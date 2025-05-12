@@ -1,8 +1,8 @@
 import Link from "next/link"
 import { MessageSquare } from "lucide-react"
-import Twitter from "@/app/components/icons/Twitter"
-import Instagram from "@/app/components/icons/Instagram"
-import Github from "@/app/components/icons/Github"
+import Twitter from "@/components/icons/Twitter"
+import Instagram from "@/components/icons/Instagram"
+import Github from "@/components/icons/Github"
 
 export default function Footer() {
   return (
