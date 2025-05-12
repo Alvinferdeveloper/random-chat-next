@@ -4,7 +4,7 @@ import Link from "next/link"
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background px-5">
       {/* Hero Section */}
       <section className="py-12 md:py-20 bg-gradient-to-b from-background to-muted/30">
         <div className="container px-4 md:px-6">
