@@ -1,8 +1,7 @@
 "use client"
-
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { ThemeToggle } from "@/app/components/pages/main/themeToggle"
+import { ThemeToggle } from "@/app/components/pages/main/ThemeToggle"
 import { Button } from "@/components/ui/button"
 import { MessageSquare, Users } from "lucide-react"
 

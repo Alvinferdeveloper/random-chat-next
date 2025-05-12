@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import Check from '@/app/components/icons/check'
+import Check from '@/app/components/icons/Check'
 
 export default function CtaSection() {
     return (

@@ -1,8 +1,8 @@
 import Link from "next/link"
 import { MessageSquare } from "lucide-react"
-import Twitter from "../../icons/twitter"
-import Instagram from "../../icons/instagram"
-import Github from "../../icons/github"
+import Twitter from "@/app/components/icons/Twitter"
+import Instagram from "@/app/components/icons/Instagram"
+import Github from "@/app/components/icons/Github"
 
 export default function Footer() {
   return (
@@ -90,15 +90,15 @@ export default function Footer() {
           <div className="flex items-center mt-4 space-x-4 md:mt-0">
             <Link href="#" className="text-muted-foreground hover:text-foreground">
               <span className="sr-only">Instagram</span>
-              <Instagram/>
+              <Instagram />
             </Link>
             <Link href="#" className="text-muted-foreground hover:text-foreground">
               <span className="sr-only">Twitter</span>
-              <Twitter/>
+              <Twitter />
             </Link>
             <Link href="#" className="text-muted-foreground hover:text-foreground">
               <span className="sr-only">GitHub</span>
-              <Github/>
+              <Github />
             </Link>
           </div>
         </div>
