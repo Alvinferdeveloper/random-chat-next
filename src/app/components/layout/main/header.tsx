@@ -2,7 +2,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ThemeToggle } from "@/components/pages/main/ThemeToggle"
-import { Button } from "@/components/ui/button"
+import { Button } from "@shadcn/button"
 import { MessageSquare, Users } from "lucide-react"
 
 export default function Header() {
