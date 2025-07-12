@@ -7,30 +7,33 @@ import { Users } from "lucide-react"
 import { MessageSquare } from "lucide-react"
 import { ArrowRight } from "lucide-react"
 import { ConnectingAnimation } from "@/components/animations/ConnectionAnimation"
-import useRoom from "../hooks/useRoom"
-import { roomStyle } from "../utils/roomStyle"
-
+import useRoom from "@/src/app/hooks/useRoom"
+import { roomStyle } from "@/src/app/utils/roomStyle"
+import { useSocket } from "@/components/providers/SocketProvider"
 
 export default function Rooms() {
     const router = useRouter()
     const [connecting, setConnecting] = useState<string | null>(null)
     const [hovered, setHovered] = useState<string | null>(null)
     const { rooms } = useRoom();
+    const socket = useSocket();
 
-    const handleJoinRoom = (roomId: string) => {
-        setConnecting(roomId)
+    const handleJoinRoom = async (roomId: string) => {
+        setConnecting(roomId);
+        const username = `user_${Math.floor(Math.random() * 10000)}`;
+        socket.emit("joinRoom", roomId, username);
+        router.push(`/chat/${roomId}`);
 
-        // Simular tiempo de conexión
-        setTimeout(() => {
-            router.push(`/chat/${roomId}`)
-        }, 2000)
+        socket.on("connect_error", (err) => {
+            alert("No se pudo conectar al servidor de chat. Intenta más tarde.");
+            setConnecting(null);
+        });
     }
 
     return (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 p-6">
             {rooms.map((room) => {
-                const style = roomStyle(room.color || "DEFAULT") 
-                console.log(style)
+                const style = roomStyle(room.color || "DEFAULT")
                 return (
                     <Card
                         key={room.id}

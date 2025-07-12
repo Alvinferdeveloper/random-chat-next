@@ -15,7 +15,7 @@ export default function useRoom() {
 
     useEffect(() => {
         const fetchRooms = async () => {
-            const res = await fetch("http://localhost:3001/api/v1/room/getRooms");
+            const res = await fetch("http://192.168.179.105:3001/api/v1/room/getRooms");
             if (!res.ok) {
                 setError("Ocurrio un error al cargar las salas... ");
                 return;
