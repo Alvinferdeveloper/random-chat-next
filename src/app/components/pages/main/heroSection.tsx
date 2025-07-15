@@ -1,5 +1,6 @@
 import { Button } from "@shadcn/button"
 import { ArrowRight } from "lucide-react"
+import Link from "next/link"
 
 export default function HeroSection() {
     return (
@@ -16,9 +17,11 @@ export default function HeroSection() {
                             </p>
                         </div>
                         <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                            <Button size="lg" className="gap-2">
-                                Comenzar ahora
-                                <ArrowRight className="w-4 h-4" />
+                            <Button size="lg" className="gap-2" asChild>
+                                <Link href="/rooms">
+                                    Comenzar ahora
+                                    <ArrowRight className="w-4 h-4" />
+                                </Link>
                             </Button>
                             <Button size="lg" variant="outline">
                                 Saber más
