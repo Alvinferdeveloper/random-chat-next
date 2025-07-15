@@ -1,8 +1,49 @@
+"use client"
+
 import { Button } from "@shadcn/button"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
+import { useEffect, useState } from "react"
+
+const messages = [
+    {
+        text: "¡Hola! ¿Alguien vio el partido de anoche?",
+        isUser: false,
+    },
+    {
+        text: "¡Sí! Fue increíble ese gol en el último minuto.",
+        isUser: true,
+    },
+    {
+        text: "¿Alguien tiene una buena receta de pasta?",
+        isUser: false,
+    },
+    {
+        text: "Yo tengo una de lasaña vegetariana que queda deliciosa.",
+        isUser: true,
+    },
+]
 
 export default function HeroSection() {
+    const [visibleMessages, setVisibleMessages] = useState<typeof messages>([])
+
+    useEffect(() => {
+        const timeouts: ReturnType<typeof setTimeout>[] = []
+        let delay = 500 // Initial delay for the first message
+
+        messages.forEach((message) => {
+            const timeout = setTimeout(() => {
+                setVisibleMessages((prev) => [...prev, message])
+            }, delay)
+            timeouts.push(timeout)
+            delay += 2000 // Subsequent messages have a 2s delay
+        })
+
+        return () => {
+            timeouts.forEach(clearTimeout)
+        }
+    }, [])
+
     return (
         <section className="py-12 md:py-20 bg-gradient-to-b from-background to-muted/30">
             <div className="container px-4 md:px-6">
@@ -33,20 +74,22 @@ export default function HeroSection() {
                             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/20 rounded-full blur-3xl" />
                             <div className="relative z-10 grid grid-cols-2 gap-4">
                                 <div className="space-y-4">
-                                    <div className="p-4 bg-background border rounded-lg shadow-sm">
-                                        <p className="text-sm">¡Hola! ¿Alguien vio el partido de anoche?</p>
-                                    </div>
-                                    <div className="p-4 bg-primary text-primary-foreground rounded-lg shadow-sm">
-                                        <p className="text-sm">¡Sí! Fue increíble ese gol en el último minuto.</p>
-                                    </div>
+                                    {visibleMessages.map((message, index) => (
+                                        !message.isUser && (
+                                            <div key={index} className="p-4 bg-background border rounded-lg shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                                <p className="text-sm">{message.text}</p>
+                                            </div>
+                                        )
+                                    ))}
                                 </div>
                                 <div className="space-y-4 mt-8">
-                                    <div className="p-4 bg-background border rounded-lg shadow-sm">
-                                        <p className="text-sm">¿Alguien tiene una buena receta de pasta?</p>
-                                    </div>
-                                    <div className="p-4 bg-primary text-primary-foreground rounded-lg shadow-sm">
-                                        <p className="text-sm">Yo tengo una de lasaña vegetariana que queda deliciosa.</p>
-                                    </div>
+                                    {visibleMessages.map((message, index) => (
+                                        message.isUser && (
+                                            <div key={index} className="p-4 bg-primary text-primary-foreground rounded-lg shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                                <p className="text-sm">{message.text}</p>
+                                            </div>
+                                        )
+                                    ))}
                                 </div>
                             </div>
                         </div>
