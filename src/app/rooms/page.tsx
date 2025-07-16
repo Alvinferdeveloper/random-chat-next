@@ -1,6 +1,6 @@
 "use client"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardFooter, CardHeader } from "@shadcn/card"
 import { Button } from "@shadcn/button"
 import { Users } from "lucide-react"
@@ -17,17 +17,39 @@ export default function Rooms() {
     const [hovered, setHovered] = useState<string | null>(null)
     const { rooms } = useRoom();
     const socket = useSocket();
+    const [userCounts, setUserCounts] = useState<Record<string, number>>({});
 
-    const handleJoinRoom = async (roomId: string) => {
+    useEffect(() => {
+        if (socket) {
+            socket.emit('getInitialRoomState');
+
+            socket.on('initialRoomState', (roomState: Record<string, { userCount: number }>) => {
+                const counts: Record<string, number> = {};
+                for (const roomId in roomState) {
+                    counts[roomId] = roomState[roomId].userCount;
+                }
+                setUserCounts(counts);
+            });
+
+            socket.on('userCount', (data: { roomId: string; count: number }) => {
+                setUserCounts((prevCounts) => ({
+                    ...prevCounts,
+                    [data.roomId]: data.count,
+                }));
+            });
+        }
+
+        return () => {
+            if (socket) {
+                socket.off('initialRoomState');
+                socket.off('userCount');
+            }
+        };
+    }, [socket]);
+
+    const handleJoinRoom = (roomId: string) => {
         setConnecting(roomId);
-        const username = `user_${Math.floor(Math.random() * 10000)}`;
-        socket.emit("joinRoom", roomId, username);
         router.push(`/chat/${roomId}`);
-
-        socket.on("connect_error", (err) => {
-            alert("No se pudo conectar al servidor de chat. Intenta más tarde.");
-            setConnecting(null);
-        });
     }
 
     return (
@@ -55,7 +77,7 @@ export default function Rooms() {
                         <CardContent className="pt-6">
                             <div className="flex items-center text-sm text-muted-foreground">
                                 <Users className="w-4 h-4 mr-2" />
-                                <span>{25} usuarios activos</span>
+                                <span>{userCounts[room.id] || 0} usuarios activos</span>
                             </div>
                         </CardContent>
 

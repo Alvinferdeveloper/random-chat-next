@@ -48,6 +48,7 @@ export function useChat() {
             return () => {
                 socket.off("message", handleMessage);
                 socket.off("error", handleError);
+                socket.emit("leaveRoom", roomId);
             };
         }
     }, [roomId, socket]);
