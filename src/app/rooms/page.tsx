@@ -1,15 +1,11 @@
 "use client"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { Card, CardContent, CardFooter, CardHeader } from "@shadcn/card"
-import { Button } from "@shadcn/button"
-import { Users } from "lucide-react"
-import { MessageSquare } from "lucide-react"
-import { ArrowRight } from "lucide-react"
+import { Card, CardContent } from "@shadcn/card"
 import { ConnectingAnimation } from "@/components/animations/ConnectionAnimation"
 import useRoom from "@/src/app/hooks/useRoom"
-import { roomStyle } from "@/src/app/utils/roomStyle"
 import { useSocket } from "@/components/providers/SocketProvider"
+import { Circle, Check } from "lucide-react"
 
 export default function Rooms() {
     const router = useRouter()
@@ -55,55 +51,58 @@ export default function Rooms() {
     return (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 p-6">
             {rooms.map((room) => {
-                const style = roomStyle(room.color || "DEFAULT")
                 return (
                     <Card
                         key={room.id}
-                        className={`overflow-hidden transition-all duration-300 border ${style.borderColor} hover:shadow-lg ${connecting === room.id ? "scale-[0.98] opacity-75" : ""
+                        className={`bg-[#2f3136] border-none rounded-lg py-0 overflow-hidden hover:bg-[#32353b] transition-colors cursor-pointer ${connecting === room.id ? "scale-[0.98] opacity-75" : ""
                             } ${hovered === room.id ? "scale-[1.02]" : ""}`}
                         onMouseEnter={() => setHovered(room.id)}
                         onMouseLeave={() => setHovered(null)}
+                        onClick={() => handleJoinRoom(room.id)}
                     >
-                        <CardHeader className={`${style.color} pb-6`}>
-                            <div className="flex items-center justify-between">
-                                <h3 className="text-2xl font-bold">{room.name}</h3>
-                                <div className={`flex items-center justify-center w-12 h-12 rounded-full`}>
-                                    <span className="text-2xl">⚽</span>
+                        <div className="relative">
+                            {/* Banner Image */}
+                            <div className="h-[170px] relative overflow-hidden">
+                                <img src={room.server_banner} alt="Room banner image" />
+                            </div>
+
+                            {/* room Icon */}
+                            <div className="absolute -bottom-4 left-4">
+                                <div className="w-12 h-12 bg-[#5865f2] rounded-full flex items-center justify-center border-4 border-[#2f3136] overflow-hidden">
+                                    <img src={room.server_icon} alt="" />
                                 </div>
                             </div>
-                            <p className="mt-2 text-foreground/80">{room.short_description}</p>
-                        </CardHeader>
+                        </div>
 
-                        <CardContent className="pt-6">
-                            <div className="flex items-center text-sm text-muted-foreground">
-                                <Users className="w-4 h-4 mr-2" />
-                                <span>{userCounts[room.id] || 0} usuarios activos</span>
+                        <CardContent className="pt-3 pb-4 px-4">
+                            {/* room Name with Verification */}
+                            <div className="flex items-center gap-2 mb-2">
+                                <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                                    <Check className="w-3 h-3 text-white" />
+                                </div>
+                                <h3 className="text-white font-semibold text-lg">{room.name}</h3>
                             </div>
-                        </CardContent>
 
-                        <CardFooter>
+                            {/* Description */}
                             {connecting === room.id ? (
                                 <div className="w-full py-2">
                                     <ConnectingAnimation text="Conectando a la sala..." />
                                 </div>
                             ) : (
-                                <Button
-                                    onClick={() => handleJoinRoom(room.id)}
-                                    className="w-full gap-2 transition-all duration-300"
-                                    size="lg"
-                                >
-                                    <MessageSquare className="w-4 h-4" />
-                                    Unirse a la sala
-                                    <ArrowRight
-                                        className={`w-4 h-4 ml-auto transition-transform duration-300 ${hovered === room.id ? "translate-x-1" : ""
-                                            }`}
-                                    />
-                                </Button>
-                            )}
-                        </CardFooter>
+                                <p className="text-[#b9bbbe] text-sm mb-4 leading-relaxed">{room.full_description}</p>)}
+
+                            {/* Member Stats */}
+                            <div className="flex items-center gap-4 text-xs">
+                                <div className="flex items-center gap-1">
+                                    <Circle className="w-2 h-2 fill-green-500 text-green-500" />
+                                    <span className="text-[#b9bbbe]">{userCounts[room.id] || 0} usuarios activos </span>
+                                </div>
+                            </div>
+                        </CardContent>
                     </Card>
                 )
             })}
         </div>
     )
 }
+

@@ -5,8 +5,8 @@ type Room = {
     name: string,
     short_description: string,
     full_description: string,
-    icon: string,
-    color: string
+    server_banner: string,
+    server_icon: string
 }
 
 export default function useRoom() {
