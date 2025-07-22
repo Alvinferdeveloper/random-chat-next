@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useRef } from "react";
-import { Input } from "@shadcn/input";
-import { Button } from "@shadcn/button";
+import { Input } from "@/src/components/ui/input";
+import { Button } from "@/src/components/ui/button";
 import { Send, Smile, Paperclip } from "lucide-react";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 
@@ -9,10 +9,10 @@ interface MessageInputProps {
     newMessage: string;
     setNewMessage: (value: string | ((prev: string) => string)) => void;
     handleSendMessage: (e: React.FormEvent) => void;
-    handleImageSend: (image: ArrayBuffer) => void;
+    handleImageSelect: (file: File) => void;
 }
 
-export function MessageInput({ newMessage, setNewMessage, handleSendMessage, handleImageSend }: MessageInputProps) {
+export function MessageInput({ newMessage, setNewMessage, handleSendMessage, handleImageSelect }: MessageInputProps) {
     const [showPicker, setShowPicker] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -24,13 +24,7 @@ export function MessageInput({ newMessage, setNewMessage, handleSendMessage, han
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                if (event.target?.result) {
-                    handleImageSend(event.target.result as ArrayBuffer);
-                }
-            };
-            reader.readAsArrayBuffer(file);
+            handleImageSelect(file);
         }
     };
 

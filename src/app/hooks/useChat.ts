@@ -13,6 +13,11 @@ export function useChat() {
     const [username, setUsername] = useState<string>("");
     const [connecting, setConnecting] = useState(true);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const [previewImage, setPreviewImage] = useState<string | null>(null);
+    const [description, setDescription] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+
 
     useEffect(() => {
         let storedUsername = localStorage.getItem("username");
@@ -70,9 +75,33 @@ export function useChat() {
         setNewMessage("");
     };
 
-    const handleImageSend = (image: ArrayBuffer) => {
-        if (!socket) return;
-        socket.emit("image", image);
+    const handleImageSelect = (file: File) => {
+        setSelectedImageFile(file);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            setPreviewImage(e.target?.result as string);
+            setIsModalOpen(true);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const closeModal = () => {
+        setPreviewImage(null);
+        setDescription("");
+        setIsModalOpen(false);
+        setSelectedImageFile(null);
+    };
+
+    const handleImageSend = () => {
+        if (!socket || !selectedImageFile) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const image = e.target?.result as ArrayBuffer;
+            socket.emit("image", { image, description });
+            closeModal();
+        };
+        reader.readAsArrayBuffer(selectedImageFile);
     };
 
     return {
@@ -82,8 +111,14 @@ export function useChat() {
         username,
         connecting,
         messagesEndRef,
+        previewImage,
+        description,
+        isModalOpen,
         setNewMessage,
         handleSendMessage,
+        handleImageSelect,
         handleImageSend,
+        setDescription,
+        closeModal,
     };
 }

@@ -4,4 +4,5 @@ export interface Message {
     image?: ArrayBuffer;
     timestamp: string;
     system?: boolean;
+    description?: string;
 }
