@@ -15,6 +15,7 @@ export default function ChatPage() {
         messagesEndRef,
         setNewMessage,
         handleSendMessage,
+        handleImageSend,
     } = useChat();
 
     if (connecting) {
@@ -35,6 +36,7 @@ export default function ChatPage() {
                 newMessage={newMessage}
                 setNewMessage={setNewMessage}
                 handleSendMessage={handleSendMessage}
+                handleImageSend={handleImageSend}
             />
         </div>
     );

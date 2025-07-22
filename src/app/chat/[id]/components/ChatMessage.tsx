@@ -28,14 +28,23 @@ export function ChatMessage({ msg, username }: ChatMessageProps) {
                 <span className="text-xs text-muted-foreground">{formatTime(msg.timestamp)}</span>
             </div>
             <div
-                className={`max-w-xs rounded-lg px-3 py-2 text-sm md:max-w-md ${msg.system
-                        ? "bg-muted/30 text-center italic"
-                        : isMyMessage
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted"
-                    }`}
+                className={`max-w-xs rounded-lg text-sm md:max-w-md ${msg.system
+                    ? "bg-muted/30 text-center italic"
+                    : isMyMessage
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted"
+                    }
+                    ${!msg.image ? "px-3 py-2" : ""}
+                    `}
             >
-                {msg.message}
+                {msg.message && <p>{msg.message}</p>}
+                {msg.image && (
+                    <img
+                        src={URL.createObjectURL(new Blob([msg.image]))}
+                        alt="Imagen enviada"
+                        className="rounded-lg"
+                    />
+                )}
             </div>
         </div>
     );

@@ -1,22 +1,37 @@
 "use client"
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Input } from "@shadcn/input";
 import { Button } from "@shadcn/button";
-import { Send, Smile } from "lucide-react";
+import { Send, Smile, Paperclip } from "lucide-react";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 
 interface MessageInputProps {
     newMessage: string;
     setNewMessage: (value: string | ((prev: string) => string)) => void;
     handleSendMessage: (e: React.FormEvent) => void;
+    handleImageSend: (image: ArrayBuffer) => void;
 }
 
-export function MessageInput({ newMessage, setNewMessage, handleSendMessage }: MessageInputProps) {
+export function MessageInput({ newMessage, setNewMessage, handleSendMessage, handleImageSend }: MessageInputProps) {
     const [showPicker, setShowPicker] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const onEmojiClick = (emojiData: EmojiClickData) => {
         setNewMessage(prev => prev + emojiData.emoji);
         setShowPicker(false);
+    };
+
+    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                if (event.target?.result) {
+                    handleImageSend(event.target.result as ArrayBuffer);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
     };
 
     return (
@@ -28,6 +43,21 @@ export function MessageInput({ newMessage, setNewMessage, handleSendMessage }: M
                     </div>
                 )}
                 <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+                    <Button
+                        type="button"
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => fileInputRef.current?.click()}
+                    >
+                        <Paperclip className="h-5 w-5 text-muted-foreground" />
+                    </Button>
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={onFileChange}
+                        className="hidden"
+                        accept="image/*"
+                    />
                     <div className="relative flex-grow">
                         <Input
                             value={newMessage}

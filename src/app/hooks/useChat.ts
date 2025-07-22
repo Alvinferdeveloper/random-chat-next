@@ -30,6 +30,10 @@ export function useChat() {
                 setMessages((prev) => [...prev, msg]);
             };
 
+            const handleImage = (img: Message) => {
+                setMessages((prev) => [...prev, img]);
+            };
+
             const handleError = (errMsg: string) => {
                 setMessages((prev) => [
                     ...prev,
@@ -43,10 +47,12 @@ export function useChat() {
             };
 
             socket.on("message", handleMessage);
+            socket.on("image", handleImage);
             socket.on("error", handleError);
 
             return () => {
                 socket.off("message", handleMessage);
+                socket.off("image", handleImage);
                 socket.off("error", handleError);
                 socket.emit("leaveRoom", roomId);
             };
@@ -64,6 +70,11 @@ export function useChat() {
         setNewMessage("");
     };
 
+    const handleImageSend = (image: ArrayBuffer) => {
+        if (!socket) return;
+        socket.emit("image", image);
+    };
+
     return {
         roomId,
         messages,
@@ -73,5 +84,6 @@ export function useChat() {
         messagesEndRef,
         setNewMessage,
         handleSendMessage,
+        handleImageSend,
     };
 }
