@@ -28,10 +28,10 @@ export function ChatMessage({ msg, username }: ChatMessageProps) {
                 <span className="text-xs text-muted-foreground">{formatTime(msg.timestamp)}</span>
             </div>
             <div
-                className={`max-w-xs rounded-lg ${msg.image ? "px-1" : "px-2"} py-2 text-sm md:max-w-md ${msg.system
+                className={`max-w-xs rounded-lg ${msg.image ? "p-0.5" : "p-2"} text-sm md:max-w-md ${msg.system
                     ? "bg-muted/30 text-center italic"
                     : isMyMessage
-                        ? "bg-primary text-primary-foreground"
+                        ? "bg-blue-700 text-white"
                         : "bg-muted"
                     }`}
             >
