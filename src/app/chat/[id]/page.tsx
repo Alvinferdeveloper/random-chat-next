@@ -1,10 +1,12 @@
 "use client"
 import { useChat } from "@/src/app/hooks/useChat";
+import { useImageViewer } from "@/src/app/hooks/useImageViewer";
 import { ChatHeader } from "@/src/app/chat/[id]/components/ChatHeader";
 import { MessageList } from "@/src/app/chat/[id]/components/MessageList";
 import { MessageInput } from "@/src/app/chat/[id]/components/MessageInput";
 import { ChatConnecting } from "@/src/app/chat/[id]/components/ChatConnecting";
 import { ImagePreviewModal } from "@/src/app/chat/[id]/components/ImagePreviewModal";
+import { ImageViewerModal } from "@/src/app/chat/[id]/components/ImageViewerModal";
 
 export default function ChatPage() {
     const {
@@ -25,6 +27,8 @@ export default function ChatPage() {
         closeModal,
     } = useChat();
 
+    const { isImageViewerOpen, viewedImageUrl, openImageViewer, closeImageViewer } = useImageViewer();
+
     if (connecting) {
         return <ChatConnecting roomId={roomId} />;
     }
@@ -37,6 +41,7 @@ export default function ChatPage() {
                     messages={messages}
                     username={username}
                     messagesEndRef={messagesEndRef}
+                    openImageViewer={openImageViewer}
                 />
             </div>
             <MessageInput
@@ -52,6 +57,11 @@ export default function ChatPage() {
                 setDescription={setDescription}
                 handleImageSend={handleImageSend}
                 closeModal={closeModal}
+            />
+            <ImageViewerModal
+                isOpen={isImageViewerOpen}
+                imageUrl={viewedImageUrl}
+                onClose={closeImageViewer}
             />
         </div>
     );

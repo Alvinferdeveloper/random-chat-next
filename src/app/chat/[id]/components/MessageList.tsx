@@ -7,14 +7,15 @@ interface MessageListProps {
     messages: Message[];
     username: string;
     messagesEndRef: React.RefObject<HTMLDivElement | null>;
+    openImageViewer: (imageUrl: string) => void;
 }
 
-export function MessageList({ messages, username, messagesEndRef }: MessageListProps) {
+export function MessageList({ messages, username, messagesEndRef, openImageViewer }: MessageListProps) {
     return (
         <div className="flex-1 p-4 overflow-y-auto">
             <div className="space-y-4">
                 {messages.map((msg, idx) => (
-                    <ChatMessage key={idx} msg={msg} username={username} />
+                    <ChatMessage key={idx} msg={msg} username={username} openImageViewer={openImageViewer} />
                 ))}
                 <div ref={messagesEndRef} />
             </div>
