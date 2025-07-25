@@ -26,6 +26,10 @@ export function MessageInput({ newMessage, setNewMessage, handleSendMessage, han
         if (file) {
             handleImageSelect(file);
         }
+        // Reset the input value to allow selecting the same file again
+        if (e.target) {
+            e.target.value = "";
+        }
     };
 
     return (
