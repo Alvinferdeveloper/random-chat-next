@@ -26,7 +26,7 @@ export function ChatHeader({ roomId }: ChatHeaderProps) {
     return (
         <header className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="flex items-center gap-2">
-                <Link href="/">
+                <Link href="/rooms">
                     <Button variant="ghost" size="icon" aria-label="Volver">
                         <ArrowLeft className="w-5 h-5" />
                     </Button>
