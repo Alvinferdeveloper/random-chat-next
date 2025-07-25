@@ -25,9 +25,10 @@ export default function ChatPage() {
         handleImageSend,
         setDescription,
         closeModal,
+        scrollToBottom,
     } = useChat();
 
-    const { isImageViewerOpen, viewedImageUrl, openImageViewer, closeImageViewer } = useImageViewer();
+    const { openImageViewer, isImageViewerOpen, viewedImageUrl, closeImageViewer } = useImageViewer()
 
     if (connecting) {
         return <ChatConnecting roomId={roomId} />;
@@ -41,6 +42,7 @@ export default function ChatPage() {
                     messages={messages}
                     username={username}
                     messagesEndRef={messagesEndRef}
+                    scrollToBottom={scrollToBottom}
                     openImageViewer={openImageViewer}
                 />
             </div>

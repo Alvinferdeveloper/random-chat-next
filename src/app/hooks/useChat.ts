@@ -18,6 +18,9 @@ export function useChat() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
 
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
 
     useEffect(() => {
         let storedUsername = localStorage.getItem("username");
@@ -65,7 +68,7 @@ export function useChat() {
     }, [roomId, socket]);
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        scrollToBottom();
     }, [messages]);
 
     const handleSendMessage = (e: React.FormEvent) => {
@@ -120,5 +123,6 @@ export function useChat() {
         handleImageSend,
         setDescription,
         closeModal,
+        scrollToBottom,
     };
 }

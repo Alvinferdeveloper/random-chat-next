@@ -5,6 +5,7 @@ interface ChatMessageProps {
     msg: Message;
     username: string;
     openImageViewer: (imageUrl: string) => void;
+    scrollToBottom: () => void;
 }
 
 function formatTime(dateStr: string) {
@@ -12,7 +13,7 @@ function formatTime(dateStr: string) {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
-export function ChatMessage({ msg, username, openImageViewer }: ChatMessageProps) {
+export function ChatMessage({ msg, username, openImageViewer, scrollToBottom }: ChatMessageProps) {
     const isMyMessage = msg.username === username && !msg.system;
 
     const imageUrl = msg.image ? URL.createObjectURL(new Blob([msg.image])) : null;
@@ -46,6 +47,7 @@ export function ChatMessage({ msg, username, openImageViewer }: ChatMessageProps
                             src={imageUrl}
                             alt="Imagen enviada"
                             className="rounded-lg"
+                            onLoad={scrollToBottom}
                         />
                         {msg.description && <p className="mt-2 text-sm">{msg.description}</p>}
                     </div>
