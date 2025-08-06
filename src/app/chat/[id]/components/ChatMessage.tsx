@@ -14,29 +14,20 @@ function formatTime(dateStr: string) {
 }
 
 export function ChatMessage({ msg, username, openImageViewer, scrollToBottom }: ChatMessageProps) {
-    const isMyMessage = msg.username === username && !msg.system;
+    const isMyMessage = msg.username === username;
 
     const imageUrl = msg.image ? URL.createObjectURL(new Blob([msg.image])) : null;
 
     return (
-        <div
-            className={`flex w-full flex-col gap-1 ${msg.system ? "items-center" : isMyMessage ? "items-end" : "items-start"}`}>
+        <div className={`flex w-full flex-col gap-1 ${isMyMessage ? "items-end" : "items-start"}`}>
             <div className={`flex items-center gap-2 ${isMyMessage ? "flex-row-reverse" : "flex-row"}`}>
-                {!msg.system && (
-                    <span className="text-sm font-semibold text-primary">
-                        {isMyMessage ? "Tú" : msg.username}
-                    </span>
-                )}
+                <span className="text-sm font-semibold text-primary">
+                    {isMyMessage ? "Tú" : msg.username}
+                </span>
                 <span className="text-xs text-muted-foreground">{formatTime(msg.timestamp)}</span>
             </div>
             <div
-                className={`max-w-xs rounded-lg text-sm md:max-w-md ${msg.system
-                    ? "bg-muted/30 text-center italic"
-                    : isMyMessage
-                        ? "bg-blue-700 text-white"
-                        : "bg-muted"
-                    }
-                    ${msg.image ? "p-0.5" : "p-2"}`}>
+                className={`max-w-xs rounded-lg text-sm md:max-w-md ${isMyMessage ? "bg-blue-700 text-white" : "bg-muted"} ${msg.image ? "p-0.5" : "p-2"}`}>
                 {msg.message && <p>{msg.message}</p>}
                 {msg.image && imageUrl && (
                     <div

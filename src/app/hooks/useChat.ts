@@ -12,7 +12,7 @@ export function useChat() {
     const roomId = params.id as string;
     const socket = useSocket();
     const username = useUsername();
-    const { messages, connecting } = useSocketHandler(roomId, username);
+    const { messages, connecting, notificationUser } = useSocketHandler(roomId, username);
     const { messagesEndRef, scrollToBottom } = useAutoScroll(messages);
     const {
         previewImage,
@@ -49,5 +49,6 @@ export function useChat() {
         setDescription,
         closeModal,
         scrollToBottom,
+        notificationUser,
     };
 }

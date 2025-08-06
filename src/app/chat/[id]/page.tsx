@@ -7,6 +7,7 @@ import { MessageInput } from "@/src/app/chat/[id]/components/MessageInput";
 import { ChatConnecting } from "@/src/app/chat/[id]/components/ChatConnecting";
 import { ImagePreviewModal } from "@/src/app/chat/[id]/components/ImagePreviewModal";
 import { ImageViewerModal } from "@/src/app/chat/[id]/components/ImageViewerModal";
+import { UserJoinedNotification } from '@/src/app/chat/[id]/components/UserJoinedNotification';
 
 export default function ChatPage() {
     const {
@@ -26,6 +27,7 @@ export default function ChatPage() {
         setDescription,
         closeModal,
         scrollToBottom,
+        notificationUser,
     } = useChat();
 
     const { openImageViewer, isImageViewerOpen, viewedImageUrl, closeImageViewer } = useImageViewer()
@@ -36,6 +38,12 @@ export default function ChatPage() {
 
     return (
         <div className="flex flex-col h-screen bg-background">
+            {notificationUser && (
+                <UserJoinedNotification
+                    key={notificationUser}
+                    username={notificationUser}
+                />
+            )}
             <ChatHeader roomId={roomId} />
             <div className="relative flex flex-1 overflow-hidden">
                 <MessageList
