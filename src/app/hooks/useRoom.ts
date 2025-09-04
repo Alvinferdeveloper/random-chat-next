@@ -15,7 +15,7 @@ export default function useRoom() {
 
     useEffect(() => {
         const fetchRooms = async () => {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/rooms`);
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/rooms`, { credentials:'include'});
             if (!res.ok) {
                 setError("Ocurrio un error al cargar las salas... ");
                 return;

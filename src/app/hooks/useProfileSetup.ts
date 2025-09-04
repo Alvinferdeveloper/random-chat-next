@@ -37,7 +37,7 @@ export function useProfileSetup() {
         const fetchHobbies = async () => {
             try {
                 setHobbiesLoading(true);
-                const response = await fetch('http://localhost:3001/api/v1/hobbies');
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/hobbies`, { credentials: 'include' });
                 if (!response.ok) {
                     throw new Error('No se pudieron cargar las aficiones.');
                 }
@@ -66,7 +66,7 @@ export function useProfileSetup() {
         setError(null);
 
         try {
-            const response = await fetch('http://localhost:3001/api/v1/user/complete-profile', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/user/complete-profile`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(
