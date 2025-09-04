@@ -1,12 +1,22 @@
-"use client"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { ThemeToggle } from "@/components/pages/main/ThemeToggle"
-import { Button } from "@shadcn/button"
-import { MessageSquare, Users } from "lucide-react"
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { MessageSquare } from 'lucide-react';
+import dynamic from 'next/dynamic';
+
+const DynamicHeader = dynamic(() => import('./DynamicHeader'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center gap-4">
+      <div className="h-9 w-9 bg-muted/50 rounded-md animate-pulse"></div>
+      <div className="h-8 w-8 bg-muted/50 rounded-full animate-pulse"></div>
+    </div>
+  ),
+});
 
 export default function Header() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -21,8 +31,7 @@ export default function Header() {
         <nav className="hidden md:flex items-center gap-6 text-sm">
           <Link
             href="/"
-            className={`transition-colors hover:text-primary ${pathname === "/" ? "text-primary font-medium" : "text-muted-foreground"}`}
-          >
+            className={`transition-colors hover:text-primary ${pathname === '/' ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
             Inicio
           </Link>
           <Link href="#temas" className="text-muted-foreground transition-colors hover:text-primary">
@@ -36,16 +45,8 @@ export default function Header() {
           </Link>
         </nav>
 
-        <div className="flex items-center gap-4">
-          <ThemeToggle />
-          <a href="/login">
-            <Button size="sm" className="hidden md:flex gap-2">
-              <Users className="w-4 h-4" />
-              Iniciar sesión
-            </Button>
-          </a>
-        </div>
+        <DynamicHeader />
       </div>
     </header>
-  )
+  );
 }
