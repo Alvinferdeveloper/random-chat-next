@@ -7,7 +7,6 @@ import { MessageSquare, Users } from "lucide-react"
 
 export default function Header() {
   const pathname = usePathname()
-  const isHome = pathname === "/"
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -39,10 +38,12 @@ export default function Header() {
 
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          <Button size="sm" className="hidden md:flex gap-2">
-            <Users className="w-4 h-4" />
-            Iniciar sesión
-          </Button>
+          <a href="/login">
+            <Button size="sm" className="hidden md:flex gap-2">
+              <Users className="w-4 h-4" />
+              Iniciar sesión
+            </Button>
+          </a>
         </div>
       </div>
     </header>

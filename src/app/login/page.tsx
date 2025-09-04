@@ -17,11 +17,10 @@ export default function LoginForm() {
         })
 
     }
-
     const handleFacebookLogin = () => {
         authClient.signIn.social({
             provider: "facebook",
-            callbackURL: "/"
+            callbackURL: "/rooms"
         })
     }
 

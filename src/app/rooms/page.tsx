@@ -1,19 +1,39 @@
-"use client"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { Card, CardContent } from "@shadcn/card"
-import { ConnectingAnimation } from "@/components/animations/ConnectionAnimation"
-import useRoom from "@/src/app/hooks/useRoom"
-import { useSocket } from "@/components/providers/SocketProvider"
-import { Circle, Check } from "lucide-react"
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Card, CardContent } from '@/src/components/ui/card';
+import { ConnectingAnimation } from '@/components/animations/ConnectionAnimation';
+import useRoom from '@/src/app/hooks/useRoom';
+import { useSocket } from '@/components/providers/SocketProvider';
+import { Circle, Check } from 'lucide-react';
+import { authClient } from '../lib/auth-client';
+import { AdditionalInfoModal } from '@/src/app/components/auth/AdditionalInfoModal';
 
 export default function Rooms() {
-    const router = useRouter()
-    const [connecting, setConnecting] = useState<string | null>(null)
-    const [hovered, setHovered] = useState<string | null>(null)
+    const router = useRouter();
+    const [connecting, setConnecting] = useState<string | null>(null);
+    const [hovered, setHovered] = useState<string | null>(null);
     const { rooms } = useRoom();
     const socket = useSocket();
     const [userCounts, setUserCounts] = useState<Record<string, number>>({});
+
+    const { data: session, isPending } = authClient.useSession();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    useEffect(() => {
+        if (isPending) return;
+        if (session?.user) {
+            if (!(session.user as any).isCompleteProfile) {
+                setIsModalOpen(true);
+            }
+        }
+    }, [isPending, session]);
+
+    const handleProfileComplete = () => {
+        setIsModalOpen(false);
+        window.location.reload();
+    };
 
     useEffect(() => {
         if (socket) {
@@ -46,10 +66,23 @@ export default function Rooms() {
     const handleJoinRoom = (roomId: string) => {
         setConnecting(roomId);
         router.push(`/chat/${roomId}`);
+    };
+
+    if (isPending) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <p>Cargando sesión...</p>
+            </div>
+        );
     }
 
     return (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 p-6">
+            <AdditionalInfoModal
+                isOpen={isModalOpen}
+                onProfileComplete={handleProfileComplete}
+            />
+
             {rooms.map((room) => {
                 return (
                     <Card
