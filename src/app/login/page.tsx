@@ -18,16 +18,16 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
 
     const handleGoogleLogin = async () => {
-        await authClient.signIn.social({
+        const { data, error } = await authClient.signIn.social({
             provider: "google",
-            callbackURL: "http://localhost:3000/rooms"
+            callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/rooms`
         });
     };
 
     const handleFacebookLogin = () => {
         authClient.signIn.social({
             provider: "facebook",
-            callbackURL: "http://localhost:3000/rooms"
+            callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/rooms`
         });
     };
 
@@ -39,7 +39,7 @@ export default function LoginPage() {
         const { data, error } = await authClient.signIn.email({
             email,
             password,
-            callbackURL: "/rooms",
+            callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/rooms`,
         });
 
         setLoading(false);
