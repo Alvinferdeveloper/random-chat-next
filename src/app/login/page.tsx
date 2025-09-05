@@ -1,41 +1,66 @@
-"use client"
+'use client';
 
-import type React from "react"
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Button } from "@/src/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card";
+import { Input } from "@/src/components/ui/input";
+import { Label } from "@/src/components/ui/label";
+import { Separator } from "@/src/components/ui/separator";
+import { authClient } from "../lib/auth-client";
 
-import { Button } from "@/src/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
-import { Input } from "@/src/components/ui/input"
-import { Label } from "@/src/components/ui/label"
-import { Separator } from "@/src/components/ui/separator"
-import { authClient } from "../lib/auth-client"
+export default function LoginPage() {
+    const router = useRouter();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
-export default function LoginForm() {
     const handleGoogleLogin = async () => {
         await authClient.signIn.social({
             provider: "google",
             callbackURL: "http://localhost:3000/rooms"
-        })
+        });
+    };
 
-    }
     const handleFacebookLogin = () => {
         authClient.signIn.social({
             provider: "facebook",
-            callbackURL: "/rooms"
-        })
-    }
+            callbackURL: "http://localhost:3000/rooms"
+        });
+    };
 
-    const handleEmailLogin = (e: React.FormEvent) => {
-        e.preventDefault()
-        console.log("Iniciando sesión con email...")
-    }
+    const handleEmailLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+
+        const { data, error } = await authClient.signIn.email({
+            email,
+            password,
+            callbackURL: "/rooms",
+        });
+
+        setLoading(false);
+
+        if (error) {
+            if (error.status === 403) {
+                setError('Por favor, verifica tu correo electrónico antes de iniciar sesión.');
+            } else {
+                setError(error.message || 'Credenciales incorrectas.');
+            }
+        } else {
+            router.push('/rooms');
+        }
+    };
 
     return (
         <main className="min-h-screen bg-background flex items-center justify-center p-4">
-
-            <Card className="w-full max-w-md mx-auto shadow-lg ">
+            <Card className="w-full max-w-md mx-auto shadow-lg">
                 <CardHeader className="space-y-1 text-center">
                     <CardTitle className="text-2xl font-bold">Iniciar Sesión</CardTitle>
-                    <CardDescription className="text-muted-foreground">Elige tu método preferido para acceder</CardDescription>
+                    <CardDescription>Elige tu método preferido para acceder</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {/* Botones de redes sociales */}
@@ -65,7 +90,6 @@ export default function LoginForm() {
                             </svg>
                             Continuar con Google
                         </Button>
-
                         <Button
                             onClick={handleFacebookLogin}
                             variant="outline"
@@ -83,7 +107,7 @@ export default function LoginForm() {
 
                     <div className="relative">
                         <div className="absolute inset-0 flex items-center">
-                            <Separator className="w-full" />
+                            <Separator />
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
                             <span className="bg-card px-2 text-muted-foreground">O continúa con</span>
@@ -94,31 +118,26 @@ export default function LoginForm() {
                     <form onSubmit={handleEmailLogin} className="space-y-4">
                         <div className="space-y-2">
                             <Label htmlFor="email">Correo electrónico</Label>
-                            <Input id="email" type="email" placeholder="tu@ejemplo.com" required className="h-11" />
+                            <Input id="email" type="email" placeholder="tu@ejemplo.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="password">Contraseña</Label>
-                            <Input id="password" type="password" placeholder="••••••••" required className="h-11" />
+                            <Input id="password" type="password" placeholder="********" required value={password} onChange={(e) => setPassword(e.target.value)} />
                         </div>
-                        <Button type="submit" className="w-full h-11 bg-primary hover:bg-primary/90">
-                            Iniciar Sesión
+                        {error && <p className="text-sm text-destructive">{error}</p>}
+                        <Button type="submit" className="w-full" disabled={loading}>
+                            {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
                         </Button>
                     </form>
 
-                    <div className="text-center">
-                        <a href="#" className="text-sm text-muted-foreground hover:text-accent underline-offset-4 hover:underline">
-                            ¿Olvidaste tu contraseña?
-                        </a>
-                    </div>
-
                     <div className="text-center text-sm text-muted-foreground">
                         ¿No tienes cuenta?{" "}
-                        <a href="#" className="text-accent hover:underline underline-offset-4">
+                        <Link href="/signup" className="underline">
                             Regístrate aquí
-                        </a>
+                        </Link>
                     </div>
                 </CardContent>
             </Card>
         </main>
-    )
+    );
 }
