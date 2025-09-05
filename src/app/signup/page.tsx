@@ -25,7 +25,7 @@ export default function SignupPage() {
             name,
             email,
             password,
-            callbackURL: `${window.location.origin}/verify-email`,
+            callbackURL: `http://192.168.64.105:3000/verify-email?success=true`,
         });
 
         setLoading(false);
