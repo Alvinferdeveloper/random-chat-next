@@ -1,6 +1,6 @@
 import { Button } from "@shadcn/button"
 import Link from "next/link"
-import Check from '@/components/icons/Check'
+import Check from '@/src/app/components/icons/Ccheck'
 
 export default function CtaSection() {
     return (
