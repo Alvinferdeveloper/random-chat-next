@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
-import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { ThemeProvider } from "@/src/app/components/providers/ThemeProvider";
 import "./globals.css";
 import { SocketProvider } from "@/components/providers/SocketProvider";
 
