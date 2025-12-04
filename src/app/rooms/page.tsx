@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/src/components/ui/card';
 import { ConnectingAnimation } from '../components/animations/ConnectionAnimation';
-import useRoom from '@/src/app/hooks/useRoom';
+import useRoom from '@/src/app/rooms/hooks/useRoom';
 import { useSocket } from '@/components/providers/SocketProvider';
 import { Circle, Check } from 'lucide-react';
 import { authClient } from '../lib/auth-client';

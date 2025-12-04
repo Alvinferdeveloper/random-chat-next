@@ -1,6 +1,6 @@
 "use client"
-import { useChat } from "@/src/app/hooks/useChat";
-import { useImageViewer } from "@/src/app/hooks/useImageViewer";
+import { useChat } from "@/src/app/chat/[id]/hooks/useChat";
+import { useImageViewer } from "@/src/app/chat/[id]/hooks/useImageViewer";
 import { ChatHeader } from "@/src/app/chat/[id]/components/ChatHeader";
 import { MessageList } from "@/src/app/chat/[id]/components/MessageList";
 import { MessageInput } from "@/src/app/chat/[id]/components/MessageInput";
@@ -8,6 +8,7 @@ import { ChatConnecting } from "@/src/app/chat/[id]/components/ChatConnecting";
 import { ImagePreviewModal } from "@/src/app/chat/[id]/components/ImagePreviewModal";
 import { ImageViewerModal } from "@/src/app/chat/[id]/components/ImageViewerModal";
 import { UserJoinedNotification } from '@/src/app/chat/[id]/components/UserJoinedNotification';
+import { useImageHandling } from "@/src/app/chat/[id]/hooks/useImageHandling";
 
 export default function ChatPage() {
     const {
@@ -17,18 +18,21 @@ export default function ChatPage() {
         username,
         connecting,
         messagesEndRef,
+        setNewMessage,
+        handleSendMessage,
+        scrollToBottom,
+        notificationUser,
+    } = useChat();
+
+    const {
         previewImage,
         description,
         isModalOpen,
-        setNewMessage,
-        handleSendMessage,
         handleImageSelect,
         handleImageSend,
         setDescription,
         closeModal,
-        scrollToBottom,
-        notificationUser,
-    } = useChat();
+    } = useImageHandling();
 
     const { openImageViewer, isImageViewerOpen, viewedImageUrl, closeImageViewer } = useImageViewer()
 

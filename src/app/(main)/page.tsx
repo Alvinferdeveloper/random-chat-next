@@ -1,6 +1,6 @@
-import HeroSection from "@/src/app/components/pages/main/HeroSection"
-import FeaturesSection from "@/src/app/components/pages/main/FeaturesSection"
-import CtaSection from "@/src/app/components/pages/main/CtaSection"
+import HeroSection from "@/src/app/(main)/components/HeroSection"
+import FeaturesSection from "@/src/app/(main)/components/FeaturesSection"
+import CtaSection from "@/src/app/(main)/components/CtaSection"
 
 export default function Home() {
   return (

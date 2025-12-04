@@ -3,17 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { MessageSquare } from 'lucide-react';
-import dynamic from 'next/dynamic';
-
-const DynamicHeader = dynamic(() => import('./DynamicHeader'), {
-  ssr: false,
-  loading: () => (
-    <div className="flex items-center gap-4">
-      <div className="h-9 w-9 bg-muted/50 rounded-md animate-pulse"></div>
-      <div className="h-8 w-8 bg-muted/50 rounded-full animate-pulse"></div>
-    </div>
-  ),
-});
+import { ThemeToggle } from './ThemeToggle';
+import { UserNav } from '@/src/app/components/layout/ProfileDropDown';
 
 export default function Header() {
   const pathname = usePathname();
@@ -44,8 +35,8 @@ export default function Header() {
             Acerca de
           </Link>
         </nav>
-
-        <DynamicHeader />
+        <ThemeToggle />
+        <UserNav />
       </div>
     </header>
   );

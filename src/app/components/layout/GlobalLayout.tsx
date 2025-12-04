@@ -1,5 +1,5 @@
-import Header from '@/components/layout/main/Header'
-import Footer from '@/components/layout/main/Footer'
+import Header from '@/src/app/components/layout/Header'
+import Footer from '@/src/app/components/layout/Footer'
 export default function GlobalLayout({ children }: { children: React.ReactNode }) {
     return (
         <div className="flex flex-col min-h-screen">

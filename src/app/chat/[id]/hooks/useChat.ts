@@ -2,10 +2,9 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useSocket } from "@/components/providers/SocketProvider";
-import { useUsername } from "./useUsername";
-import { useSocketHandler } from "./useSocketHandler";
+import { useUsername } from "@/src/app/hooks/useUsername";
+import { useSocketHandler } from "@/src/app/hooks/useSocketHandler";
 import { useAutoScroll } from "./useAutoScroll";
-import { useImageHandling } from "./useImageHandling";
 
 export function useChat() {
     const params = useParams();
@@ -14,15 +13,6 @@ export function useChat() {
     const username = useUsername();
     const { messages, connecting, notificationUser } = useSocketHandler(roomId, username);
     const { messagesEndRef, scrollToBottom } = useAutoScroll(messages);
-    const {
-        previewImage,
-        description,
-        isModalOpen,
-        handleImageSelect,
-        handleImageSend,
-        setDescription,
-        closeModal,
-    } = useImageHandling();
     const [newMessage, setNewMessage] = useState("");
 
     const handleSendMessage = (e: React.FormEvent) => {
@@ -39,15 +29,8 @@ export function useChat() {
         username,
         connecting,
         messagesEndRef,
-        previewImage,
-        description,
-        isModalOpen,
         setNewMessage,
         handleSendMessage,
-        handleImageSelect,
-        handleImageSend,
-        setDescription,
-        closeModal,
         scrollToBottom,
         notificationUser,
     };
