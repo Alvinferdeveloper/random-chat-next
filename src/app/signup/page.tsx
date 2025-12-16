@@ -25,7 +25,7 @@ export default function SignupPage() {
             name,
             email,
             password,
-            callbackURL: `http://192.168.64.105:3000/verify-email?success=true`,
+            callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?success=true`,
         });
 
         setLoading(false);
