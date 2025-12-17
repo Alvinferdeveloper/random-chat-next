@@ -17,13 +17,13 @@ import {
     DropdownMenuTrigger,
 } from '@/src/components/ui/dropdown-menu';
 import { LogOut, User as UserIcon, Users } from 'lucide-react';
+import { useAuth } from '@/src/app/hooks/useAuth';
 
 export function UserNav() {
-    const { data: session, isPending } = authClient.useSession();
+    const { session, isPending } = useAuth();
 
     const handleLogout = async () => {
         await authClient.signOut();
-        window.location.href = '/login';
     };
 
     if (isPending) {
@@ -33,7 +33,7 @@ export function UserNav() {
     if (!session?.user) {
         return (
             <a href="/login">
-                <Button size="sm" className="hidden md:flex gap-2">
+                <Button size="sm" className="hidden md:flex gap-2 cursor-pointer">
                     <Users className="w-4 h-4" />
                     Iniciar sesión
                 </Button>
@@ -51,7 +51,7 @@ export function UserNav() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full cursor-pointer">
                     <Avatar className="h-9 w-9">
                         <AvatarImage src={user.image ?? ''} alt={`@${user.name}`} />
                         <AvatarFallback>{initials}</AvatarFallback>

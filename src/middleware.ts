@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const publicRoutes = ['/', '/login', '/signup', '/verify-email'];
+const publicRoutes = ['/', '/login', '/signup', '/verify-email', '/rooms', '/chat/[id]'];
 
 const SESSION_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/users/session`;
 
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
-    const isPublicRoute = publicRoutes.includes(pathname);
+    const isPublicRoute = publicRoutes.includes(pathname) || pathname.startsWith('/chat/');
 
     let isAuthenticated = false;
     try {
@@ -24,7 +24,9 @@ export async function middleware(request: NextRequest) {
     }
 
     if (isPublicRoute && isAuthenticated) {
-        return NextResponse.redirect(new URL('/rooms', request.url));
+        if (pathname !== '/rooms' && !pathname.startsWith('/chat/')) {
+            return NextResponse.redirect(new URL('/rooms', request.url));
+        }
     }
 
     if (!isPublicRoute && !isAuthenticated) {

@@ -18,7 +18,7 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
 
     const handleGoogleLogin = async () => {
-        const { data, error } = await authClient.signIn.social({
+        await authClient.signIn.social({
             provider: "google",
             callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/rooms`
         });

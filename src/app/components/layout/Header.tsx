@@ -35,8 +35,10 @@ export default function Header() {
             Acerca de
           </Link>
         </nav>
-        <ThemeToggle />
-        <UserNav />
+        <div className=' gap-2 flex justify-between items-center'>
+          <ThemeToggle />
+          <UserNav />
+        </div>
       </div>
     </header>
   );

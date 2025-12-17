@@ -7,8 +7,8 @@ import { ConnectingAnimation } from '../components/animations/ConnectionAnimatio
 import useRoom from '@/src/app/rooms/hooks/useRoom';
 import { useSocket } from '@/components/providers/SocketProvider';
 import { Circle, Check } from 'lucide-react';
-import { authClient } from '../lib/auth-client';
 import { AdditionalInfoModal } from '../components/auth/AdditionalInfoModal';
+import { useAuth } from '../hooks/useAuth';
 
 export default function Rooms() {
     const router = useRouter();
@@ -18,7 +18,7 @@ export default function Rooms() {
     const socket = useSocket();
     const [userCounts, setUserCounts] = useState<Record<string, number>>({});
 
-    const { data: session, isPending } = authClient.useSession();
+    const { session, isPending } = useAuth();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
