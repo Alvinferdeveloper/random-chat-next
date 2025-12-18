@@ -11,7 +11,7 @@ export function useSocketHandler(roomId: string, username: string) {
 
     useEffect(() => {
         if (socket && username) {
-            socket.emit("joinRoom", roomId, username);
+            socket.emit("join-room", roomId, username);
             setConnecting(false);
 
             const handleMessage = (msg: Message) => {
@@ -41,15 +41,15 @@ export function useSocketHandler(roomId: string, username: string) {
 
             socket.on("message", handleMessage);
             socket.on("image", handleImage);
-            socket.on("userJoined", handleUserJoined);
+            socket.on("user-joined", handleUserJoined);
             socket.on("error", handleError);
 
             return () => {
                 socket.off("message", handleMessage);
                 socket.off("image", handleImage);
-                socket.off("userJoined", handleUserJoined);
+                socket.off("user-joined", handleUserJoined);
                 socket.off("error", handleError);
-                socket.emit("leaveRoom", roomId);
+                socket.emit("leave-room", roomId);
             };
         }
     }, [roomId, socket, username]);

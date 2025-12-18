@@ -37,9 +37,9 @@ export default function Rooms() {
 
     useEffect(() => {
         if (socket) {
-            socket.emit('getInitialRoomState');
+            socket.emit('get-initial-room-state');
 
-            socket.on('initialRoomState', (roomState: Record<string, { userCount: number }>) => {
+            socket.on('initial-room-state', (roomState: Record<string, { userCount: number }>) => {
                 const counts: Record<string, number> = {};
                 for (const roomId in roomState) {
                     counts[roomId] = roomState[roomId].userCount;
@@ -47,7 +47,7 @@ export default function Rooms() {
                 setUserCounts(counts);
             });
 
-            socket.on('userCount', (data: { roomId: string; count: number }) => {
+            socket.on('user-count', (data: { roomId: string; count: number }) => {
                 setUserCounts((prevCounts) => ({
                     ...prevCounts,
                     [data.roomId]: data.count,
@@ -57,8 +57,8 @@ export default function Rooms() {
 
         return () => {
             if (socket) {
-                socket.off('initialRoomState');
-                socket.off('userCount');
+                socket.off('initial-room-state');
+                socket.off('user-count');
             }
         };
     }, [socket]);
