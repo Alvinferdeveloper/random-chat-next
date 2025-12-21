@@ -5,4 +5,5 @@ export interface Message {
     timestamp: string;
     system?: boolean;
     description?: string;
+    userProfileImage?: string;
 }

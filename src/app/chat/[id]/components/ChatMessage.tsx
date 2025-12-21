@@ -1,5 +1,6 @@
 "use client"
 import { Message } from "@/src/types/chat";
+import { Avatar, AvatarImage } from "@/src/components/ui/avatar";
 
 interface ChatMessageProps {
     msg: Message;
@@ -21,6 +22,9 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom }: 
     return (
         <div className={`flex w-full flex-col gap-1 ${isMyMessage ? "items-end" : "items-start"}`}>
             <div className={`flex items-center gap-2 ${isMyMessage ? "flex-row-reverse" : "flex-row"}`}>
+                <Avatar className="h-6 w-6">
+                    <AvatarImage src={msg.userProfileImage || '/images/user_placeholder.png'} alt={`${msg.username}'s profile picture`} />
+                </Avatar>
                 <span className="text-sm font-semibold text-primary">
                     {isMyMessage ? "Tú" : msg.username}
                 </span>
