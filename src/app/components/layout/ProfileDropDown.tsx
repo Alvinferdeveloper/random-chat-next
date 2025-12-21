@@ -18,12 +18,18 @@ import {
 } from '@/src/components/ui/dropdown-menu';
 import { LogOut, User as UserIcon, Users } from 'lucide-react';
 import { useAuth } from '@/src/app/hooks/useAuth';
+import { useSocket } from '@/src/app/components/providers/SocketProvider';
 
 export function UserNav() {
     const { session, isPending } = useAuth();
+    const socket = useSocket();
 
     const handleLogout = async () => {
         await authClient.signOut();
+        if (socket) {
+            socket.disconnect();
+            socket.connect();
+        }
     };
 
     if (isPending) {
