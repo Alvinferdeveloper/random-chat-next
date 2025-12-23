@@ -19,10 +19,12 @@ import {
 import { LogOut, User as UserIcon, Users } from 'lucide-react';
 import { useAuth } from '@/src/app/hooks/useAuth';
 import { useSocket } from '@/src/app/components/providers/SocketProvider';
+import { useRouter } from 'next/navigation';
 
 export function UserNav() {
     const { session, isPending } = useAuth();
     const socket = useSocket();
+    const navigation = useRouter()
 
     const handleLogout = async () => {
         await authClient.signOut();
@@ -75,7 +77,7 @@ export function UserNav() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigation.push("/profile")}>
                         <UserIcon className="mr-2 h-4 w-4" />
                         <span>Perfil</span>
                     </DropdownMenuItem>
