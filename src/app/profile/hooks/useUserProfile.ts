@@ -35,8 +35,8 @@ export function useUserProfile() {
                 throw new Error(errorData.message || 'No se pudo cargar el perfil.');
             }
             const data = await response.json();
-            setUser(data.data);
-            form.reset(data.data);
+            setUser(data);
+            form.reset(data);
         } catch (err: any) {
             setError(err.message || 'Error al cargar el perfil.');
         } finally {
@@ -61,7 +61,6 @@ export function useUserProfile() {
                 ? { [endpoint]: (value as Hobby[]).map(h => h.id) }
                 : { [field]: value };
 
-
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/users/profile`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
@@ -75,8 +74,8 @@ export function useUserProfile() {
             }
 
             const updatedData = await response.json();
-            setUser(updatedData.data);
-            form.reset(updatedData.data);
+            setUser(updatedData.user);
+            form.reset(updatedData.user);
 
         } catch (err: any) {
             setError(err.message || 'Error al actualizar.');

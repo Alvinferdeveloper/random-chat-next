@@ -51,8 +51,6 @@ export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Pa
         }
     }, [userHobbies, isEditing]);
 
-    const { handleSubmit } = useForm();
-
     const onSave = async () => {
         setIsSaving(true);
         const hobbiesToSave = allHobbies.filter(hobby => selectedHobbyIds.includes(hobby.id));

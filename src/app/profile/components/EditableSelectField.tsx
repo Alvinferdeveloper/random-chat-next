@@ -16,7 +16,6 @@ interface EditableSelectFieldProps<T extends FieldValues, Name extends Path<T> =
     name: Name;
     label: string;
     value: string | undefined;
-    control: any;
     updateFn: (field: Name, value: any) => Promise<void>;
     options: Option[];
     placeholder?: string;
@@ -26,7 +25,6 @@ export function EditableSelectField<T extends FieldValues, Name extends Path<T> 
     name,
     label,
     value,
-    control,
     updateFn,
     options,
     placeholder = '',
@@ -34,7 +32,7 @@ export function EditableSelectField<T extends FieldValues, Name extends Path<T> 
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
-    const { handleSubmit, formState: { errors } } = useForm({
+    const { control, handleSubmit, formState: { errors } } = useForm({
         defaultValues: { [name]: value }
     });
 

@@ -85,7 +85,6 @@ export function UserProfile() {
                                     name="username"
                                     label="Nombre de Usuario"
                                     value={user.username}
-                                    control={form.control}
                                     updateFn={updateProfileField}
                                     inputClassName="text-4xl font-black tracking-tight"
                                     labelClassName="hidden" // Escondemos el label arriba para usar el diseño gigante
@@ -112,7 +111,6 @@ export function UserProfile() {
                                     name="bio"
                                     label="Biografía"
                                     value={user.bio}
-                                    control={form.control}
                                     updateFn={updateProfileField}
                                     isTextarea
                                     placeholder="Cuéntanos un poco sobre ti..."
@@ -122,7 +120,6 @@ export function UserProfile() {
                                     name="location"
                                     label="Ubicación"
                                     value={user.location}
-                                    control={form.control}
                                     updateFn={updateProfileField}
                                     placeholder="Ciudad, País"
                                 />
@@ -179,7 +176,6 @@ export function UserProfile() {
                                     name="ageRange"
                                     label="Rango de Edad"
                                     value={user.ageRange}
-                                    control={form.control}
                                     updateFn={updateProfileField}
                                     options={ageRangeOptions}
                                     placeholder="Selecciona tu edad"
@@ -189,7 +185,6 @@ export function UserProfile() {
                                     name="conversationType"
                                     label="Tipo de Conversación"
                                     value={user.conversationType}
-                                    control={form.control}
                                     updateFn={updateProfileField}
                                     options={conversationTypeOptions}
                                     placeholder="¿Qué tipo de chat prefieres?"

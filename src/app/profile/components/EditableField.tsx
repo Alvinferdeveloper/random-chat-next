@@ -13,7 +13,6 @@ interface EditableFieldProps<T extends FieldValues, Name extends Path<T> = Path<
     name: Name;
     label: string;
     value: string | undefined;
-    control: any;
     updateFn: (field: Name, value: any) => Promise<void>;
     isTextarea?: boolean;
     placeholder?: string;
@@ -23,13 +22,13 @@ interface EditableFieldProps<T extends FieldValues, Name extends Path<T> = Path<
 }
 
 export function EditableField<T extends FieldValues, Name extends Path<T> = Path<T>>({
-    name, label, value, control, updateFn, isTextarea = false,
+    name, label, value, updateFn, isTextarea = false,
     placeholder = '', maxLength, inputClassName = '', labelClassName = '',
 }: EditableFieldProps<T, Name>) {
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
-    const { handleSubmit, formState: { errors } } = useForm({
+    const { control, handleSubmit, formState: { errors } } = useForm({
         defaultValues: { [name]: value }
     });
 
