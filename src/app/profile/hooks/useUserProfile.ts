@@ -35,8 +35,8 @@ export function useUserProfile() {
                 throw new Error(errorData.message || 'No se pudo cargar el perfil.');
             }
             const data = await response.json();
-            setUser(data);
-            form.reset(data);
+            setUser(data.user);
+            form.reset(data.user);
         } catch (err: any) {
             setError(err.message || 'Error al cargar el perfil.');
         } finally {
