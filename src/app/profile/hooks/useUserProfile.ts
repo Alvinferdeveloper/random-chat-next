@@ -16,6 +16,7 @@ export function useUserProfile() {
     const [user, setUser] = useState<ProfileData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
 
     const { hobbies: allHobbies, hobbiesLoading } = useProfileSetup();
 
@@ -56,7 +57,6 @@ export function useUserProfile() {
 
         try {
             const endpoint = field === 'hobbies' ? 'selected_hobbies' : 'hobbies';
-
             const body = field === 'hobbies'
                 ? { [endpoint]: (value as Hobby[]).map(h => h.id) }
                 : { [field]: value };
@@ -80,10 +80,51 @@ export function useUserProfile() {
         } catch (err: any) {
             setError(err.message || 'Error al actualizar.');
             if (user) {
-                setUser({ ...user, [field]: originalValue }); // Revert on error
+                setUser({ ...user, [field]: originalValue });
             }
         }
     };
+
+    const uploadImage = async (file: File) => {
+        setIsUploading(true);
+        setError(null);
+
+        try {
+            // 1. Get presigned URL from our backend
+            const presignedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/users/profile/generate-upload-url`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fileName: file.name, contentType: file.type }),
+                credentials: 'include',
+            });
+
+            if (!presignedResponse.ok) {
+                throw new Error('No se pudo obtener la URL para subir la imagen.');
+            }
+
+            const { signedUploadUrl, publicUrl } = await presignedResponse.json();
+
+            // 2. Upload image to Supabase
+            const uploadResponse = await fetch(signedUploadUrl, {
+                method: 'PUT',
+                body: file,
+                headers: { 'Content-Type': file.type },
+            });
+
+            if (!uploadResponse.ok) {
+                throw new Error('Error al subir la imagen a Supabase.');
+            }
+
+            // 3. Update profile with the new image URL
+            await updateProfileField('image', publicUrl);
+
+        } catch (err: any) {
+            setError(err.message || 'Ocurrió un error al subir la imagen.');
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
 
     return {
         user,
@@ -94,5 +135,7 @@ export function useUserProfile() {
         refetch: fetchUserProfile,
         allHobbies,
         hobbiesLoading,
+        uploadImage,
+        isUploading,
     };
 }

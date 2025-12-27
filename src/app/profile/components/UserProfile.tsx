@@ -1,12 +1,13 @@
 'use client';
 
+import { useRef } from 'react';
 import { useUserProfile } from '../hooks/useUserProfile';
 import { EditableField } from './EditableField';
 import { EditableSelectField } from './EditableSelectField';
 import { EditableHobbies } from './EditableHobbies';
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar';
 import { Button } from '@/src/components/ui/button';
-import { Mail, Upload } from 'lucide-react';
+import { Mail, Upload, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card';
 import { Label } from '@/src/components/ui/label';
 import { ageRangeOptions, conversationTypeOptions } from '@/src/app/constants';
@@ -27,7 +28,8 @@ const itemVariants = {
 };
 
 export function UserProfile() {
-    const { user, loading, error, form, updateProfileField, allHobbies, hobbiesLoading } = useUserProfile();
+    const { user, loading, error, form, updateProfileField, allHobbies, hobbiesLoading, uploadImage, isUploading } = useUserProfile();
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     if (loading) {
         return (
@@ -47,9 +49,13 @@ export function UserProfile() {
     }
 
     const handleImageUpload = () => {
-        const newImageUrl = prompt("Ingresa la nueva URL de la imagen de perfil:", user.profileImage || '');
-        if (newImageUrl !== null && newImageUrl.trim() !== '') {
-            updateProfileField('profileImage', newImageUrl);
+        fileInputRef.current?.click();
+    };
+
+    const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            uploadImage(file);
         }
     };
 
@@ -60,6 +66,13 @@ export function UserProfile() {
             animate="visible"
             variants={containerVariants}
             className="mx-auto pb-12">
+            <input
+                type="file"
+                ref={fileInputRef}
+                onChange={onFileChange}
+                className="hidden"
+                accept="image/png, image/jpeg, image/gif"
+            />
             <motion.div variants={itemVariants}>
                 <Card className="overflow-hidden shadow-xl border-border/40 bg-card/60 backdrop-blur-xl mb-8">
                     <CardHeader className="p-8">
@@ -67,15 +80,21 @@ export function UserProfile() {
                             <div className="relative group">
                                 <div className="absolute -inset-1 bg-gradient-to-r from-primary to-primary-foreground rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
                                 <Avatar className="h-36 w-36 border-4 border-background shadow-2xl relative">
-                                    <AvatarImage src={user.profileImage || undefined} className="object-cover" />
+                                    <AvatarImage src={user.image || undefined} className="object-cover" />
                                     <AvatarFallback className="text-5xl bg-gradient-to-br from-muted to-muted/50">
                                         {user.username?.charAt(0).toUpperCase()}
                                     </AvatarFallback>
+                                    {isUploading && (
+                                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-full">
+                                            <Loader2 className="h-10 w-10 text-white animate-spin" />
+                                        </div>
+                                    )}
                                 </Avatar>
                                 <Button
                                     size="icon"
                                     className="absolute bottom-2 right-2 rounded-full h-10 w-10 shadow-lg scale-0 group-hover:scale-100 transition-transform duration-300"
                                     onClick={handleImageUpload}
+                                    disabled={isUploading}
                                 >
                                     <Upload className="h-5 w-5" />
                                 </Button>
