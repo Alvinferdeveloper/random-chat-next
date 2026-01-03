@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import { ThemeProvider } from "@/src/app/components/providers/ThemeProvider";
 import "./globals.css";
 import { SocketProvider } from "@/components/providers/SocketProvider";
 
-const outfit = Outfit({
-  variable: "--font-outfit",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
 });
-
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className={outfit.className}>
+      <body className={montserrat.className}>
         <SocketProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <div className="flex flex-col min-h-screen">
