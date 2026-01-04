@@ -24,8 +24,8 @@ export default function LoginPage() {
         });
     };
 
-    const handleFacebookLogin = () => {
-        authClient.signIn.social({
+    const handleFacebookLogin = async () => {
+        await authClient.signIn.social({
             provider: "facebook",
             callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/rooms`
         });
