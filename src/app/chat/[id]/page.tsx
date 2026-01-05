@@ -18,10 +18,12 @@ export default function ChatPage() {
         username,
         connecting,
         messagesEndRef,
+        replyingToMessage,
+        notificationUser,
         setNewMessage,
         handleSendMessage,
         scrollToBottom,
-        notificationUser,
+        setReplyingToMessage,
     } = useChat();
 
     const {
@@ -56,6 +58,7 @@ export default function ChatPage() {
                     messagesEndRef={messagesEndRef}
                     scrollToBottom={scrollToBottom}
                     openImageViewer={openImageViewer}
+                    setReplyingToMessage={setReplyingToMessage}
                 />
             </div>
             <MessageInput
@@ -63,6 +66,8 @@ export default function ChatPage() {
                 setNewMessage={setNewMessage}
                 handleSendMessage={handleSendMessage}
                 handleImageSelect={handleImageSelect}
+                replyingToMessage={replyingToMessage}
+                setReplyingToMessage={setReplyingToMessage}
             />
             <ImagePreviewModal
                 previewImage={previewImage!}

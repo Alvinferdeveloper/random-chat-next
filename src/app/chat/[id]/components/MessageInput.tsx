@@ -2,17 +2,20 @@
 import React, { useState, useRef } from "react";
 import { Input } from "@/src/components/ui/input";
 import { Button } from "@/src/components/ui/button";
-import { Send, Smile, Paperclip } from "lucide-react";
+import { Send, Smile, Paperclip, X, Reply as ReplyIcon } from "lucide-react";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import { Message } from "@/src/types/chat";
 
 interface MessageInputProps {
     newMessage: string;
-    setNewMessage: (value: string | ((prev: string) => string)) => void;
+    setNewMessage: React.Dispatch<React.SetStateAction<string>>;
     handleSendMessage: (e: React.FormEvent) => void;
     handleImageSelect: (file: File) => void;
+    replyingToMessage: Message | null;
+    setReplyingToMessage: (message: Message | null) => void;
 }
 
-export function MessageInput({ newMessage, setNewMessage, handleSendMessage, handleImageSelect }: MessageInputProps) {
+export function MessageInput({ newMessage, setNewMessage, handleSendMessage, handleImageSelect, replyingToMessage, setReplyingToMessage }: MessageInputProps) {
     const [showPicker, setShowPicker] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -32,8 +35,26 @@ export function MessageInput({ newMessage, setNewMessage, handleSendMessage, han
         }
     };
 
+    const handleCancelReply = () => {
+        setReplyingToMessage(null);
+    };
+
     return (
-        <div className="sticky bottom-0 p-4 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="sticky bottom-0 p-4 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10">
+            {replyingToMessage && (
+                <div className="flex items-center justify-between p-2 mb-2 text-sm bg-muted rounded-t-lg border-b border-border">
+                    <div className="flex items-center gap-2">
+                        <ReplyIcon className="h-4 w-4 text-primary" />
+                        <span>Respondiendo a <span className="font-semibold">{replyingToMessage.username}</span>:</span>
+                        <span className="truncate italic max-w-[200px]">
+                            {"message" in replyingToMessage ? replyingToMessage.message : (replyingToMessage.description || '[Imagen]')}
+                        </span>
+                    </div>
+                    <Button variant="ghost" size="icon" onClick={handleCancelReply} className="h-6 w-6">
+                        <X className="h-4 w-4" />
+                    </Button>
+                </div>
+            )}
             <div className="relative">
                 {showPicker && (
                     <div className="absolute bottom-full mb-2">
@@ -46,6 +67,7 @@ export function MessageInput({ newMessage, setNewMessage, handleSendMessage, han
                         size="icon"
                         variant="ghost"
                         onClick={() => fileInputRef.current?.click()}
+                        className="flex-shrink-0"
                     >
                         <Paperclip className="h-5 w-5 text-muted-foreground" />
                     </Button>
