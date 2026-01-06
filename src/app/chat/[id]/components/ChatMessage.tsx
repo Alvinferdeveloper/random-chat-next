@@ -70,7 +70,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
 
             {isTextMessage(msg) && <p>{msg.message}</p>}
             {isImageMessage(msg) && imageUrl && (
-                <div className="cursor-pointer">
+                <div className="cursor-pointer" onClick={() => openImageViewer(imageUrl)}>
                     <img
                         src={imageUrl}
                         alt="Imagen enviada"
