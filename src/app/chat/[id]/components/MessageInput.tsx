@@ -40,7 +40,8 @@ export function MessageInput({ newMessage, setNewMessage, handleSendMessage, han
     };
 
     return (
-        <div className="sticky bottom-0 p-4 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10">
+        <div className="sticky bottom-16 sm:bottom-0 p-4 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 
+                        transition-[padding] duration-300 ease-in-out pb-[calc(1rem+var(--bottom-inset,0px))]">
             {replyingToMessage && (
                 <div className="flex items-center justify-between p-2 mb-2 text-sm bg-muted rounded-t-lg border-b border-border">
                     <div className="flex items-center gap-2">

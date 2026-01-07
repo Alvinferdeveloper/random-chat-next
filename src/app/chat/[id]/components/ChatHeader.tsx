@@ -1,8 +1,8 @@
 "use client"
 import Link from "next/link";
-import { ArrowLeft, MessageSquare } from "lucide-react";
-import { Button } from "@shadcn/button";
-import { Badge } from "@shadcn/badge";
+import { ArrowLeft, MessageSquare, Users } from "lucide-react";
+import { Button } from "@/src/components/ui/button";
+import { Badge } from "@/src/components/ui/badge";
 
 const topicNames: Record<string, string> = {
     deportes: "Deportes",
@@ -20,9 +20,11 @@ const topicIcons: Record<string, string> = {
 
 interface ChatHeaderProps {
     roomId: string;
+    isUserListVisible: boolean;
+    onToggleUserList: () => void;
 }
 
-export function ChatHeader({ roomId }: ChatHeaderProps) {
+export function ChatHeader({ roomId, isUserListVisible, onToggleUserList }: ChatHeaderProps) {
     return (
         <header className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="flex items-center gap-2">
@@ -45,6 +47,14 @@ export function ChatHeader({ roomId }: ChatHeaderProps) {
                 </div>
             </div>
             <div className="flex items-center gap-3">
+                <Button
+                    variant={isUserListVisible ? "secondary" : "ghost"}
+                    size="icon"
+                    onClick={onToggleUserList}
+                    aria-label="Mostrar participantes"
+                >
+                    <Users className="h-5 w-5" />
+                </Button>
                 <Link href="/" className="flex items-center gap-2">
                     <MessageSquare className="w-5 h-5 text-primary" />
                     <span className="font-bold">ChatHub</span>
