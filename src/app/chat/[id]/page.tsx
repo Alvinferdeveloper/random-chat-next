@@ -29,6 +29,7 @@ export default function ChatPage() {
         handleSendMessage,
         scrollToBottom,
         setReplyingToMessage,
+        sendReaction
     } = useChat();
 
     const hasHover = useHover();
@@ -80,6 +81,7 @@ export default function ChatPage() {
                             scrollToBottom={scrollToBottom}
                             openImageViewer={openImageViewer}
                             setReplyingToMessage={setReplyingToMessage}
+                            sendReaction={sendReaction}
                         />
                     </div>
                     <MessageInput

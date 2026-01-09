@@ -4,12 +4,18 @@ export interface ReplyContext {
     messageSnippet: string;
 }
 
+export interface Reaction {
+    emoji: string;
+    users: string[]; // Array of usernames
+}
+
 export interface BaseMessage {
     id: string;
     username: string;
     userProfileImage: string | null;
     timestamp: string;
     replyTo: ReplyContext | null;
+    reactions?: Reaction[];
     system?: boolean;
 }
 

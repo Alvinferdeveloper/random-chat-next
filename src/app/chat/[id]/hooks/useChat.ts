@@ -63,6 +63,11 @@ export function useChat() {
         setReplyingToMessage(null);
     };
 
+    const sendReaction = (messageId: string, emoji: string) => {
+        if (!socket) return;
+        socket.emit("send_reaction", { messageId, emoji });
+    };
+
     return {
         roomId,
         messages,
@@ -76,6 +81,7 @@ export function useChat() {
         setNewMessage,
         handleSendMessage,
         sendImage,
+        sendReaction,
         setReplyingToMessage,
         scrollToBottom,
     };

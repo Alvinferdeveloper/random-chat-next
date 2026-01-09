@@ -10,9 +10,10 @@ interface MessageListProps {
     openImageViewer: (imageUrl: string) => void;
     scrollToBottom: () => void;
     setReplyingToMessage: (message: Message) => void;
+    sendReaction: (messageId: string, emoji: string) => void;
 }
 
-export function MessageList({ messages, username, messagesEndRef, openImageViewer, scrollToBottom, setReplyingToMessage }: MessageListProps) {
+export function MessageList({ messages, username, messagesEndRef, openImageViewer, scrollToBottom, setReplyingToMessage, sendReaction }: MessageListProps) {
     return (
         <div className="flex-1 p-4 overflow-y-auto scrollbar-thin-light">
             <div className="space-y-4">
@@ -24,6 +25,7 @@ export function MessageList({ messages, username, messagesEndRef, openImageViewe
                         openImageViewer={openImageViewer}
                         scrollToBottom={scrollToBottom}
                         setReplyingToMessage={setReplyingToMessage}
+                        sendReaction={sendReaction}
                     />
                 ))}
                 <div ref={messagesEndRef} />
