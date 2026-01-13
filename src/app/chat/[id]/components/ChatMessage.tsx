@@ -9,6 +9,12 @@ import { useHover } from "@/src/app/hooks/useHover";
 import { ReactionPicker } from "@/src/app/chat/[id]/components/ReactionPicker";
 import { cn } from "@/src/lib/utils";
 
+interface User {
+    id: string;
+    username: string;
+    profileImage?: string;
+}
+
 interface ChatMessageProps {
     msg: Message;
     username: string;
@@ -16,6 +22,7 @@ interface ChatMessageProps {
     scrollToBottom: () => void;
     setReplyingToMessage: (message: Message) => void;
     sendReaction: (messageId: string, emoji: string) => void;
+    usersInRoom: User[];
 }
 
 function formatTime(dateStr: string) {
@@ -23,7 +30,7 @@ function formatTime(dateStr: string) {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
-export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, setReplyingToMessage, sendReaction }: ChatMessageProps) {
+export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, setReplyingToMessage, sendReaction, usersInRoom }: ChatMessageProps) {
     const isMyMessage = msg.username === username;
     const [menuVisible, setMenuVisible] = useState(false);
     const [pickerVisible, setPickerVisible] = useState(false);
@@ -65,6 +72,29 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
         setMenuVisible(false);
     }
 
+    const highlightMentions = (text: string) => {
+        const mentionRegex = /@([a-zA-Z0-9_]+)/g;
+        const parts = text.split(mentionRegex);
+
+        return parts.map((part, index) => {
+            if (index % 2 === 1) { // This is a username
+                const userExists = usersInRoom.some(u => u.username === part);
+                const isMe = part === username;
+                return (
+                    <span key={index} className={cn(
+                        "font-semibold rounded px-1",
+                        userExists ? "bg-blue-300/50 dark:bg-blue-700/50 text-blue-800 dark:text-blue-200" : "text-muted-foreground",
+                        isMe && "ring-1 ring-blue-500"
+                    )}>
+                        @{part}
+                    </span>
+                );
+            }
+            return part; // This is a normal text part
+        });
+    };
+
+
     const messageContent = (
         <div
             ref={messageRef}
@@ -84,7 +114,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                     <span className="italic truncate max-w-[150px]">{msg.replyTo.messageSnippet}</span>
                 </div>
             )}
-            {isTextMessage(msg) && <p className="leading-relaxed">{msg.message}</p>}
+            {isTextMessage(msg) && <p className="leading-relaxed">{highlightMentions(msg.message)}</p>}
             {isImageMessage(msg) && imageUrl && (
                 <div className="cursor-pointer overflow-hidden rounded-xl" onClick={handleClick}>
                     <img src={imageUrl} alt="Imagen" className="w-full object-cover" onLoad={scrollToBottom} />
@@ -118,7 +148,10 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                 </div>
             )}
             {pickerVisible && hasHover && (
-                <div className="absolute -top-12 right-0 z-30 animate-in fade-in zoom-in duration-200">
+                <div className={cn(
+                    "absolute -top-12 z-30 animate-in fade-in zoom-in duration-200",
+                    isMyMessage ? "right-0" : "left-0"
+                )}>
                     <ReactionPicker onSelect={handleReact} />
                 </div>
             )}
@@ -161,8 +194,11 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                 <>
                     <div className="fixed inset-0 z-40" onClick={() => { setMenuVisible(false); setPickerVisible(false); }} />
                     <div
-                        className="fixed z-50 bg-background border rounded-lg shadow-lg p-1 flex items-center gap-1"
-                        style={{ top: menuPosition.y - 45, left: menuPosition.x, transform: 'translateX(-50%)' }}
+                        className={cn(
+                            "fixed z-50 bg-background border rounded-lg shadow-lg p-1 flex items-center gap-1 right-6",
+                            isMyMessage ? "right-6" : "left-6"
+                        )}
+                        style={{ top: menuPosition.y - 45 }}
                     >
                         {pickerVisible ? (
                             <ReactionPicker onSelect={handleReact} />

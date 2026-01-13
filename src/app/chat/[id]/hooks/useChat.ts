@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useSocket } from "@/src/app/components/providers/SocketProvider";
 import { useUsername } from "@/src/app/hooks/useUsername";
@@ -18,10 +18,33 @@ export function useChat() {
     const [newMessage, setNewMessage] = useState("");
     const [replyingToMessage, setReplyingToMessage] = useState<Message | null>(null);
 
+    const [isMentionListVisible, setIsMentionListVisible] = useState(false);
+    const [mentionQuery, setMentionQuery] = useState("");
+    const [mentionStartIndex, setMentionStartIndex] = useState(-1);
+
+    useEffect(() => {
+        const atIndex = newMessage.lastIndexOf('@');
+        // Show mention list if '@' is typed at the start or after a space
+        if (atIndex > -1 && (atIndex === 0 || /\s/.test(newMessage[atIndex - 1]))) {
+            const query = newMessage.substring(atIndex + 1);
+            // Don't show for '@ '
+            if (query !== ' ') {
+                setMentionQuery(query);
+                setMentionStartIndex(atIndex);
+                setIsMentionListVisible(true);
+            } else {
+                setIsMentionListVisible(false);
+            }
+        } else {
+            setIsMentionListVisible(false);
+        }
+    }, [newMessage]);
+
+
     const createReplyContext = (message: Message) => {
         const messageSnippet = isTextMessage(message)
             ? message.message.substring(0, 50)
-            : '[Imagen]'; // Or some other placeholder for images
+            : '[Imagen]';
 
         return {
             id: message.id,
@@ -68,6 +91,12 @@ export function useChat() {
         socket.emit("send_reaction", { messageId, emoji });
     };
 
+    const handleSelectMention = (selectedUsername: string) => {
+        const prefix = newMessage.substring(0, mentionStartIndex);
+        setNewMessage(`${prefix}@${selectedUsername} `);
+        setIsMentionListVisible(false);
+    };
+
     return {
         roomId,
         messages,
@@ -78,11 +107,14 @@ export function useChat() {
         replyingToMessage,
         notificationUser,
         usersInRoom,
+        isMentionListVisible,
+        mentionQuery,
         setNewMessage,
         handleSendMessage,
         sendImage,
         sendReaction,
         setReplyingToMessage,
         scrollToBottom,
+        handleSelectMention,
     };
 }

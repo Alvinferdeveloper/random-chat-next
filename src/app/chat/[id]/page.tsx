@@ -28,8 +28,11 @@ export default function ChatPage() {
         setNewMessage,
         handleSendMessage,
         scrollToBottom,
+        isMentionListVisible,
+        mentionQuery,
         setReplyingToMessage,
-        sendReaction
+        sendReaction,
+        handleSelectMention
     } = useChat();
 
     const hasHover = useHover();
@@ -80,6 +83,7 @@ export default function ChatPage() {
                             messagesEndRef={messagesEndRef}
                             scrollToBottom={scrollToBottom}
                             openImageViewer={openImageViewer}
+                            usersInRoom={usersInRoom}
                             setReplyingToMessage={setReplyingToMessage}
                             sendReaction={sendReaction}
                         />
@@ -91,6 +95,10 @@ export default function ChatPage() {
                         handleImageSelect={handleImageSelect}
                         replyingToMessage={replyingToMessage}
                         setReplyingToMessage={setReplyingToMessage}
+                        usersInRoom={usersInRoom}
+                        isMentionListVisible={isMentionListVisible}
+                        mentionQuery={mentionQuery}
+                        handleSelectMention={handleSelectMention}
                     />
                 </main>
 

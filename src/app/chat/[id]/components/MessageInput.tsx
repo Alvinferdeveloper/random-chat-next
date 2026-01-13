@@ -5,7 +5,13 @@ import { Button } from "@/src/components/ui/button";
 import { Send, Smile, Paperclip, X, Reply as ReplyIcon } from "lucide-react";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import { Message } from "@/src/types/chat";
+import { MentionList } from "@/src/app/chat/[id]/components/MentionList";
 
+interface User {
+    id: string;
+    username: string;
+    profileImage?: string;
+}
 interface MessageInputProps {
     newMessage: string;
     setNewMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -13,15 +19,32 @@ interface MessageInputProps {
     handleImageSelect: (file: File) => void;
     replyingToMessage: Message | null;
     setReplyingToMessage: (message: Message | null) => void;
+    usersInRoom: User[];
+    isMentionListVisible: boolean;
+    mentionQuery: string;
+    handleSelectMention: (username: string) => void;
 }
 
-export function MessageInput({ newMessage, setNewMessage, handleSendMessage, handleImageSelect, replyingToMessage, setReplyingToMessage }: MessageInputProps) {
+export function MessageInput({
+    newMessage,
+    setNewMessage,
+    handleSendMessage,
+    handleImageSelect,
+    replyingToMessage,
+    setReplyingToMessage,
+    usersInRoom,
+    isMentionListVisible,
+    mentionQuery,
+    handleSelectMention
+}: MessageInputProps) {
     const [showPicker, setShowPicker] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const onEmojiClick = (emojiData: EmojiClickData) => {
         setNewMessage(prev => prev + emojiData.emoji);
         setShowPicker(false);
+        inputRef.current?.focus();
     };
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,7 +52,6 @@ export function MessageInput({ newMessage, setNewMessage, handleSendMessage, han
         if (file) {
             handleImageSelect(file);
         }
-        // Reset the input value to allow selecting the same file again
         if (e.target) {
             e.target.value = "";
         }
@@ -40,7 +62,7 @@ export function MessageInput({ newMessage, setNewMessage, handleSendMessage, han
     };
 
     return (
-        <div className="sticky bottom-16 sm:bottom-0 p-4 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 
+        <div className="sticky bottom-0 p-4 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 
                         transition-[padding] duration-300 ease-in-out pb-[calc(1rem+var(--bottom-inset,0px))]">
             {replyingToMessage && (
                 <div className="flex items-center justify-between p-2 mb-2 text-sm bg-muted rounded-t-lg border-b border-border">
@@ -57,8 +79,15 @@ export function MessageInput({ newMessage, setNewMessage, handleSendMessage, han
                 </div>
             )}
             <div className="relative">
+                {isMentionListVisible && (
+                    <MentionList
+                        users={usersInRoom}
+                        query={mentionQuery}
+                        onSelect={handleSelectMention}
+                    />
+                )}
                 {showPicker && (
-                    <div className="absolute bottom-full mb-2">
+                    <div className="absolute bottom-full mb-2 z-20">
                         <EmojiPicker onEmojiClick={onEmojiClick} />
                     </div>
                 )}
@@ -81,6 +110,7 @@ export function MessageInput({ newMessage, setNewMessage, handleSendMessage, han
                     />
                     <div className="relative flex-grow">
                         <Input
+                            ref={inputRef}
                             value={newMessage}
                             onChange={(e) => setNewMessage(e.target.value)}
                             placeholder="Escribe un mensaje..."
