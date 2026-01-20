@@ -16,7 +16,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/src/components/ui/dropdown-menu';
-import { LogOut, User as UserIcon, Users } from 'lucide-react';
+import { LogOut, User as UserIcon, Users, BadgePlus } from 'lucide-react';
 import { useAuth } from '@/src/app/hooks/useAuth';
 import { useSocket } from '@/src/app/components/providers/SocketProvider';
 import { useRouter } from 'next/navigation';
@@ -77,13 +77,19 @@ export function UserNav() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem onClick={() => navigation.push("/profile")}>
+                    <DropdownMenuItem className='cursor-pointer' onClick={() => navigation.push("/profile")}>
                         <UserIcon className="mr-2 h-4 w-4" />
                         <span>Perfil</span>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
+                <DropdownMenuGroup>
+                    <DropdownMenuItem className='cursor-pointer' onClick={() => navigation.push("/rooms/create")}>
+                        <BadgePlus className="mr-2 h-4 w-4" />
+                        <span>Crear sala</span>
+                    </DropdownMenuItem>
+                </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>
+                <DropdownMenuItem className='cursor-pointer' onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Cerrar sesión</span>
                 </DropdownMenuItem>
