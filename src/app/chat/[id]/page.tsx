@@ -1,6 +1,11 @@
 "use client"
 import { useState, useEffect } from "react";
-import { useChat } from "@/src/app/chat/[id]/hooks/useChat";
+import { useParams } from "next/navigation";
+import { useSocketHandler } from "@/src/app/hooks/useSocketHandler";
+import { useJoinRoom } from "@/src/app/hooks/useJoinRoom";
+import { useUsername } from "@/src/app/hooks/useUsername";
+import { useMessageInput } from "@/src/app/chat/[id]/hooks/useMessageInput";
+import { useAutoScroll } from "@/src/app/chat/[id]/hooks/useAutoScroll";
 import { useImageViewer } from "@/src/app/chat/[id]/hooks/useImageViewer";
 import { ChatHeader } from "@/src/app/chat/[id]/components/ChatHeader";
 import { MessageList } from "@/src/app/chat/[id]/components/MessageList";
@@ -16,28 +21,33 @@ import { useHover } from "@/src/app/hooks/useHover";
 import { cn } from "@/src/lib/utils";
 
 export default function ChatPage() {
+    const params = useParams();
+    const id = params.id;
+    const username = useUsername();
+    const { connecting } = useJoinRoom(id as string, username);
+
     const {
-        roomId,
         messages,
-        newMessage,
-        username,
-        connecting,
-        messagesEndRef,
-        replyingToMessage,
         notificationUser,
         usersInRoom,
-        setNewMessage,
-        handleSendMessage,
-        scrollToBottom,
-        isMentionListVisible,
-        mentionQuery,
-        setReplyingToMessage,
-        sendReaction,
-        handleSelectMention,
         typingUsers,
         startTyping,
-        stopTyping
-    } = useChat();
+        stopTyping,
+        sendReaction
+    } = useSocketHandler(username);
+
+    const {
+        newMessage,
+        setNewMessage,
+        replyingToMessage,
+        setReplyingToMessage,
+        isMentionListVisible,
+        mentionQuery,
+        handleSendMessage,
+        handleSelectMention
+    } = useMessageInput();
+
+    const { messagesEndRef, scrollToBottom } = useAutoScroll(messages);
 
     const hasHover = useHover();
     const [isUserListVisible, setIsUserListVisible] = useState(false);
@@ -60,7 +70,7 @@ export default function ChatPage() {
     const { openImageViewer, isImageViewerOpen, viewedImageUrl, closeImageViewer } = useImageViewer()
 
     if (connecting) {
-        return <ChatConnecting roomId={roomId} />;
+        return <ChatConnecting roomId={id as string} />;
     }
 
     const toggleUserList = () => setIsUserListVisible(!isUserListVisible);
@@ -74,7 +84,7 @@ export default function ChatPage() {
                 />
             )}
             <ChatHeader
-                roomId={roomId}
+                roomId={id as string}
                 isUserListVisible={isUserListVisible}
                 onToggleUserList={toggleUserList}
             />

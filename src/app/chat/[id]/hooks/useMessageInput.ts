@@ -1,23 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
-import { useSocket } from "@/src/app/components/providers/SocketProvider";
-import { useUsername } from "@/src/app/hooks/useUsername";
-import { useSocketHandler } from "@/src/app/hooks/useSocketHandler";
-import { useAutoScroll } from "@/src/app/chat/[id]/hooks/useAutoScroll";
 import { Message, isTextMessage } from "@/src/types/chat";
+import { useSocket } from "@/src/app/components/providers/SocketProvider";
 
-export function useChat() {
-    const params = useParams();
-    const roomId = params.id as string;
+export function useMessageInput() {
     const socket = useSocket();
-    const username = useUsername();
-    const { messages, connecting, notificationUser, usersInRoom, typingUsers, startTyping, stopTyping } = useSocketHandler(roomId, username);
-    const { messagesEndRef, scrollToBottom } = useAutoScroll(messages);
-
     const [newMessage, setNewMessage] = useState("");
     const [replyingToMessage, setReplyingToMessage] = useState<Message | null>(null);
-
     const [isMentionListVisible, setIsMentionListVisible] = useState(false);
     const [mentionQuery, setMentionQuery] = useState("");
     const [mentionStartIndex, setMentionStartIndex] = useState(-1);
@@ -40,7 +29,6 @@ export function useChat() {
         }
     }, [newMessage]);
 
-
     const createReplyContext = (message: Message) => {
         const messageSnippet = isTextMessage(message)
             ? message.message.substring(0, 50)
@@ -53,8 +41,8 @@ export function useChat() {
         };
     };
 
-    const handleSendMessage = (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSendMessage = (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
         if (newMessage.trim() === "" || !socket) return;
 
         const payload: { message: string, replyTo?: object } = {
@@ -86,11 +74,6 @@ export function useChat() {
         setReplyingToMessage(null);
     };
 
-    const sendReaction = (messageId: string, emoji: string) => {
-        if (!socket) return;
-        socket.emit("send_reaction", { messageId, emoji });
-    };
-
     const handleSelectMention = (selectedUsername: string) => {
         const prefix = newMessage.substring(0, mentionStartIndex);
         setNewMessage(`${prefix}@${selectedUsername} `);
@@ -98,26 +81,14 @@ export function useChat() {
     };
 
     return {
-        roomId,
-        messages,
         newMessage,
-        username,
-        connecting,
-        messagesEndRef,
+        setNewMessage,
         replyingToMessage,
-        notificationUser,
-        usersInRoom,
+        setReplyingToMessage,
         isMentionListVisible,
         mentionQuery,
-        setNewMessage,
         handleSendMessage,
         sendImage,
-        sendReaction,
-        setReplyingToMessage,
-        scrollToBottom,
-        handleSelectMention,
-        typingUsers,
-        startTyping,
-        stopTyping
+        handleSelectMention
     };
 }
