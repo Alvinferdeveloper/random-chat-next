@@ -23,6 +23,8 @@ interface MessageInputProps {
     isMentionListVisible: boolean;
     mentionQuery: string;
     handleSelectMention: (username: string) => void;
+    onStartTyping?: () => void;
+    onStopTyping?: () => void;
 }
 
 export function MessageInput({
@@ -35,16 +37,37 @@ export function MessageInput({
     usersInRoom,
     isMentionListVisible,
     mentionQuery,
-    handleSelectMention
+    handleSelectMention,
+    onStartTyping,
+    onStopTyping
 }: MessageInputProps) {
     const [showPicker, setShowPicker] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+    const [isTyping, setIsTyping] = useState(false);
+    const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const onEmojiClick = (emojiData: EmojiClickData) => {
         setNewMessage(prev => prev + emojiData.emoji);
         setShowPicker(false);
         inputRef.current?.focus();
+        handleTypingInput();
+    };
+
+    const handleTypingInput = () => {
+        if (!isTyping) {
+            setIsTyping(true);
+            onStartTyping?.();
+        }
+
+        if (typingTimeoutRef.current) {
+            clearTimeout(typingTimeoutRef.current);
+        }
+
+        typingTimeoutRef.current = setTimeout(() => {
+            setIsTyping(false);
+            onStopTyping?.();
+        }, 2000);
     };
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +82,32 @@ export function MessageInput({
 
     const handleCancelReply = () => {
         setReplyingToMessage(null);
+    };
+
+    const onSubmit = (e: React.FormEvent) => {
+        handleSendMessage(e);
+        if (isTyping) {
+            setIsTyping(false);
+            onStopTyping?.();
+            if (typingTimeoutRef.current) {
+                clearTimeout(typingTimeoutRef.current);
+            }
+        }
+    };
+
+    const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setNewMessage(value);
+        if (value.trim().length > 0) {
+            handleTypingInput();
+        } else if (isTyping) {
+            // If field is cleared, stop typing immediately
+            setIsTyping(false);
+            onStopTyping?.();
+            if (typingTimeoutRef.current) {
+                clearTimeout(typingTimeoutRef.current);
+            }
+        }
     };
 
     return (
@@ -91,7 +140,7 @@ export function MessageInput({
                         <EmojiPicker onEmojiClick={onEmojiClick} />
                     </div>
                 )}
-                <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+                <form onSubmit={onSubmit} className="flex items-center gap-2">
                     <Button
                         type="button"
                         size="icon"
@@ -112,7 +161,7 @@ export function MessageInput({
                         <Input
                             ref={inputRef}
                             value={newMessage}
-                            onChange={(e) => setNewMessage(e.target.value)}
+                            onChange={onInputChange}
                             placeholder="Escribe un mensaje..."
                             className="pr-12"
                         />

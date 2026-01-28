@@ -11,6 +11,7 @@ import { ImageViewerModal } from "@/src/app/chat/[id]/components/ImageViewerModa
 import { UserJoinedNotification } from '@/src/app/chat/[id]/components/UserJoinedNotification';
 import { useImageHandling } from "@/src/app/chat/[id]/hooks/useImageHandling";
 import { UserList } from "@/src/app/chat/[id]/components/UserList";
+import { TypingIndicator } from "@/src/app/chat/[id]/components/TypingIndicator";
 import { useHover } from "@/src/app/hooks/useHover";
 import { cn } from "@/src/lib/utils";
 
@@ -32,7 +33,10 @@ export default function ChatPage() {
         mentionQuery,
         setReplyingToMessage,
         sendReaction,
-        handleSelectMention
+        handleSelectMention,
+        typingUsers,
+        startTyping,
+        stopTyping
     } = useChat();
 
     const hasHover = useHover();
@@ -88,6 +92,7 @@ export default function ChatPage() {
                             sendReaction={sendReaction}
                         />
                     </div>
+                    <TypingIndicator typingUsers={typingUsers} />
                     <MessageInput
                         newMessage={newMessage}
                         setNewMessage={setNewMessage}
@@ -99,6 +104,8 @@ export default function ChatPage() {
                         isMentionListVisible={isMentionListVisible}
                         mentionQuery={mentionQuery}
                         handleSelectMention={handleSelectMention}
+                        onStartTyping={startTyping}
+                        onStopTyping={stopTyping}
                     />
                 </main>
 

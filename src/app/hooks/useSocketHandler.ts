@@ -16,6 +16,19 @@ export function useSocketHandler(roomId: string, username: string) {
     const [usersInRoom, setUsersInRoom] = useState<User[]>([]);
     const [connecting, setConnecting] = useState(true);
     const [notificationUser, setNotificationUser] = useState<string | null>(null);
+    const [typingUsers, setTypingUsers] = useState<Set<string>>(new Set());
+
+    const startTyping = () => {
+        if (socket) {
+            socket.emit("start-typing");
+        }
+    };
+
+    const stopTyping = () => {
+        if (socket) {
+            socket.emit("stop-typing");
+        }
+    };
 
     useEffect(() => {
         if (socket && username) {
@@ -35,6 +48,24 @@ export function useSocketHandler(roomId: string, username: string) {
 
             const handleRoomUsers = (users: User[]) => {
                 setUsersInRoom(users);
+            };
+
+            const handleUserStartedTyping = ({ username: typingUsername }: { username: string }) => {
+                if (typingUsername !== username) { // Don't show ourselves
+                    setTypingUsers(prev => {
+                        const newSet = new Set(prev);
+                        newSet.add(typingUsername);
+                        return newSet;
+                    });
+                }
+            };
+
+            const handleUserStoppedTyping = ({ username: typingUsername }: { username: string }) => {
+                setTypingUsers(prev => {
+                    const newSet = new Set(prev);
+                    newSet.delete(typingUsername);
+                    return newSet;
+                });
             };
 
             const handleReactionUpdate = (
@@ -87,9 +118,11 @@ export function useSocketHandler(roomId: string, username: string) {
             };
 
             socket.on("message", handleMessage);
-            socket.on("image", handleMessage); // Both use the same logic now
+            socket.on("image", handleMessage);
             socket.on("user-joined", handleUserJoined);
             socket.on("room_users", handleRoomUsers);
+            socket.on("user-started-typing", handleUserStartedTyping);
+            socket.on("user-stopped-typing", handleUserStoppedTyping);
             socket.on("reaction_update", handleReactionUpdate);
             socket.on("error", handleError);
 
@@ -98,6 +131,8 @@ export function useSocketHandler(roomId: string, username: string) {
                 socket.off("image", handleMessage);
                 socket.off("user-joined", handleUserJoined);
                 socket.off("room_users", handleRoomUsers);
+                socket.off("user-started-typing", handleUserStartedTyping);
+                socket.off("user-stopped-typing", handleUserStoppedTyping);
                 socket.off("reaction_update", handleReactionUpdate);
                 socket.off("error", handleError);
                 socket.emit("leave-room", roomId);
@@ -105,5 +140,5 @@ export function useSocketHandler(roomId: string, username: string) {
         }
     }, [roomId, socket, username]);
 
-    return { messages, connecting, notificationUser, usersInRoom };
+    return { messages, connecting, notificationUser, usersInRoom, typingUsers, startTyping, stopTyping };
 }
