@@ -173,7 +173,10 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
             <div className={`group w-full flex flex-col gap-1 ${isMyMessage ? "items-end" : "items-start"}`}>
                 <div className={`flex items-center gap-2 ${isMyMessage ? "flex-row-reverse" : "flex-row"}`}>
                     <Avatar className="h-6 w-6">
-                        <AvatarImage src={msg.userProfileImage || undefined} alt={`${msg.username}'s profile picture`} />
+                        <AvatarImage
+                            src={msg.userProfileImage || `https://api.dicebear.com/9.x/avataaars/svg?seed=${msg.username}`}
+                            alt={`${msg.username}'s profile picture`}
+                        />
                         <AvatarFallback>{getInitials(msg.username)}</AvatarFallback>
                     </Avatar>
                     <span className="text-sm font-semibold text-primary">
