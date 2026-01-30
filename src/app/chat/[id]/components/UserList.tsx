@@ -35,10 +35,11 @@ export function UserList({ users }: UserListProps) {
                             className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/60 transition-colors"
                         >
                             <Avatar className="h-9 w-9">
-                                <AvatarImage src={user.profileImage} alt={`${user.username}'s profile picture`} />
-                                <AvatarFallback className="bg-muted-foreground/20">
-                                    {getInitials(user.username)}
-                                </AvatarFallback>
+                                <AvatarImage
+                                    src={user.profileImage || `https://api.dicebear.com/9.x/avataaars/svg?seed=${user.username}`}
+                                    alt={`${user.username}'s profile picture`}
+                                />
+                                <AvatarFallback>{getInitials(user.username)}</AvatarFallback>
                             </Avatar>
                             <span className="font-medium truncate">{user.username}</span>
                         </motion.div>
