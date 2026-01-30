@@ -24,8 +24,9 @@ export interface TextMessage extends BaseMessage {
 }
 
 export interface ImageMessage extends BaseMessage {
-    image: ArrayBuffer;
+    imageUrl: string;
     description?: string;
+    isUploading?: boolean;
 }
 
 export type Message = TextMessage | ImageMessage;
@@ -37,5 +38,5 @@ export function isTextMessage(message: Message): message is TextMessage {
 
 // Type guard to check if a message is an ImageMessage
 export function isImageMessage(message: Message): message is ImageMessage {
-    return (message as ImageMessage).image !== undefined;
+    return (message as ImageMessage).imageUrl !== undefined;
 }

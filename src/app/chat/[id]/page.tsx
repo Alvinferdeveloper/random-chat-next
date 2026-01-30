@@ -19,6 +19,7 @@ import { UserList } from "@/src/app/chat/[id]/components/UserList";
 import { TypingIndicator } from "@/src/app/chat/[id]/components/TypingIndicator";
 import { useHover } from "@/src/app/hooks/useHover";
 import { cn } from "@/src/lib/utils";
+import { isTextMessage } from "@/src/types/chat";
 
 export default function ChatPage() {
     const params = useParams();
@@ -33,7 +34,8 @@ export default function ChatPage() {
         typingUsers,
         startTyping,
         stopTyping,
-        sendReaction
+        sendReaction,
+        addOptimisticMessage
     } = useSocketHandler(username);
 
     const {
@@ -65,6 +67,7 @@ export default function ChatPage() {
         handleImageSend,
         setDescription,
         closeModal,
+        isUploading,
     } = useImageHandling();
 
     const { openImageViewer, isImageViewerOpen, viewedImageUrl, closeImageViewer } = useImageViewer()
@@ -74,6 +77,22 @@ export default function ChatPage() {
     }
 
     const toggleUserList = () => setIsUserListVisible(!isUserListVisible);
+
+    const handleSendImageWithReply = () => {
+        let replyContext = undefined;
+        if (replyingToMessage) {
+            const messageSnippet = isTextMessage(replyingToMessage)
+                ? replyingToMessage.message.substring(0, 50)
+                : '[Imagen]';
+
+            replyContext = {
+                id: replyingToMessage.id,
+                author: replyingToMessage.username,
+                messageSnippet: messageSnippet.length === 50 ? `${messageSnippet}...` : messageSnippet,
+            };
+        }
+        handleImageSend(replyContext, addOptimisticMessage, username);
+    }
 
     return (
         <div className="flex flex-col h-screen bg-background">
@@ -145,8 +164,9 @@ export default function ChatPage() {
                 description={description}
                 isModalOpen={isModalOpen}
                 setDescription={setDescription}
-                handleImageSend={handleImageSend}
+                handleImageSend={handleSendImageWithReply}
                 closeModal={closeModal}
+                isUploading={isUploading}
             />
             <ImageViewerModal
                 isOpen={isImageViewerOpen}

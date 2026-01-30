@@ -2,7 +2,7 @@
 import { Message, isTextMessage, isImageMessage, Reaction } from "@/src/types/chat";
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
-import { Reply, ChevronRight, SmilePlus } from "lucide-react";
+import { Reply, ChevronRight, SmilePlus, Loader2 } from "lucide-react";
 import React, { useState, useRef } from "react";
 import { useLongPress } from "@/src/app/chat/[id]/hooks/useLongPress";
 import { useHover } from "@/src/app/hooks/useHover";
@@ -48,14 +48,14 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
     };
 
     const handleClick = () => {
-        if (isImageMessage(msg) && imageUrl) {
-            openImageViewer(imageUrl)
+        if (isImageMessage(msg) && msg.imageUrl) {
+            openImageViewer(msg.imageUrl)
         }
     }
 
     const longPressHandlers = useLongPress(handleLongPress, handleClick, { delay: 300 });
 
-    const imageUrl = isImageMessage(msg) && msg.image ? URL.createObjectURL(new Blob([msg.image])) : null;
+    const imageUrl = isImageMessage(msg) ? msg.imageUrl : null;
 
     const getInitials = (name: string) => {
         return name.charAt(0).toUpperCase();
@@ -116,8 +116,18 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
             )}
             {isTextMessage(msg) && <p className="leading-relaxed">{highlightMentions(msg.message)}</p>}
             {isImageMessage(msg) && imageUrl && (
-                <div className="cursor-pointer overflow-hidden rounded-xl" onClick={handleClick}>
-                    <img src={imageUrl} alt="Imagen" className="w-full object-cover" onLoad={scrollToBottom} />
+                <div className="cursor-pointer overflow-hidden rounded-xl relative" onClick={handleClick}>
+                    <img
+                        src={imageUrl}
+                        alt="Imagen"
+                        className={cn("w-full object-cover", msg.isUploading && "opacity-50")}
+                        onLoad={scrollToBottom}
+                    />
+                    {msg.isUploading && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                            <Loader2 className="w-8 h-8 text-white animate-spin" />
+                        </div>
+                    )}
                     {msg.description && <p className="p-2 text-sm">{msg.description}</p>}
                 </div>
             )}

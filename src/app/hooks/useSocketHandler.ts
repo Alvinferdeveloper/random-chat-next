@@ -29,11 +29,27 @@ export function useSocketHandler(username: string) {
         }
     };
 
+    const addOptimisticMessage = (message: Message) => {
+        setMessages(prev => produce(prev, draft => {
+            draft.push(message);
+        }));
+    };
+
     useEffect(() => {
         if (!socket) return;
 
         const handleMessage = (msg: Message) => {
             setMessages(prev => produce(prev, draft => {
+                // If it's my message, remove any uploading message that might correspond to it
+                if (msg.username === username) {
+                    // Simple heuristic: remove the first uploading image message
+                    const uploadingIndex = draft.findIndex(m =>
+                        (m as Message & { isUploading?: boolean }).isUploading
+                    );
+                    if (uploadingIndex !== -1) {
+                        draft.splice(uploadingIndex, 1);
+                    }
+                }
                 draft.push(msg);
             }));
         };
@@ -141,5 +157,5 @@ export function useSocketHandler(username: string) {
         socket.emit("send_reaction", { messageId, emoji });
     };
 
-    return { messages, notificationUser, usersInRoom, typingUsers, startTyping, stopTyping, sendReaction };
+    return { messages, notificationUser, usersInRoom, typingUsers, startTyping, stopTyping, sendReaction, addOptimisticMessage };
 }
