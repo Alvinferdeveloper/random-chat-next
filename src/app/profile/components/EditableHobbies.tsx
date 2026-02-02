@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useForm, FieldValues, Path } from 'react-hook-form';
+import { FieldValues, Path } from 'react-hook-form';
 import { Button } from '@/src/components/ui/button';
 import { Badge } from '@/src/components/ui/badge';
 import { Pencil, Save, X, Loader2 } from 'lucide-react';
@@ -26,11 +26,6 @@ interface EditableHobbiesProps<T extends FieldValues, Name extends Path<T> = Pat
     control: any;
     updateFn: (field: Name, value: any) => Promise<void>;
 }
-
-const getLucideIcon = (name: string): LucideIcon => {
-    const icons = LucideIcons as unknown as Record<string, LucideIcon>;
-    return icons[name] ?? LucideIcons.HelpCircle;
-};
 
 export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Path<T>>({
     name,
@@ -85,10 +80,9 @@ export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Pa
                 <div className="flex flex-wrap gap-2 mt-1">
                     {userHobbies && userHobbies.length > 0 ? (
                         userHobbies.map((hobby) => {
-                            const Icon = getLucideIcon(hobby.icon || 'HelpCircle');
                             return (
                                 <Badge key={hobby.id} variant="secondary" className="flex items-center gap-2 py-1 px-3">
-                                    <Icon className="h-4 w-4" />
+                                    <span className='h-4 w-4'>{hobby.icon}</span>
                                     <span className="font-normal">{hobby.name}</span>
                                 </Badge>
                             );
@@ -107,7 +101,6 @@ export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Pa
                         ) : (
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                                 {allHobbies.map((hobby) => {
-                                    const Icon = getLucideIcon(hobby.icon || 'HelpCircle');
                                     return (
                                         <div
                                             key={hobby.id}
@@ -120,7 +113,7 @@ export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Pa
                                                     : 'border-border bg-card hover:border-primary/50'
                                                     }`}
                                             >
-                                                <Icon className="h-6 w-6 mb-1" />
+                                                <span className="h-6 w-6 mb-1">{hobby.icon}</span>
                                                 <span className="text-center text-sm">{hobby.name}</span>
                                             </label>
                                             <Checkbox
