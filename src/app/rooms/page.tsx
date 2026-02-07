@@ -51,6 +51,8 @@ export default function Rooms() {
         window.location.reload();
     };
 
+    console.log(rooms)
+
     useEffect(() => {
         if (socket) {
             socket.emit('get-initial-room-state');
@@ -142,9 +144,13 @@ export default function Rooms() {
                                 <CardContent className="pt-4 pb-4 px-4 flex flex-col flex-1">
                                     {/* Room Name */}
                                     <div className="flex items-center gap-2 mb-2">
-                                        <div className="w-4 h-4 min-w-[16px] bg-green-500 rounded-full flex items-center justify-center shrink-0">
-                                            <Check className="w-3 h-3 text-white" />
-                                        </div>
+                                        {
+                                            room.verified && (
+                                                <div className="w-4 h-4 min-w-[16px] bg-green-500 rounded-full flex items-center justify-center shrink-0">
+                                                    <Check className="w-3 h-3 text-white" />
+                                                </div>
+                                            )
+                                        }
                                         <h3 className="text-white font-bold text-lg truncate pr-2">
                                             {room.name}
                                         </h3>

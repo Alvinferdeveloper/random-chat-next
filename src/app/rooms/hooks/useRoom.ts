@@ -4,6 +4,7 @@ export type Room = {
     id: string,
     name: string,
     short_description: string,
+    verified: boolean
     full_description: string,
     server_banner: string,
     server_icon: string
