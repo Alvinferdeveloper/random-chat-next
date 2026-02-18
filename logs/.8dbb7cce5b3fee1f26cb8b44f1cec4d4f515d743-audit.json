@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\Users\\alvin\\Proyectos\\random_chat\\random_chat\\logs\\.8dbb7cce5b3fee1f26cb8b44f1cec4d4f515d743-audit.json",
+    "files": [
+        {
+            "date": 1771379232315,
+            "name": "C:\\Users\\alvin\\Proyectos\\random_chat\\random_chat\\logs\\mcp-puppeteer-2026-02-17.log",
+            "hash": "5429c1c806d8790066722d1708643ba88e2686d7fbd90aed6cc2b7ad08e12a93"
+        }
+    ],
+    "hashType": "sha256"
+}

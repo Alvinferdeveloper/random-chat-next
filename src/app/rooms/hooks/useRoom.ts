@@ -7,8 +7,12 @@ export type Room = {
     verified: boolean
     full_description: string,
     server_banner: string,
-    server_icon: string
+    server_icon: string,
+    status: RoomStatus,
+    created_at: string,
 }
+
+export type RoomStatus = 'IN_REVISION' | 'ACCEPTED' | 'REJECTED';
 
 export default function useRoom() {
     const [rooms, setRooms] = useState<Room[]>([]);
