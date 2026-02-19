@@ -14,27 +14,44 @@ export type Room = {
 
 export type RoomStatus = 'IN_REVISION' | 'ACCEPTED' | 'REJECTED';
 
-export default function useRoom() {
+export default function useRoom(searchQuery: string = "") {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [error, setError] = useState("");
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
 
+    useEffect(() => {
+        setRooms([]);
+        setPage(1);
+        setHasMore(true);
+    }, [searchQuery]);
+
     const loadMoreRooms = useCallback(async () => {
-        if (loading || !hasMore) return;
+        if (loading || (!hasMore && page !== 1)) return;
+        // Allow fetch if page is 1 (new search) even if hasMore might be stale, 
+        // though resetting state above handles hasMore.
 
         setLoading(true);
         setError("");
 
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/rooms?page=${page}&limit=${process.env.NEXT_PUBLIC_ROOMS_FETCH_LIMIT || 10}`);
+            const queryParams = new URLSearchParams({
+                page: page.toString(),
+                limit: (process.env.NEXT_PUBLIC_ROOMS_FETCH_LIMIT || 10).toString(),
+            });
+
+            if (searchQuery) {
+                queryParams.append("q", searchQuery);
+            }
+
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/rooms?${queryParams.toString()}`);
             if (!res.ok) {
                 throw new Error("Ocurrió un error al cargar las salas...");
             }
             const json = await res.json();
 
-            setRooms(prevRooms => [...prevRooms, ...json.data]);
+            setRooms(prevRooms => page === 1 ? json.data : [...prevRooms, ...json.data]);
             setPage(prevPage => prevPage + 1);
             setHasMore(json.pagination.hasNextPage);
 
@@ -43,11 +60,19 @@ export default function useRoom() {
         } finally {
             setLoading(false);
         }
-    }, [page, loading, hasMore]);
+    }, [page, loading, hasMore, searchQuery]);
 
     useEffect(() => {
-        loadMoreRooms();
-    }, []);
+        // Initial load or reload when search changes (because page resets to 1)
+        if (page === 1) {
+            loadMoreRooms();
+        }
+    }, [page, searchQuery]); // Add searchQuery to dependencies if we want it to trigger.
+    // Actually, since we reset page to 1 on searchQuery change, 
+    // and we have page in dependency of this effect, it might trigger twice if we are not careful.
+    // Let's simplify: 
+    // 1. Search Query updates -> Effect 1 resets page to 1. 
+    // 2. Page updates to 1 -> Effect 2 triggers loadMoreRooms.
 
     return { rooms, error, loading, hasMore, loadMoreRooms };
 }

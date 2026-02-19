@@ -12,6 +12,9 @@ import { RoomCard } from '@/src/app/rooms/components/RoomCard';
 
 import { useRoomUserCounts } from '@/src/app/rooms/hooks/useRoomUserCounts';
 
+import { SearchBar } from '@/src/app/rooms/components/SearchBar';
+import { useDebounce } from '@/src/app/hooks/useDebounce';
+
 const cardVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: (i: number) => ({
@@ -28,7 +31,11 @@ const cardVariants: Variants = {
 export default function Rooms() {
     const router = useRouter();
     const [connecting, setConnecting] = useState<string | null>(null);
-    const { rooms, error, loading, hasMore, loadMoreRooms } = useRoom();
+    const [searchQuery, setSearchQuery] = useState("");
+    const debouncedSearch = useDebounce(searchQuery, 500);
+
+    const { rooms, error, loading, hasMore, loadMoreRooms } = useRoom(debouncedSearch);
+
     const { sentinelRef } = useInfiniteScroll({ loading, hasMore, onLoadMore: loadMoreRooms });
     const { userCounts } = useRoomUserCounts();
 
@@ -68,6 +75,22 @@ export default function Rooms() {
                 isOpen={isModalOpen}
                 onProfileComplete={handleProfileComplete}
             />
+            <div className="p-6 pb-2 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div className="relative">
+                    {/* brightness effect  */}
+                    <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg blur opacity-25"></div>
+
+                    <h1 className="relative px-4 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-blue-400">
+                        Salas Disponibles
+                    </h1>
+                </div>
+
+                <SearchBar
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    placeholder="Buscar sala por nombre..."
+                />
+            </div>
             <main className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 p-6">
                 {rooms.map((room, index) => (
                     <RoomCard
