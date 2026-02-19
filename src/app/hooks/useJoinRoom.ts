@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useSocket } from "@/src/app/components/providers/SocketProvider";
+import { useSocket } from "@/src/app/components/providers/SocketEventProvider";
 
 export function useJoinRoom(roomId: string, username: string) {
     const socket = useSocket();

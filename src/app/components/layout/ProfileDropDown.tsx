@@ -18,7 +18,7 @@ import {
 } from '@/src/components/ui/dropdown-menu';
 import { LogOut, User as UserIcon, Users, BadgePlus, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '@/src/app/hooks/useAuth';
-import { useSocket } from '@/src/app/components/providers/SocketProvider';
+import { useSocket } from '@/src/app/components/providers/SocketEventProvider';
 import { useRouter } from 'next/navigation';
 
 export function UserNav() {

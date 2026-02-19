@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useSocket } from "@/components/providers/SocketProvider";
+import { useSocket } from "@/src/app/components/providers/SocketEventProvider";
 
 export function useImageHandling() {
     const socket = useSocket();

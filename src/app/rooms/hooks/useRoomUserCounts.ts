@@ -1,12 +1,11 @@
 'use client';
 
-import { useRoomUserCountsContext } from '@/src/app/components/providers/RoomCountProvider';
+import { useRoomUserCounts as useRoomUserCountsFromProvider } from '@/src/app/components/providers/SocketEventProvider';
 
 /**
- * Hook to share room counts across multiple components.
- * It uses a shared Context to ensure socket events are only registered once.
+ * Hook to access shared room user counts.
+ * State is managed globally by SocketEventProvider (events registered once).
  */
 export const useRoomUserCounts = () => {
-    const { userCounts } = useRoomUserCountsContext();
-    return { userCounts };
+    return useRoomUserCountsFromProvider();
 };

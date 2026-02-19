@@ -36,7 +36,7 @@ export default function ChatPage() {
         stopTyping,
         sendReaction,
         addOptimisticMessage
-    } = useSocketHandler(username);
+    } = useSocketHandler();
 
     const {
         newMessage,

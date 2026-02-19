@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Message, isTextMessage } from "@/src/types/chat";
-import { useSocket } from "@/src/app/components/providers/SocketProvider";
+import { useSocket } from "@/src/app/components/providers/SocketEventProvider";
 
 export function useMessageInput() {
     const socket = useSocket();

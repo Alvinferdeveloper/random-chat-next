@@ -3,7 +3,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSocketHandler } from "@/src/app/hooks/useSocketHandler";
-import { useUsername } from "@/src/app/hooks/useUsername";
 
 interface User {
     id: string;
@@ -44,8 +43,7 @@ const TypingDots = () => {
 };
 
 export function UserList({ users }: UserListProps) {
-    const username = useUsername();
-    const { typingUsers } = useSocketHandler(username);
+    const { typingUsers } = useSocketHandler();
 
     const getInitials = (name: string) => {
         return name.charAt(0).toUpperCase();

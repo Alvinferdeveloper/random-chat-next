@@ -2,11 +2,11 @@
 
 import { useMyRooms } from '@/src/app/rooms/my-rooms/hooks/useMyRooms';
 import { RoomCard } from '@/src/app/rooms/components/RoomCard';
-import { Trash2, Loader2, ArrowLeft, Edit, Calendar } from 'lucide-react';
+import { Trash2, Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useRoomUserCountsContext } from '@/src/app/components/providers/RoomCountProvider';
+import { useRoomUserCounts } from '@/src/app/rooms/hooks/useRoomUserCounts';
 import RoomCardFooter from '@/src/app/rooms/my-rooms/components/RoomCardFooter';
 
 const cardVariants = {
@@ -27,7 +27,7 @@ export default function MyRoomsPage() {
     const router = useRouter();
     const [connecting, setConnecting] = useState<string | null>(null);
     const [deletingId, setDeletingId] = useState<string | null>(null);
-    const { userCounts } = useRoomUserCountsContext();
+    const { userCounts } = useRoomUserCounts();
 
     const handleDelete = async (e: React.MouseEvent, roomId: string) => {
         e.stopPropagation();
