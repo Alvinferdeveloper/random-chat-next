@@ -6,6 +6,9 @@ import { ConnectingAnimation } from '@/src/app/components/animations/ConnectionA
 import { Circle, Check } from 'lucide-react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Heart } from 'lucide-react';
+import { useFavoriteRoom } from '@/src/app/rooms/hooks/useFavoriteRoom';
+import { useAuth } from '@/src/app/hooks/useAuth';
 
 interface RoomCardProps {
     room: Room;
@@ -26,7 +29,9 @@ export function RoomCard({
     cardVariants,
     footer
 }: RoomCardProps) {
+    const { isFavorite, toggleFavorite } = useFavoriteRoom(room.id, room.isFavorite);
     const [hovered, setHovered] = useState(false);
+    const { session } = useAuth();
 
     return (
         <motion.div
@@ -53,6 +58,20 @@ export function RoomCard({
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />}
 
+                        {
+                            session && (
+                                <button
+                                    onClick={toggleFavorite}
+                                    className="absolute top-2 right-2 p-2 cursor-pointer rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 transition-all z-20 group/heart"
+                                    aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                                >
+                                    <Heart
+                                        className={`w-5 h-5 transition-colors ${isFavorite ? "fill-red-500 text-red-500" : "text-white group-hover/heart:text-red-400"
+                                            }`}
+                                    />
+                                </button>
+                            )
+                        }
                     </div>
 
                     <div className="absolute -bottom-5 left-4 z-10">

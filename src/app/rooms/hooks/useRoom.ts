@@ -6,6 +6,7 @@ export type Room = {
     short_description: string,
     verified: boolean
     full_description: string,
+    isFavorite: boolean,
     server_banner: string,
     server_icon: string,
     status: RoomStatus,
@@ -45,7 +46,7 @@ export default function useRoom(searchQuery: string = "") {
                 queryParams.append("q", searchQuery);
             }
 
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/rooms?${queryParams.toString()}`);
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/rooms?${queryParams.toString()}`, { credentials: 'include' });
             if (!res.ok) {
                 throw new Error("Ocurrió un error al cargar las salas...");
             }
