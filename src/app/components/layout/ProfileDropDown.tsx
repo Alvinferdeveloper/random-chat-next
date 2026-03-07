@@ -16,7 +16,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/src/components/ui/dropdown-menu';
-import { LogOut, User as UserIcon, Users, BadgePlus, LayoutDashboard } from 'lucide-react';
+import { LogOut, User as UserIcon, Users, BadgePlus, LayoutDashboard, Heart } from 'lucide-react';
 import { useAuth } from '@/src/app/hooks/useAuth';
 import { useSocket } from '@/src/app/components/providers/SocketEventProvider';
 import { useRouter } from 'next/navigation';
@@ -84,6 +84,10 @@ export function UserNav() {
                     <DropdownMenuItem className='cursor-pointer' onClick={() => navigation.push("/rooms/my-rooms")}>
                         <LayoutDashboard className="mr-2 h-4 w-4" />
                         <span>Mis salas</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className='cursor-pointer' onClick={() => navigation.push("/rooms/favorites")}>
+                        <Heart className="mr-2 h-4 w-4" />
+                        <span>Favoritos</span>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuGroup>

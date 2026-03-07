@@ -15,7 +15,9 @@ export type Room = {
 
 export type RoomStatus = 'IN_REVISION' | 'ACCEPTED' | 'REJECTED';
 
-export default function useRoom(searchQuery: string = "") {
+export type RoomFetchType = 'all' | 'favorites';
+
+export default function useRoom(searchQuery: string = "", type: RoomFetchType = 'all') {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [error, setError] = useState("");
     const [page, setPage] = useState(1);
@@ -26,7 +28,7 @@ export default function useRoom(searchQuery: string = "") {
         setRooms([]);
         setPage(1);
         setHasMore(true);
-    }, [searchQuery]);
+    }, [searchQuery, type]);
 
     const loadMoreRooms = useCallback(async () => {
         if (loading || (!hasMore && page !== 1)) return;
@@ -46,7 +48,11 @@ export default function useRoom(searchQuery: string = "") {
                 queryParams.append("q", searchQuery);
             }
 
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/rooms?${queryParams.toString()}`, { credentials: 'include' });
+            const baseUrl = type === 'favorites'
+                ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/rooms/favorites`
+                : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/rooms`;
+
+            const res = await fetch(`${baseUrl}?${queryParams.toString()}`, { credentials: 'include' });
             if (!res.ok) {
                 throw new Error("Ocurrió un error al cargar las salas...");
             }
@@ -61,14 +67,14 @@ export default function useRoom(searchQuery: string = "") {
         } finally {
             setLoading(false);
         }
-    }, [page, loading, hasMore, searchQuery]);
+    }, [page, loading, hasMore, searchQuery, type]);
 
     useEffect(() => {
         // Initial load or reload when search changes (because page resets to 1)
         if (page === 1) {
             loadMoreRooms();
         }
-    }, [page, searchQuery]); // Add searchQuery to dependencies if we want it to trigger.
+    }, [page, searchQuery, type]); // Add searchQuery to dependencies if we want it to trigger.
     // Actually, since we reset page to 1 on searchQuery change, 
     // and we have page in dependency of this effect, it might trigger twice if we are not careful.
     // Let's simplify: 
