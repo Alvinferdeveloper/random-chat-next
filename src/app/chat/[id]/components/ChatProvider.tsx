@@ -59,6 +59,14 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
             }));
         };
 
+        const handleMessageHistory = (recentMessages: Message[]) => {
+            setMessages(prev => produce(prev, draft => {
+                const existingIds = new Set(draft.map(m => m.id));
+                const filteredHistory = recentMessages.filter(m => !existingIds.has(m.id));
+                draft.unshift(...filteredHistory);
+            }));
+        };
+
         const handleUserJoined = (data: { username: string }) => {
             setNotificationUser(data.username);
             setTimeout(() => setNotificationUser(null), 4500);
@@ -125,6 +133,7 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
 
         socket.on('message', handleMessage);
         socket.on('image', handleMessage);
+        socket.on('message-history', handleMessageHistory);
         socket.on('user-joined', handleUserJoined);
         socket.on('room_users', handleRoomUsers);
         socket.on('user-started-typing', handleUserStartedTyping);
@@ -135,6 +144,7 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
         return () => {
             socket.off('message', handleMessage);
             socket.off('image', handleMessage);
+            socket.off('message-history', handleMessageHistory);
             socket.off('user-joined', handleUserJoined);
             socket.off('room_users', handleRoomUsers);
             socket.off('user-started-typing', handleUserStartedTyping);
