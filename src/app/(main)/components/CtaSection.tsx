@@ -2,10 +2,11 @@ import { Button } from "@/src/components/ui/button"
 import Link from "next/link"
 import Check from '@/src/app/components/icons/Check'
 import Image from "next/image"
+import { forwardRef } from "react"
 
-export default function AboutAndCtaSection() {
+const AboutAndCtaSection = forwardRef<HTMLDivElement>((props, ref) => {
     return (
-        <section id="acerca-de" className="py-20 md:py-32">
+        <section id="acerca-de" ref={ref} className="py-20 md:py-32">
             <div className="container px-4 mx-auto md:px-6">
 
                 {/* Parte 1: Acerca de y Lista de Beneficios */}
@@ -98,4 +99,8 @@ export default function AboutAndCtaSection() {
             </div>
         </section>
     )
-}
+});
+
+AboutAndCtaSection.displayName = "AboutAndCtaSection";
+
+export default AboutAndCtaSection;

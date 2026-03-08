@@ -4,7 +4,7 @@ import { Button } from "@/src/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useEffect, useState, forwardRef } from "react"
 
 const mockUsers = [
     { id: "user1", name: "Ana", image: "https://api.dicebear.com/8.x/adventurer/svg?seed=Ana" },
@@ -48,7 +48,7 @@ const messages = [
     }
 ];
 
-export default function HeroSection() {
+const HeroSection = forwardRef<HTMLDivElement>((props, ref) => {
     const [visibleMessages, setVisibleMessages] = useState<typeof messages>([]);
 
     useEffect(() => {
@@ -86,7 +86,7 @@ export default function HeroSection() {
     const getUserData = (senderId: string) => mockUsers.find(user => user.id === senderId);
 
     return (
-        <section className="py-12 md:py-20 bg-gradient-to-b from-background to-muted/30">
+        <section ref={ref} id="hero" className="py-12 md:py-20 bg-gradient-to-b from-background to-muted/30 relative">
             <div className="container px-4 md:px-6">
                 <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 xl:grid-cols-2">
                     <div className="flex flex-col justify-center space-y-4">
@@ -162,4 +162,8 @@ export default function HeroSection() {
             </div>
         </section>
     );
-}
+});
+
+HeroSection.displayName = "HeroSection";
+
+export default HeroSection;
