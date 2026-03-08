@@ -86,7 +86,7 @@ const HeroSection = forwardRef<HTMLDivElement>((props, ref) => {
     const getUserData = (senderId: string) => mockUsers.find(user => user.id === senderId);
 
     return (
-        <section ref={ref} id="hero" className="py-12 md:py-20 bg-gradient-to-b from-background to-muted/30 relative">
+        <section ref={ref} id="hero" className="py-12 md:pt-20 md:pb-6  relative">
             <div className="container px-4 md:px-6">
                 <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 xl:grid-cols-2">
                     <div className="flex flex-col justify-center space-y-4">
@@ -117,7 +117,7 @@ const HeroSection = forwardRef<HTMLDivElement>((props, ref) => {
                     </div>
                     <div className="flex items-center justify-center">
                         <div className="relative w-full h-80 md:h-96 lg:h-full">
-                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/20 rounded-full blur-3xl" />
+                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 blur-3xl" />
                             <div className="relative z-10 grid grid-cols-2 gap-4">
                                 <div className="space-y-4">
                                     {visibleMessages.map((message, index) => {

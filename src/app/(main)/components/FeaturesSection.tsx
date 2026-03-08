@@ -25,7 +25,7 @@ const featureList = [
 
 const FeaturesSection = forwardRef<HTMLDivElement>((props, ref) => {
     return (
-        <section id="como-funciona" ref={ref} className="py-20 md:py-32 bg-secondary-background dark:bg-gray-950 overflow-hidden">
+        <section id="como-funciona" ref={ref} className="py-20 md:py-32  overflow-hidden">
             <div className="container px-4 mx-auto md:px-6">
 
                 {/* 1. ENCABEZADO: Título Vivo y Moderno */}
