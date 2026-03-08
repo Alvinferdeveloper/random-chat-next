@@ -20,6 +20,8 @@ import { TypingIndicator } from "@/src/app/chat/[id]/components/TypingIndicator"
 import { useHover } from "@/src/app/hooks/useHover";
 import { cn } from "@/src/lib/utils";
 import { isTextMessage } from "@/src/types/chat";
+import CampfireBackground from "@/src/app/chat/[id]/components/CampfireBackground";
+import CampfireLottie from "@/src/app/chat/[id]/components/CampfireLottie";
 
 export default function ChatPage() {
     const params = useParams();
@@ -95,7 +97,8 @@ export default function ChatPage() {
     }
 
     return (
-        <div className="flex flex-col h-screen bg-background">
+        <div className="flex flex-col h-screen bg-transparent">
+            <CampfireBackground />
             {notificationUser && (
                 <UserJoinedNotification
                     key={notificationUser}
@@ -108,8 +111,11 @@ export default function ChatPage() {
                 onToggleUserList={toggleUserList}
             />
             <div className="flex flex-1 overflow-hidden">
-                <main className="flex-1 flex flex-col">
-                    <div className="relative flex-1 overflow-y-auto">
+                <main className="flex-1 flex flex-col relative">
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+                        <CampfireLottie src="/illustrations/fire/animations/12345.json" className="w-64 h-64 opacity-80" />
+                    </div>
+                    <div className="relative z-10 flex-1 overflow-y-auto">
                         <MessageList
                             messages={messages}
                             username={username}
