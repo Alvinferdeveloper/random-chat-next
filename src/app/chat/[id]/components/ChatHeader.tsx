@@ -1,8 +1,9 @@
 "use client"
 import Link from "next/link";
-import { ArrowLeft, MessageSquare, Users } from "lucide-react";
+import { ArrowLeft, Users } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
+import Image from "next/image";
 
 const topicNames: Record<string, string> = {
     deportes: "Deportes",
@@ -26,7 +27,7 @@ interface ChatHeaderProps {
 
 export function ChatHeader({ roomId, isUserListVisible, onToggleUserList }: ChatHeaderProps) {
     return (
-        <header className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <header className="sticky top-0 z-10 flex items-center justify-between px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="flex items-center gap-2">
                 <Link href="/rooms">
                     <Button variant="ghost" size="icon" aria-label="Volver">
@@ -56,8 +57,7 @@ export function ChatHeader({ roomId, isUserListVisible, onToggleUserList }: Chat
                     <Users className="h-5 w-5" />
                 </Button>
                 <Link href="/" className="flex items-center gap-2">
-                    <MessageSquare className="w-5 h-5 text-primary" />
-                    <span className="font-bold">ChatHub</span>
+                    <Image src="/images/logo_chat.png" width={70} height={70} alt="Logo" />
                 </Link>
             </div>
         </header>

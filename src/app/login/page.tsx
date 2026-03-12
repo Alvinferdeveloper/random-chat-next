@@ -8,7 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
 import { Separator } from "@/src/components/ui/separator";
-import { authClient } from "../lib/auth-client";
+import { authClient } from "@/src/app/lib/auth-client";
+import Image from 'next/image';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -56,7 +57,12 @@ export default function LoginPage() {
     };
 
     return (
-        <main className="min-h-screen bg-background flex items-center justify-center p-4">
+        <main className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+            <div className="flex items-center gap-2">
+                <Link href="/" className="flex items-center gap-2">
+                    <Image src="/images/logo_chat.png" width={100} height={100} alt="Logo" />
+                </Link>
+            </div>
             <Card className="w-full max-w-md mx-auto shadow-lg">
                 <CardHeader className="space-y-1 text-center">
                     <CardTitle className="text-2xl font-bold">Iniciar Sesión</CardTitle>
