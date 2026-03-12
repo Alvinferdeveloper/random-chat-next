@@ -56,9 +56,9 @@ export default function Rooms() {
         window.location.reload();
     };
 
-    const handleJoinRoom = (roomId: string) => {
+    const handleJoinRoom = (roomId: string, roomName: string) => {
         setConnecting(roomId);
-        router.push(`/chat/${roomId}`);
+        router.push(`/chat/${roomId}?roomName=${roomName}`);
     };
 
     if (isPending) {
@@ -70,7 +70,7 @@ export default function Rooms() {
     }
 
     return (
-        <div>
+        <div className="bg-main-gradient">
             <AdditionalInfoModal
                 isOpen={isModalOpen}
                 onProfileComplete={handleProfileComplete}
@@ -80,7 +80,7 @@ export default function Rooms() {
                     {/* brightness effect  */}
                     <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg blur opacity-25"></div>
 
-                    <h1 className="relative px-4 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-blue-400">
+                    <h1 className="relative px-4 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300 dark:from-white dark:via-blue-100 dark:to-blue-4000">
                         Salas Disponibles
                     </h1>
                 </div>

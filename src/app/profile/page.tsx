@@ -3,7 +3,7 @@ import { Suspense } from "react";
 
 export default function ProfilePage() {
     return (
-        <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-background to-background pb-20">
+        <div className="min-h-screen bg-main-gradient pb-20">
             <div className="container mx-auto max-w-5xl pt-16 px-4">
                 <Suspense fallback={
                     <div className="flex flex-col items-center justify-center space-y-4 h-64">

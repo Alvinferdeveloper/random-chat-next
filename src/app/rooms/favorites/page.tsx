@@ -54,7 +54,7 @@ export default function FavoritesPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#1e2d3c]">
+        <div className="min-h-screen bg-main-gradient">
             <div className="p-6 pb-2 flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="flex items-center gap-4">
                     <Button

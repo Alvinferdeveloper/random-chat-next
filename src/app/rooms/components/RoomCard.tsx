@@ -15,7 +15,7 @@ interface RoomCardProps {
     index: number;
     userCount: number;
     isConnecting: boolean;
-    onJoin: (roomId: string) => void;
+    onJoin: (roomId: string, roomName: string) => void;
     cardVariants: any;
     footer?: React.ReactNode;
 }
@@ -48,7 +48,7 @@ export function RoomCard({
                     } ${hovered ? "scale-[1.02] shadow-xl" : ""}`}
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
-                onClick={() => onJoin(room.id)}
+                onClick={() => onJoin(room.id, room.name)}
             >
                 <div className="relative shrink-0">
                     <div className="h-[170px] relative w-full bg-gray-700">

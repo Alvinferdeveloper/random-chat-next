@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useSocketHandler } from "@/src/app/hooks/useSocketHandler";
 import { useJoinRoom } from "@/src/app/hooks/useJoinRoom";
 import { useUsername } from "@/src/app/hooks/useUsername";
@@ -28,6 +28,9 @@ export default function ChatPage() {
     const id = params.id;
     const username = useUsername();
     const { connecting } = useJoinRoom(id as string, username);
+
+    const searchParams = useSearchParams();
+    const roomName = searchParams.get("roomName");
 
     const {
         messages,
@@ -107,6 +110,7 @@ export default function ChatPage() {
             )}
             <ChatHeader
                 roomId={id as string}
+                roomName={roomName as string}
                 isUserListVisible={isUserListVisible}
                 onToggleUserList={toggleUserList}
             />

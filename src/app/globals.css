@@ -100,6 +100,16 @@
   }
 }
 
+@layer components {
+  .bg-main-gradient {
+    @apply bg-gradient-to-br from-background via-[#d8e5f5] to-background;
+  }
+
+  .dark .bg-main-gradient {
+    @apply bg-gradient-to-br from-background via-[#152438] to-background;
+  }
+}
+
 /* Custom Scrollbar Styles */
 /* Clase principal */
 .scrollbar-thin-light {

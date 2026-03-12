@@ -23,7 +23,7 @@ export default function CreateRoomPage() {
     return (
         <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
             {/* Decorative background */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-96 bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-96 bg-primary/20 blur-[100px] rounded-full pointer-events-none" />
 
             <div className="relative max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
                 {/* Navigation header */}
@@ -60,7 +60,7 @@ export default function CreateRoomPage() {
                 <div className="space-y-2 text-center mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
                         {createdRoom ? (
-                            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                            <span className="bg-gradient-to-r from-primary to-primary/30 bg-clip-text text-transparent">
                                 Dale vida a tu Sala
                             </span>
                         ) : (

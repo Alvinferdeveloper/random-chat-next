@@ -54,7 +54,7 @@ export default function MyRoomsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-background p-6">
+        <div className="min-h-screen bg-main-gradient p-6">
             <div className="max-w-7xl mx-auto space-y-8">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1">

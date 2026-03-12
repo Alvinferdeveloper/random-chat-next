@@ -10,6 +10,7 @@ import { Label } from "@/src/components/ui/label";
 import { Separator } from "@/src/components/ui/separator";
 import { authClient } from "@/src/app/lib/auth-client";
 import Image from 'next/image';
+import { ArrowLeft } from "lucide-react";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -57,13 +58,24 @@ export default function LoginPage() {
     };
 
     return (
-        <main className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+        <main className="min-h-screen from-background to-background via-[#152438] bg-gradient-to-br flex flex-col items-center justify-center p-4">
+            <div className="absolute top-8 left-8 z-10">
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => router.back()}
+                    className="group flex items-center gap-2 cursor-pointer text-muted-foreground hover:text-foreground transition-all duration-300"
+                >
+                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                    <span>Volver atrás</span>
+                </Button>
+            </div>
             <div className="flex items-center gap-2">
                 <Link href="/" className="flex items-center gap-2">
-                    <Image src="/images/logo_chat.png" width={100} height={100} alt="Logo" />
+                    <Image src="/images/logo_chat.png" width={120} height={120} alt="Logo" />
                 </Link>
             </div>
-            <Card className="w-full max-w-md mx-auto shadow-lg">
+            <Card className="w-full max-w-md mx-auto shadow-lg h-[550px] bg-[#0f1722]">
                 <CardHeader className="space-y-1 text-center">
                     <CardTitle className="text-2xl font-bold">Iniciar Sesión</CardTitle>
                     <CardDescription>Elige tu método preferido para acceder</CardDescription>
@@ -74,7 +86,7 @@ export default function LoginPage() {
                         <Button
                             onClick={handleGoogleLogin}
                             variant="outline"
-                            className="w-full h-11 border-2 hover:bg-accent hover:text-accent-foreground transition-colors bg-transparent"
+                            className="w-full h-11 border-2 cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors bg-transparent"
                         >
                             <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
                                 <path
@@ -99,7 +111,7 @@ export default function LoginPage() {
                         <Button
                             onClick={handleFacebookLogin}
                             variant="outline"
-                            className="w-full h-11 border-2 hover:bg-accent hover:text-accent-foreground transition-colors bg-transparent"
+                            className="w-full h-11 border-2 cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors bg-transparent"
                         >
                             <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
                                 <path
