@@ -1,9 +1,9 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
+import { useEffect, useState, memo } from "react"
 
-export default function CampfireBackground() {
+function CampfireBackgroundComponent() {
     const [stars, setStars] = useState<{ id: number; x: number; y: number; size: number; delay: number; duration: number }[]>([])
 
     useEffect(() => {
@@ -97,3 +97,5 @@ export default function CampfireBackground() {
         </div>
     )
 }
+
+export default memo(CampfireBackgroundComponent);

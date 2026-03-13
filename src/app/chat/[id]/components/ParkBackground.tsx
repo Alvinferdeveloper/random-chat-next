@@ -1,9 +1,9 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
+import { useEffect, useState, memo } from "react"
 
-export default function ParkBackground() {
+function ParkBackgroundComponent() {
     const [clouds, setClouds] = useState<{ id: number; x: number; y: number; scale: number; duration: number; delay: number }[]>([])
 
     useEffect(() => {
@@ -24,12 +24,12 @@ export default function ParkBackground() {
             <div className="absolute inset-0 bg-gradient-to-b from-sky-300 via-sky-200 to-emerald-50" />
 
             {/* Sun */}
-            <motion.div
-                className="absolute top-10 right-48 w-32 h-32 rounded-full bg-yellow-200 blur-2xl opacity-60"
+            <motion.div 
+                className="absolute top-10 right-10 w-32 h-32 rounded-full bg-yellow-200 blur-2xl opacity-60"
                 animate={{ scale: [1, 1.1, 1] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             />
-            <div className="absolute top-16 right-52 w-20 h-20 rounded-full bg-yellow-400 opacity-80 shadow-[0_0_50px_rgba(250,204,21,0.5)]" />
+            <div className="absolute top-16 right-16 w-20 h-20 rounded-full bg-yellow-400 opacity-80 shadow-[0_0_50px_rgba(250,204,21,0.5)]" />
 
             {/* Clouds */}
             {clouds.map((cloud) => (
@@ -89,7 +89,7 @@ export default function ParkBackground() {
             </svg>
 
             {/* Subtle Texture */}
-            <div
+            <div 
                 className="absolute inset-0 opacity-[0.03]"
                 style={{
                     backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
@@ -98,3 +98,5 @@ export default function ParkBackground() {
         </div>
     )
 }
+
+export default memo(ParkBackgroundComponent);

@@ -1,19 +1,20 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { useMemo, memo } from "react"
 
 interface TreeIllustrationProps {
     className?: string
 }
 
-export default function TreeIllustration({ className = "w-64 h-64" }: TreeIllustrationProps) {
-    const leaves = Array.from({ length: 8 }, (_, i) => ({
+function TreeIllustrationComponent({ className = "w-64 h-64" }: TreeIllustrationProps) {
+    const leaves = useMemo(() => Array.from({ length: 8 }, (_, i) => ({
         id: i,
         x: 20 + Math.random() * 60,
         y: 10 + Math.random() * 40,
         delay: Math.random() * 5,
         duration: 3 + Math.random() * 3,
-    }))
+    })), [])
 
     return (
         <div className={`relative ${className} flex items-end justify-center overflow-visible`}>
@@ -63,3 +64,5 @@ export default function TreeIllustration({ className = "w-64 h-64" }: TreeIllust
         </div>
     )
 }
+
+export default memo(TreeIllustrationComponent);

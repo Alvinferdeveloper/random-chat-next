@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, memo } from "react"
 import lottie from "lottie-web"
 
 interface CampfireLottieProps {
@@ -8,7 +8,7 @@ interface CampfireLottieProps {
     className?: string
 }
 
-export default function CampfireLottie({ src, className = "w-64 h-64" }: CampfireLottieProps) {
+function CampfireLottieComponent({ src, className = "w-64 h-64" }: CampfireLottieProps) {
     const containerRef = useRef<HTMLDivElement>(null)
     const [animationData, setAnimationData] = useState<any>(null)
 
@@ -54,3 +54,5 @@ export default function CampfireLottie({ src, className = "w-64 h-64" }: Campfir
         <div ref={containerRef} className={className} />
     )
 }
+
+export default memo(CampfireLottieComponent);
