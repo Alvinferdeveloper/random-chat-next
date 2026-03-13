@@ -111,7 +111,7 @@ export function MessageInput({
     };
 
     return (
-        <div className="sticky bottom-0 p-4 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 
+        <div className="sticky bottom-0  p-4 border-t bg-transparent z-10 
                         transition-[padding] duration-300 ease-in-out pb-[calc(1rem+var(--bottom-inset,0px))]">
             {replyingToMessage && (
                 <div className="flex items-center justify-between p-2 mb-2 text-sm bg-muted rounded-t-lg border-b border-border">
@@ -163,7 +163,7 @@ export function MessageInput({
                             value={newMessage}
                             onChange={onInputChange}
                             placeholder="Escribe un mensaje..."
-                            className="pr-12"
+                            className="pr-12 bg-background/90"
                         />
                         <Button
                             type="button"

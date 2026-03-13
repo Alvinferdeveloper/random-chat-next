@@ -20,14 +20,19 @@ import { TypingIndicator } from "@/src/app/chat/[id]/components/TypingIndicator"
 import { useHover } from "@/src/app/hooks/useHover";
 import { cn } from "@/src/lib/utils";
 import { isTextMessage } from "@/src/types/chat";
+import { useTheme } from "next-themes";
 import CampfireBackground from "@/src/app/chat/[id]/components/CampfireBackground";
 import CampfireLottie from "@/src/app/chat/[id]/components/CampfireLottie";
+import ParkBackground from "@/src/app/chat/[id]/components/ParkBackground";
+import TreeIllustration from "@/src/app/chat/[id]/components/TreeIllustration";
 
 export default function ChatPage() {
     const params = useParams();
     const id = params.id;
     const username = useUsername();
     const { connecting } = useJoinRoom(id as string, username);
+    const { theme, resolvedTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
 
     const searchParams = useSearchParams();
     const roomName = searchParams.get("roomName");
@@ -60,6 +65,7 @@ export default function ChatPage() {
     const [isUserListVisible, setIsUserListVisible] = useState(false);
 
     useEffect(() => {
+        setMounted(true);
         // Default to visible on desktop, hidden on mobile
         setIsUserListVisible(hasHover);
     }, [hasHover]);
@@ -99,9 +105,11 @@ export default function ChatPage() {
         handleImageSend(replyContext, addOptimisticMessage, username);
     }
 
+    const currentTheme = resolvedTheme || theme;
+
     return (
         <div className="flex flex-col h-screen bg-transparent">
-            <CampfireBackground />
+            {mounted && (currentTheme === "light" ? <ParkBackground /> : <CampfireBackground />)}
             {notificationUser && (
                 <UserJoinedNotification
                     key={notificationUser}
@@ -117,7 +125,11 @@ export default function ChatPage() {
             <div className="flex flex-1 overflow-hidden">
                 <main className="flex-1 flex flex-col relative">
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-                        <CampfireLottie src="/illustrations/fire/animations/12345.json" className="w-64 h-64 opacity-80" />
+                        {mounted && (currentTheme === "light" ? (
+                            <TreeIllustration className="w-80 h-80 opacity-90" />
+                        ) : (
+                            <CampfireLottie src="/illustrations/fire/animations/12345.json" className="w-64 h-64 opacity-80" />
+                        ))}
                     </div>
                     <div className="relative z-10 flex-1 overflow-y-auto">
                         <MessageList

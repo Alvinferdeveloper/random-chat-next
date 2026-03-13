@@ -4,6 +4,7 @@ import { ArrowLeft, Users } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
 import Image from "next/image";
+import { ThemeToggle } from "@/src/app/components/layout/ThemeToggle";
 
 const topicNames: Record<string, string> = {
     deportes: "Deportes",
@@ -57,6 +58,7 @@ export function ChatHeader({ roomId, roomName, isUserListVisible, onToggleUserLi
                 >
                     <Users className="h-5 w-5" />
                 </Button>
+                <ThemeToggle />
                 <Link href="/" className="flex items-center gap-2">
                     <Image src="/images/logo_chat.png" width={70} height={70} alt="Logo" />
                 </Link>
