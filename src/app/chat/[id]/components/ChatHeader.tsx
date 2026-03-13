@@ -29,7 +29,7 @@ interface ChatHeaderProps {
 
 export function ChatHeader({ roomId, roomName, isUserListVisible, onToggleUserList }: ChatHeaderProps) {
     return (
-        <header className="sticky top-0 z-10 flex items-center justify-between px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <header className="sticky top-0 z-10 flex items-center justify-between px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/20">
             <div className="flex items-center gap-2">
                 <Link href="/rooms">
                     <Button variant="ghost" size="icon" aria-label="Volver" className="cursor-pointer">
