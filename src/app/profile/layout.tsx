@@ -1,4 +1,11 @@
 import GlobalLayout from "@/src/app/components/layout/GlobalLayout"
-export default function RoomsLayout({ children }: { children: React.ReactNode }) {
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Mi Perfil",
+    description: "Gestiona tu cuenta, personaliza tu perfil y revisa tus salas favoritas.",
+};
+
+export default function ProfileLayout({ children }: { children: React.ReactNode }) {
     return <GlobalLayout children={children} />
 }

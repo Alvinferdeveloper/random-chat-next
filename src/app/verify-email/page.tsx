@@ -2,6 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/ca
 import { Button } from '@/src/components/ui/button';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Verificación de Correo",
+    description: "Confirma tu dirección de correo electrónico para activar tu cuenta.",
+};
 
 export default function VerifyEmailPage({
     searchParams,

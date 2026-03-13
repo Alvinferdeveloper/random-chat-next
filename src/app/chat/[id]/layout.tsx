@@ -1,13 +1,19 @@
-'use client';
+import { ClientChatLayout } from './components/ClientChatLayout';
+import { Metadata } from 'next';
 
-import { useUsername } from '@/src/app/hooks/useUsername';
-import { ChatProvider } from '@/src/app/chat/[id]/components/ChatProvider';
+export const metadata: Metadata = {
+    title: "Chat",
+    description: "Conéctate en tiempo real y comparte momentos en esta sala de chat.",
+    robots: {
+        index: false,
+        follow: false,
+    }
+};
 
 export default function ChatLayout({ children }: { children: React.ReactNode }) {
-    const username = useUsername();
     return (
-        <ChatProvider username={username}>
+        <ClientChatLayout>
             {children}
-        </ChatProvider>
+        </ClientChatLayout>
     );
 }
