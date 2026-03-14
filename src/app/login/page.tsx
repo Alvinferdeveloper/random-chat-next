@@ -11,6 +11,7 @@ import { Separator } from "@/src/components/ui/separator";
 import { authClient } from "@/src/app/lib/auth-client";
 import Image from 'next/image';
 import { ArrowLeft } from "lucide-react";
+import { da } from 'zod/v4/locales';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -41,7 +42,7 @@ export default function LoginPage() {
         const { data, error } = await authClient.signIn.email({
             email,
             password,
-            callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/rooms`,
+            callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/admin`,
         });
 
         setLoading(false);
