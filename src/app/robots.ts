@@ -1,12 +1,14 @@
-import { Metadata } from 'next'
+import { MetadataRoute } from 'next'
 
-export default function robots(): Metadata {
+const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+
+export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/chat/', '/profile/', '/verify-email/'],
+      disallow: ['/chat/', '/profile/', '/rooms/favorites', '/rooms/my-rooms', '/verify-email'],
     },
-    sitemap: 'https://chathub.com/sitemap.xml',
-  } as any
+    sitemap: `${appUrl}/sitemap.xml`,
+  }
 }

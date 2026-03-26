@@ -2,7 +2,11 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "Iniciar Sesión",
-    description: "Accede a tu cuenta de ChatHub para continuar tus conversaciones.",
+    description: "Inicia sesión en ChatHub para unirte a salas de chat, conectar con personas y compartir momentos.",
+    robots: {
+        index: false,
+        follow: true,
+    },
 };
 
 export default function LoginLayout({ children }: { children: React.ReactNode }) {

@@ -1,8 +1,12 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Crear Cuenta",
-    description: "Regístrate en ChatHub para empezar a conectar con personas de todo el mundo.",
+    title: "Registrarse",
+    description: "Crea tu cuenta en ChatHub y únete a nuestra comunidad de salas de chat temáticas.",
+    robots: {
+        index: false,
+        follow: true,
+    },
 };
 
 export default function SignupLayout({ children }: { children: React.ReactNode }) {

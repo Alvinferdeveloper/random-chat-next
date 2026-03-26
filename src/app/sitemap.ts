@@ -1,7 +1,8 @@
 import { MetadataRoute } from 'next'
 
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://chathub.com'
 
   return [
     {
@@ -14,19 +15,31 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/rooms`,
       lastModified: new Date(),
       changeFrequency: 'hourly',
-      priority: 0.8,
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/rooms/create`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.6,
     },
     {
       url: `${baseUrl}/login`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.5,
+      priority: 0.3,
     },
     {
       url: `${baseUrl}/signup`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.5,
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/verify-email`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.3,
     },
   ]
 }

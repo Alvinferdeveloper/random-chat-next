@@ -7,14 +7,19 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Verificación de Correo",
     description: "Confirma tu dirección de correo electrónico para activar tu cuenta.",
+    robots: {
+        index: false,
+        follow: true,
+    },
 };
 
-export default function VerifyEmailPage({
+export default async function VerifyEmailPage({
     searchParams,
 }: {
-    searchParams: { [key: string]: string | string[] | undefined };
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-    const success = searchParams.success === 'true';
+    const params = await searchParams;
+    const success = params.success === 'true';
     if (!success) redirect('/login');
     return (
         <main className="min-h-screen bg-background flex items-center justify-center p-4">

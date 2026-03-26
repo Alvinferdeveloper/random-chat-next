@@ -9,6 +9,8 @@ const montserrat = Montserrat({
   subsets: ["latin"],
 });
 
+const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+
 export const metadata: Metadata = {
   title: {
     template: "%s | ChatHub",
@@ -18,10 +20,17 @@ export const metadata: Metadata = {
   keywords: ["chat", "chathub", "random chat", "salas de chat", "comunidad", "tiempo real", "mensajería"],
   authors: [{ name: "ChatHub Team" }],
   creator: "ChatHub Team",
+  metadataBase: new URL(appUrl),
+  alternates: {
+    canonical: appUrl,
+    languages: {
+      es: appUrl,
+    },
+  },
   openGraph: {
     type: "website",
     locale: "es_ES",
-    url: "https://chathub.com",
+    url: appUrl,
     siteName: "ChatHub",
     title: "ChatHub - Conecta y Comparte en Tiempo Real",
     description: "Únete a salas de chat temáticas, comparte momentos y conoce gente nueva en ChatHub, tu comunidad cálida y moderna.",
