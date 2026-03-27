@@ -11,7 +11,6 @@ import { Separator } from "@/src/components/ui/separator";
 import { authClient } from "@/src/app/lib/auth-client";
 import Image from 'next/image';
 import { ArrowLeft } from "lucide-react";
-import { da } from 'zod/v4/locales';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -59,7 +58,8 @@ export default function LoginPage() {
     };
 
     return (
-        <main className="min-h-screen from-background to-background via-[#152438] bg-gradient-to-br flex flex-col items-center justify-center p-4">
+        <main className="min-h-screen bg-gradient-to-br from-background dark:via-[#152438] via-slate-100 to-background flex flex-col items-center justify-center p-4 relative">
+
             <div className="absolute top-8 left-8 z-10">
                 <Button
                     variant="ghost"
@@ -71,23 +71,24 @@ export default function LoginPage() {
                     <span>Volver atrás</span>
                 </Button>
             </div>
-            <div className="flex items-center gap-2">
+
+            <div className="flex items-center gap-2 mb-6">
                 <Link href="/" className="flex items-center gap-2">
-                    <Image src="/images/logo_chat.png" width={120} height={120} alt="Logo" />
+                    <Image src="/images/logo_chat.png" width={120} height={120} alt="Logo" priority />
                 </Link>
             </div>
-            <Card className="w-full max-w-md mx-auto shadow-lg h-[550px] bg-[#0f1722]">
+
+            <Card className="w-full max-w-md mx-auto shadow-xl border dark:border-white/5 border-border/50 dark:bg-[#0f1722] bg-card">
                 <CardHeader className="space-y-1 text-center">
                     <CardTitle className="text-2xl font-bold">Iniciar Sesión</CardTitle>
                     <CardDescription>Elige tu método preferido para acceder</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {/* Botones de redes sociales */}
                     <div className="space-y-3">
                         <Button
                             onClick={handleGoogleLogin}
                             variant="outline"
-                            className="w-full h-11 border-2 cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors bg-transparent"
+                            className="w-full h-11 border cursor-pointer dark:hover:bg-white/5 hover:bg-slate-100 transition-colors bg-transparent"
                         >
                             <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
                                 <path
@@ -112,7 +113,7 @@ export default function LoginPage() {
                         <Button
                             onClick={handleFacebookLogin}
                             variant="outline"
-                            className="w-full h-11 border-2 cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors bg-transparent"
+                            className="w-full h-11 border cursor-pointer dark:hover:bg-white/5 hover:bg-slate-100 transition-colors bg-transparent"
                         >
                             <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
                                 <path
@@ -129,11 +130,10 @@ export default function LoginPage() {
                             <Separator />
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-card px-2 text-muted-foreground">O continúa con</span>
+                            <span className="dark:bg-[#0f1722] bg-card px-2 text-muted-foreground">O continúa con</span>
                         </div>
                     </div>
 
-                    {/* Formulario de email */}
                     <form onSubmit={handleEmailLogin} className="space-y-4">
                         <div className="space-y-2">
                             <Label htmlFor="email">Correo electrónico</Label>
@@ -143,15 +143,16 @@ export default function LoginPage() {
                             <Label htmlFor="password">Contraseña</Label>
                             <Input id="password" type="password" placeholder="********" required value={password} onChange={(e) => setPassword(e.target.value)} />
                         </div>
-                        {error && <p className="text-sm text-destructive">{error}</p>}
+                        {error && <p className="text-sm font-medium text-destructive bg-destructive/10 p-2 rounded-md">{error}</p>}
+
                         <Button type="submit" className="w-full" disabled={loading}>
                             {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
                         </Button>
                     </form>
 
-                    <div className="text-center text-sm text-muted-foreground">
+                    <div className="text-center text-sm text-muted-foreground mt-4">
                         ¿No tienes cuenta?{" "}
-                        <Link href="/signup" className="underline">
+                        <Link href="/signup" className="underline font-medium hover:text-primary transition-colors">
                             Regístrate aquí
                         </Link>
                     </div>
