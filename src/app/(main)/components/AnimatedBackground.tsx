@@ -19,10 +19,10 @@ export default function AnimatedBackground() {
 
     return (
         <div className="fixed inset-0 -z-50 overflow-hidden pointer-events-none">
-            <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-emerald-950/30" />
+            <div className="absolute inset-0 bg-gradient-to-br from-background via-background dark:to-emerald-950/30 to-emerald-100/50" />
 
             <motion.div
-                className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-[120px]"
+                className="absolute top-0 left-1/4 w-[600px] h-[600px] dark:bg-emerald-500/5 bg-emerald-300/20 rounded-full blur-[120px]"
                 animate={{
                     x: [0, 100, 0],
                     y: [0, 50, 0],
@@ -35,7 +35,7 @@ export default function AnimatedBackground() {
             />
 
             <motion.div
-                className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-[#D6F045]/5 rounded-full blur-[100px]"
+                className="absolute bottom-0 right-1/4 w-[500px] h-[500px] dark:bg-[#D6F045]/5 bg-lime-200/30 rounded-full blur-[100px]"
                 animate={{
                     x: [0, -80, 0],
                     y: [0, -60, 0],
@@ -48,7 +48,7 @@ export default function AnimatedBackground() {
             />
 
             <motion.div
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-tr from-emerald-500/5 to-[#D6F045]/5 rounded-full blur-[150px]"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] dark:from-emerald-500/5 dark:to-[#D6F045]/5 bg-gradient-to-tr from-emerald-200/30 to-teal-100/40 rounded-full blur-[150px]"
                 animate={{
                     scale: [1, 1.2, 1],
                     rotate: [0, 180, 360],
@@ -63,7 +63,7 @@ export default function AnimatedBackground() {
             {particles.map((particle, i) => (
                 <motion.div
                     key={i}
-                    className="absolute rounded-full bg-emerald-400/30"
+                    className="absolute rounded-full dark:bg-emerald-400/30 bg-emerald-500/70 shadow-[0_0_8px_rgba(16,185,129,0.2)] dark:shadow-none"
                     style={{
                         left: `${particle.x}%`,
                         top: `${particle.y}%`,
