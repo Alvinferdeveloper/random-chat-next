@@ -1,7 +1,6 @@
 "use client";
-import { authClient } from "../lib/auth-client";
+import { useSession } from "@/src/app/components/providers/SessionProvider";
 
 export function useAuth() {
-    const { data: session, isPending } = authClient.useSession();
-    return { session, isPending };
+    return useSession();
 }

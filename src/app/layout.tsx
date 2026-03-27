@@ -3,6 +3,7 @@ import { Montserrat } from "next/font/google";
 import { ThemeProvider } from "@/src/app/components/providers/ThemeProvider";
 import "./globals.css";
 import { SocketEventProvider } from "@/src/app/components/providers/SocketEventProvider";
+import { SessionProvider } from "@/src/app/components/providers/SessionProvider";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -83,13 +84,15 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={montserrat.className}>
-        <SocketEventProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-            <div className="flex flex-col min-h-screen">
-              <div className="flex-1">{children}</div>
-            </div>
-          </ThemeProvider>
-        </SocketEventProvider>
+        <SessionProvider>
+          <SocketEventProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+              <div className="flex flex-col min-h-screen">
+                <div className="flex-1">{children}</div>
+              </div>
+            </ThemeProvider>
+          </SocketEventProvider>
+        </SessionProvider>
       </body>
     </html>
   );
