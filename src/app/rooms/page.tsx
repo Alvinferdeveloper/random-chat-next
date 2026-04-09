@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react';
 import useRoom from '@/src/app/rooms/hooks/useRoom';
 import { AdditionalInfoModal } from '@/src/app/components/auth/AdditionalInfoModal';
 import { useAuth } from '@/src/app/hooks/useAuth';
-import { Loader2 } from 'lucide-react';
 import { useInfiniteScroll } from '@/src/app/rooms/hooks/useInfiniteScroll';
 import { Variants } from 'framer-motion';
 import { RoomCard } from '@/src/app/rooms/components/RoomCard';
+import { RoomSkeleton } from '@/src/app/rooms/components/RoomSkeleton';
 
 import { useRoomUserCounts } from '@/src/app/rooms/hooks/useRoomUserCounts';
 
@@ -61,13 +61,7 @@ export default function Rooms() {
         router.push(`/chat/${roomId}?roomName=${roomName}`);
     };
 
-    if (isPending) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <p>Cargando sesión...</p>
-            </div>
-        );
-    }
+    const showInitialSkeleton = isPending || (loading && rooms.length === 0);
 
     return (
         <div className="bg-main-gradient">
@@ -92,20 +86,30 @@ export default function Rooms() {
                 />
             </div>
             <main className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 p-6">
-                {rooms.map((room, index) => (
-                    <RoomCard
-                        key={room.id}
-                        room={room}
-                        index={index}
-                        userCount={userCounts[room.id] || 0}
-                        isConnecting={connecting === room.id}
-                        onJoin={handleJoinRoom}
-                        cardVariants={cardVariants}
-                    />
-                ))}
+                {showInitialSkeleton ? (
+                    [...Array(6)].map((_, i) => (
+                        <RoomSkeleton key={i} />
+                    ))
+                ) : (
+                    <>
+                        {rooms.map((room, index) => (
+                            <RoomCard
+                                key={room.id}
+                                room={room}
+                                index={index}
+                                userCount={userCounts[room.id] || 0}
+                                isConnecting={connecting === room.id}
+                                onJoin={handleJoinRoom}
+                                cardVariants={cardVariants}
+                            />
+                        ))}
+                        {loading && [...Array(3)].map((_, i) => (
+                            <RoomSkeleton key={`loading-${i}`} />
+                        ))}
+                    </>
+                )}
             </main>
             <div ref={sentinelRef} className="flex justify-center items-center h-20">
-                {loading && <Loader2 className="h-8 w-8 animate-spin text-primary" />}
                 {!loading && !hasMore && rooms.length > 0 && <p className="text-muted-foreground">No hay más salas para mostrar.</p>}
                 {error && <p className="text-destructive">{error}</p>}
             </div>
