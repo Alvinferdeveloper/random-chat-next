@@ -34,7 +34,7 @@ export default function Rooms() {
     const [searchQuery, setSearchQuery] = useState("");
     const debouncedSearch = useDebounce(searchQuery, 500);
 
-    const { rooms, error, loading, hasMore, loadMoreRooms } = useRoom(debouncedSearch);
+    const { rooms, error, loading, hasMore, loadMoreRooms, retry } = useRoom(debouncedSearch);
 
     const { sentinelRef } = useInfiniteScroll({ loading, hasMore, onLoadMore: loadMoreRooms });
     const { userCounts } = useRoomUserCounts();
@@ -63,8 +63,26 @@ export default function Rooms() {
 
     const showInitialSkeleton = isPending || (loading && rooms.length === 0);
 
+    const ErrorView = () => (
+        <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+            <div className="bg-destructive/10 p-4 rounded-full mb-4">
+                <svg className="h-12 w-12 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <h2 className="text-xl font-bold mb-2">Error al cargar las salas</h2>
+            <p className="text-muted-foreground mb-6 max-w-md">{error}</p>
+            <button
+                onClick={retry}
+                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-semibold"
+            >
+                Intentar de nuevo
+            </button>
+        </div>
+    );
+
     return (
-        <div className="bg-main-gradient">
+        <div className="bg-main-gradient min-h-screen">
             <AdditionalInfoModal
                 isOpen={isModalOpen}
                 onProfileComplete={handleProfileComplete}
@@ -85,34 +103,55 @@ export default function Rooms() {
                     placeholder="Buscar sala por nombre..."
                 />
             </div>
-            <main className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 p-6">
-                {showInitialSkeleton ? (
-                    [...Array(6)].map((_, i) => (
-                        <RoomSkeleton key={i} />
-                    ))
-                ) : (
-                    <>
-                        {rooms.map((room, index) => (
-                            <RoomCard
-                                key={room.id}
-                                room={room}
-                                index={index}
-                                userCount={userCounts[room.id] || 0}
-                                isConnecting={connecting === room.id}
-                                onJoin={handleJoinRoom}
-                                cardVariants={cardVariants}
-                            />
-                        ))}
-                        {loading && [...Array(3)].map((_, i) => (
-                            <RoomSkeleton key={`loading-${i}`} />
-                        ))}
-                    </>
-                )}
-            </main>
-            <div ref={sentinelRef} className="flex justify-center items-center h-20">
-                {!loading && !hasMore && rooms.length > 0 && <p className="text-muted-foreground">No hay más salas para mostrar.</p>}
-                {error && <p className="text-destructive">{error}</p>}
-            </div>
+
+            {error && rooms.length === 0 ? (
+                <ErrorView />
+            ) : (
+                <>
+                    <main className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 p-6">
+                        {showInitialSkeleton ? (
+                            [...Array(6)].map((_, i) => (
+                                <RoomSkeleton key={i} />
+                            ))
+                        ) : (
+                            <>
+                                {rooms.map((room, index) => (
+                                    <RoomCard
+                                        key={room.id}
+                                        room={room}
+                                        index={index}
+                                        userCount={userCounts[room.id] || 0}
+                                        isConnecting={connecting === room.id}
+                                        onJoin={handleJoinRoom}
+                                        cardVariants={cardVariants}
+                                    />
+                                ))}
+                                {loading && [...Array(3)].map((_, i) => (
+                                    <RoomSkeleton key={`loading-${i}`} />
+                                ))}
+                            </>
+                        )}
+                    </main>
+
+                    {error && rooms.length > 0 && (
+                        <div className="flex flex-col items-center p-6 bg-destructive/5 rounded-lg mx-6 mb-6">
+                            <p className="text-destructive font-medium mb-3">{error}</p>
+                            <button
+                                onClick={retry}
+                                className="px-4 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors"
+                            >
+                                Reintentar cargar más
+                            </button>
+                        </div>
+                    )}
+
+                    <div ref={sentinelRef} className="flex justify-center items-center h-20">
+                        {!loading && !hasMore && rooms.length > 0 && (
+                            <p className="text-muted-foreground">No hay más salas para mostrar.</p>
+                        )}
+                    </div>
+                </>
+            )}
         </div>
     )
 }

@@ -28,12 +28,11 @@ export default function useRoom(searchQuery: string = "", type: RoomFetchType = 
         setRooms([]);
         setPage(1);
         setHasMore(true);
+        setError("");
     }, [searchQuery, type]);
 
     const loadMoreRooms = useCallback(async () => {
-        if (loading || (!hasMore && page !== 1)) return;
-        // Allow fetch if page is 1 (new search) even if hasMore might be stale, 
-        // though resetting state above handles hasMore.
+        if (loading || error || (!hasMore && page !== 1)) return;
 
         setLoading(true);
         setError("");
@@ -53,8 +52,13 @@ export default function useRoom(searchQuery: string = "", type: RoomFetchType = 
                 : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/rooms`;
 
             const res = await fetch(`${baseUrl}?${queryParams.toString()}`, { credentials: 'include' });
+
+            if (res.status === 429) {
+                throw new Error("Has hecho demasiadas peticiones. Por favor, espera un momento antes de volver a intentarlo.");
+            }
+
             if (!res.ok) {
-                throw new Error("Ocurrió un error al cargar las salas...");
+                throw new Error("Ocurrió un error al cargar las salas. El servidor puede estar experimentando problemas.");
             }
             const json = await res.json();
 
@@ -63,23 +67,29 @@ export default function useRoom(searchQuery: string = "", type: RoomFetchType = 
             setHasMore(json.pagination.hasNextPage);
 
         } catch (err: any) {
-            setError(err.message);
+            // fetch() only throws an exception (rejects the promise) on network errors 
+            // or when something prevents the request from completing. 
+            // In these cases, the error is traditionally a TypeError.
+            if (err instanceof TypeError) {
+                setError("No se pudo establecer conexión con el servidor. Verifica tu conexión o inténtalo más tarde.");
+            } else {
+                setError(err.message || "Algo salió mal al cargar las salas.");
+            }
         } finally {
             setLoading(false);
         }
-    }, [page, loading, hasMore, searchQuery, type]);
+    }, [page, loading, error, hasMore, searchQuery, type]);
+
+    const retry = useCallback(() => {
+        setError("");
+        loadMoreRooms();
+    }, [loadMoreRooms]);
 
     useEffect(() => {
-        // Initial load or reload when search changes (because page resets to 1)
-        if (page === 1) {
+        if (page === 1 && !error) {
             loadMoreRooms();
         }
-    }, [page, searchQuery, type]); // Add searchQuery to dependencies if we want it to trigger.
-    // Actually, since we reset page to 1 on searchQuery change, 
-    // and we have page in dependency of this effect, it might trigger twice if we are not careful.
-    // Let's simplify: 
-    // 1. Search Query updates -> Effect 1 resets page to 1. 
-    // 2. Page updates to 1 -> Effect 2 triggers loadMoreRooms.
+    }, [page, searchQuery, type, error]);
 
-    return { rooms, error, loading, hasMore, loadMoreRooms };
+    return { rooms, error, loading, hasMore, loadMoreRooms, retry };
 }
