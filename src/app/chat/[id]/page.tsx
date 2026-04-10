@@ -29,7 +29,7 @@ import TreeIllustration from "@/src/app/chat/[id]/components/TreeIllustration";
 export default function ChatPage() {
     const params = useParams();
     const id = params.id;
-    const username = useUsername();
+    const { username } = useUsername();
     const { connecting } = useJoinRoom(id as string, username);
     const { theme, resolvedTheme } = useTheme();
     const [mounted, setMounted] = useState(false);

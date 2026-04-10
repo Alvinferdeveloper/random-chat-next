@@ -20,13 +20,16 @@ import { LogOut, User as UserIcon, Users, BadgePlus, LayoutDashboard, Heart } fr
 import { useAuth } from '@/src/app/hooks/useAuth';
 import { useSocket } from '@/src/app/components/providers/SocketEventProvider';
 import { useRouter } from 'next/navigation';
+import { useUsername } from "@/src/app/hooks/useUsername";
 
 export function UserNav() {
     const { session, isPending } = useAuth();
     const socket = useSocket();
     const navigation = useRouter()
+    const { removeStoredUsername } = useUsername();
 
     const handleLogout = async () => {
+        removeStoredUsername();
         await authClient.signOut();
         if (socket) {
             socket.disconnect();

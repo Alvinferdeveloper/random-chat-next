@@ -16,6 +16,10 @@ export function useUsername() {
     const [username, setUsername] = useState<string>("");
     const { session, isPending } = useAuth();
 
+    const removeStoredUsername = () => {
+        localStorage.removeItem("username");
+    };
+
     useEffect(() => {
         if (isPending) return;
 
@@ -33,5 +37,5 @@ export function useUsername() {
         }
     }, [session, isPending]);
 
-    return username;
+    return { username, removeStoredUsername };
 }
