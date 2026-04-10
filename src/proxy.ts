@@ -5,7 +5,7 @@ const publicRoutes = ['/', '/login', '/signup', '/verify-email', '/rooms', '/cha
 
 const SESSION_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/users/session`;
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const isPublicRoute = publicRoutes.includes(pathname) || pathname.startsWith('/chat/');
 
