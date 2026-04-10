@@ -26,18 +26,7 @@ export default function MyRoomsPage() {
     const { rooms, loading, error, deleteRoom } = useMyRooms();
     const router = useRouter();
     const [connecting, setConnecting] = useState<string | null>(null);
-    const [deletingId, setDeletingId] = useState<string | null>(null);
     const { userCounts } = useRoomUserCounts();
-
-    const handleDelete = async (e: React.MouseEvent, roomId: string) => {
-        e.stopPropagation();
-        if (confirm('¿Estás seguro de que quieres eliminar esta sala?')) {
-            setDeletingId(roomId);
-            await deleteRoom(roomId);
-            setDeletingId(null);
-        }
-    };
-
 
     const handleJoinRoom = (roomId: string) => {
         setConnecting(roomId);
@@ -106,8 +95,9 @@ export default function MyRoomsPage() {
                                 isConnecting={connecting === room.id}
                                 onJoin={handleJoinRoom}
                                 cardVariants={cardVariants}
+                                onDelete={deleteRoom}
                                 footer={
-                                    <RoomCardFooter room={room} deletingId={deletingId} handleDelete={handleDelete} />
+                                    <RoomCardFooter room={room} />
                                 }
                             />
                         ))}

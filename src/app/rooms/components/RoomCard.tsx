@@ -1,14 +1,15 @@
 'use client';
 
 import { Room } from '@/src/app/rooms/hooks/useRoom';
-import { Card, CardContent } from '@/src/components/ui/card';
-import { ConnectingAnimation } from '@/src/app/components/animations/ConnectionAnimation';
-import { Circle, Check } from 'lucide-react';
+import { Card } from '@/src/components/ui/card';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart } from 'lucide-react';
 import { useFavoriteRoom } from '@/src/app/rooms/hooks/useFavoriteRoom';
 import { useAuth } from '@/src/app/hooks/useAuth';
+
+import { RoomCardBanner } from '@/src/app/rooms/components/RoomCardBanner';
+import { RoomCardActions } from '@/src/app/rooms/components/RoomCardActions';
+import { RoomCardContent } from '@/src/app/rooms/components/RoomCardContent';
 
 interface RoomCardProps {
     room: Room;
@@ -18,6 +19,7 @@ interface RoomCardProps {
     onJoin: (roomId: string, roomName: string) => void;
     cardVariants: any;
     footer?: React.ReactNode;
+    onDelete?: (roomId: string) => Promise<any>;
 }
 
 export function RoomCard({
@@ -27,13 +29,14 @@ export function RoomCard({
     isConnecting,
     onJoin,
     cardVariants,
-    footer
+    footer,
+    onDelete
 }: RoomCardProps) {
     const { isFavorite, toggleFavorite } = useFavoriteRoom(room.id, room.isFavorite);
     const [hovered, setHovered] = useState(false);
-    const [bannerError, setBannerError] = useState(false);
-    const [iconError, setIconError] = useState(false);
     const { session } = useAuth();
+
+    const isOwner = session?.user?.id === room.ownerId;
 
     return (
         <motion.div
@@ -52,102 +55,29 @@ export function RoomCard({
                 onMouseLeave={() => setHovered(false)}
                 onClick={() => onJoin(room.id, room.name)}
             >
-                <div className="relative shrink-0">
-                    <div className="h-[170px] relative w-full bg-gray-700">
-                        {room.server_banner && !bannerError ? (
-                            <img
-                                src={room.server_banner}
-                                alt="Room banner"
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                onError={() => setBannerError(true)}
-                            />
-                        ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-[#5865f2]/60 via-[#3b3f45] to-[#2f3136] flex items-start p-3">
-                                <span className="text-white/70 text-xs font-medium select-none">{room.name}</span>
-                            </div>
-                        )}
+                <RoomCardBanner
+                    roomName={room.name}
+                    serverBanner={room.server_banner}
+                    serverIcon={room.server_icon}
+                >
+                    <RoomCardActions
+                        room={room}
+                        isOwner={isOwner}
+                        isFavorite={isFavorite}
+                        onToggleFavorite={toggleFavorite}
+                        onDelete={onDelete}
+                    />
+                </RoomCardBanner>
 
-                        {
-                            session && (
-                                <button
-                                    onClick={toggleFavorite}
-                                    className="absolute top-2 right-2 p-2 cursor-pointer rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 transition-all z-20 group/heart"
-                                    aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-                                >
-                                    <Heart
-                                        className={`w-5 h-5 transition-colors ${isFavorite ? "fill-red-500 text-red-500" : "text-white group-hover/heart:text-red-400"
-                                            }`}
-                                    />
-                                </button>
-                            )
-                        }
-                    </div>
-
-                    <div className="absolute -bottom-5 left-4 z-10">
-                        <div className="w-16 h-16 bg-[#5865f2] rounded-full flex items-center justify-center border-[4px] border-[#2f3136] overflow-hidden shadow-sm">
-                            {room.server_icon && !iconError ? (
-                                <img
-                                    src={room.server_icon}
-                                    alt="Icon"
-                                    className="w-full h-full object-cover"
-                                    onError={() => setIconError(true)}
-                                />
-                            ) : (
-                                <span className="text-white font-bold text-xl select-none">
-                                    {room.name.charAt(0).toUpperCase()}
-                                </span>
-                            )}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Main content */}
-                <CardContent className="pt-4 pb-4 px-4 flex flex-col flex-1">
-                    {/* Room Name */}
-                    <div className="flex items-center gap-2 mb-2">
-                        {
-                            room.verified && (
-                                <div className="w-4 h-4 min-w-[16px] bg-green-500 rounded-full flex items-center justify-center shrink-0">
-                                    <Check className="w-3 h-3 text-white" />
-                                </div>
-                            )
-                        }
-                        <h3 className="text-white font-bold text-lg truncate pr-2">
-                            {room.name}
-                        </h3>
-                    </div>
-
-                    {/* Description */}
-                    <div className="flex-1 mb-4">
-                        {isConnecting ? (
-                            <div className="w-full py-2 animate-pulse">
-                                <ConnectingAnimation text="Conectando..." />
-                            </div>
-                        ) : (
-                            <p className="text-[#b9bbbe] text-sm leading-relaxed line-clamp-2 text-ellipsis overflow-hidden">
-                                {room.full_description}
-                            </p>
-                        )}
-                    </div>
-
-                    {/* Member Stats */}
-                    <div className="mt-auto flex items-center gap-4 text-xs pt-2 border-t border-gray-700/50">
-                        <div className="flex items-center gap-1.5">
-                            <Circle className="w-2 h-2 fill-green-500 text-green-500 animate-pulse" />
-                            <span className="text-[#b9bbbe] font-medium">
-                                {userCount || 0} usuarios activos
-                            </span>
-                        </div>
-                    </div>
-                    {footer && (
-                        <div className="mt-4 pt-4 border-t border-gray-700/50" onClick={(e) => e.stopPropagation()}>
-                            {footer}
-                        </div>
-                    )}
-                </CardContent>
+                <RoomCardContent
+                    name={room.name}
+                    description={room.full_description}
+                    verified={room.verified}
+                    userCount={userCount}
+                    isConnecting={isConnecting}
+                    footer={footer}
+                />
             </Card>
         </motion.div>
     );
 }
-
-

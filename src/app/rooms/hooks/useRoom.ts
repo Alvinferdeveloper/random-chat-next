@@ -10,6 +10,7 @@ export type Room = {
     server_banner: string,
     server_icon: string,
     status: RoomStatus,
+    ownerId: string,
     created_at: string,
 }
 
