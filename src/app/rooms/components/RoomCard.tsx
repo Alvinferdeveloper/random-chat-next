@@ -31,6 +31,8 @@ export function RoomCard({
 }: RoomCardProps) {
     const { isFavorite, toggleFavorite } = useFavoriteRoom(room.id, room.isFavorite);
     const [hovered, setHovered] = useState(false);
+    const [bannerError, setBannerError] = useState(false);
+    const [iconError, setIconError] = useState(false);
     const { session } = useAuth();
 
     return (
@@ -52,11 +54,18 @@ export function RoomCard({
             >
                 <div className="relative shrink-0">
                     <div className="h-[170px] relative w-full bg-gray-700">
-                        {room.server_banner && <img
-                            src={room.server_banner}
-                            alt="Room banner"
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />}
+                        {room.server_banner && !bannerError ? (
+                            <img
+                                src={room.server_banner}
+                                alt="Room banner"
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                onError={() => setBannerError(true)}
+                            />
+                        ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-[#5865f2]/60 via-[#3b3f45] to-[#2f3136] flex items-start p-3">
+                                <span className="text-white/70 text-xs font-medium select-none">{room.name}</span>
+                            </div>
+                        )}
 
                         {
                             session && (
@@ -76,11 +85,18 @@ export function RoomCard({
 
                     <div className="absolute -bottom-5 left-4 z-10">
                         <div className="w-16 h-16 bg-[#5865f2] rounded-full flex items-center justify-center border-[4px] border-[#2f3136] overflow-hidden shadow-sm">
-                            {room.server_icon && <img
-                                src={room.server_icon}
-                                alt="Icon"
-                                className="w-full h-full object-cover"
-                            />}
+                            {room.server_icon && !iconError ? (
+                                <img
+                                    src={room.server_icon}
+                                    alt="Icon"
+                                    className="w-full h-full object-cover"
+                                    onError={() => setIconError(true)}
+                                />
+                            ) : (
+                                <span className="text-white font-bold text-xl select-none">
+                                    {room.name.charAt(0).toUpperCase()}
+                                </span>
+                            )}
                         </div>
                     </div>
                 </div>
