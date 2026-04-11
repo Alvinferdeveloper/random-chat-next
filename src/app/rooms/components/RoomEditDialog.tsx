@@ -25,7 +25,7 @@ interface RoomEditDialogProps {
 }
 
 export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps) {
-    const { updateRoom, loading: updating } = useUpdateRoom();
+    const { updateRoom, loading: updatingInfo } = useUpdateRoom();
     const { uploadRoomImage, uploading } = useCreateRoom();
 
     const [editForm, setEditForm] = useState({
@@ -34,33 +34,58 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
         full_description: room.full_description,
     });
 
+    // Local states for file selection and previews
+    const [selectedBanner, setSelectedBanner] = useState<File | null>(null);
+    const [selectedIcon, setSelectedIcon] = useState<File | null>(null);
+    const [bannerPreview, setBannerPreview] = useState<string | null>(null);
+    const [iconPreview, setIconPreview] = useState<string | null>(null);
+
     const bannerInputRef = useRef<HTMLInputElement>(null);
     const iconInputRef = useRef<HTMLInputElement>(null);
 
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, type: 'banner' | 'icon') => {
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, type: 'banner' | 'icon') => {
         const file = event.target.files?.[0];
         if (!file) return;
 
-        try {
-            const result = await uploadRoomImage(room.id, type, file);
-            if (result.success) window.location.reload();
-        } catch (error) {
-            console.error(`Error uploading ${type}:`, error);
+        const previewUrl = URL.createObjectURL(file);
+        if (type === 'banner') {
+            setSelectedBanner(file);
+            setBannerPreview(previewUrl);
+        } else {
+            setSelectedIcon(file);
+            setIconPreview(previewUrl);
         }
     };
 
     const handleSaveInfo = async () => {
-        const fields = Object.keys(editForm) as (keyof typeof editForm)[];
-        let changed = false;
-        for (const field of fields) {
-            if (editForm[field] !== (room as any)[field]) {
-                await updateRoom(room.id, field, editForm[field]);
-                changed = true;
+        try {
+            // 1. Upload images if selected
+            if (selectedBanner) {
+                await uploadRoomImage(room.id, 'banner', selectedBanner);
             }
+            if (selectedIcon) {
+                await uploadRoomImage(room.id, 'icon', selectedIcon);
+            }
+
+            // 2. Update text fields
+            const fields = Object.keys(editForm) as (keyof typeof editForm)[];
+            let changed = false;
+            for (const field of fields) {
+                if (editForm[field] !== (room as any)[field]) {
+                    await updateRoom(room.id, field, editForm[field]);
+                    changed = true;
+                }
+            }
+
+            window.location.reload();
+        } catch (error) {
+            console.error("Error saving room info:", error);
+        } finally {
+            onOpenChange(false);
         }
-        if (changed) window.location.reload();
-        onOpenChange(false);
     };
+
+    const isSaving = !!uploading || updatingInfo;
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -81,7 +106,7 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
                         <ImageUploadField
                             label="Icono"
                             type="icon"
-                            currentImage={room.server_icon}
+                            currentImage={iconPreview || room.server_icon}
                             isUploading={uploading === 'icon'}
                             inputRef={iconInputRef}
                             onFileChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFileChange(e, 'icon')}
@@ -89,7 +114,7 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
                         <ImageUploadField
                             label="Banner"
                             type="banner"
-                            currentImage={room.server_banner}
+                            currentImage={bannerPreview || room.server_banner}
                             isUploading={uploading === 'banner'}
                             inputRef={bannerInputRef}
                             onFileChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFileChange(e, 'banner')}
@@ -129,10 +154,10 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
                 <DialogFooter>
                     <Button
                         onClick={handleSaveInfo}
-                        disabled={updating}
+                        disabled={isSaving}
                         className="bg-blue-600 hover:bg-blue-700 text-white w-full"
                     >
-                        {updating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                         Guardar Información
                     </Button>
                 </DialogFooter>

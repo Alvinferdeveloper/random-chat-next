@@ -6,7 +6,7 @@ import { Button } from '@/src/components/ui/button';
 import { Loader2, Upload, Image as ImageIcon, CheckCircle2, Eye, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card';
 import { cn } from '@/src/lib/utils';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface RoomData {
     id: string;
@@ -20,25 +20,46 @@ interface CustomizeRoomProps {
 
 export function CustomizeRoom({ room }: CustomizeRoomProps) {
     const { uploadRoomImage, uploading, uploadError } = useCreateRoom();
-    const [bannerUrl, setBannerUrl] = useState<string | null>(null);
-    const [iconUrl, setIconUrl] = useState<string | null>(null);
+    const router = useRouter();
+
+    // Local state for files and previews
+    const [bannerFile, setBannerFile] = useState<File | null>(null);
+    const [iconFile, setIconFile] = useState<File | null>(null);
+    const [bannerPreview, setBannerPreview] = useState<string | null>(null);
+    const [iconPreview, setIconPreview] = useState<string | null>(null);
 
     const bannerInputRef = useRef<HTMLInputElement>(null);
     const iconInputRef = useRef<HTMLInputElement>(null);
 
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, type: 'banner' | 'icon') => {
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, type: 'banner' | 'icon') => {
         const file = event.target.files?.[0];
         if (!file) return;
 
-        const result = await uploadRoomImage(room.id, type, file);
-        if (result.success && result.publicUrl) {
-            if (type === 'banner') {
-                setBannerUrl(result.publicUrl);
-            } else {
-                setIconUrl(result.publicUrl);
-            }
+        const previewUrl = URL.createObjectURL(file);
+        if (type === 'banner') {
+            setBannerFile(file);
+            setBannerPreview(previewUrl);
+        } else {
+            setIconFile(file);
+            setIconPreview(previewUrl);
         }
     };
+
+    const handleFinalize = async () => {
+        try {
+            if (bannerFile) {
+                await uploadRoomImage(room.id, 'banner', bannerFile);
+            }
+            if (iconFile) {
+                await uploadRoomImage(room.id, 'icon', iconFile);
+            }
+            router.push(`/chat/${room.id}`);
+        } catch (error) {
+            console.error("Error finalizing room customization:", error);
+        }
+    };
+
+    const isUploading = !!uploading;
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -56,7 +77,7 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
                         <div className="space-y-3">
                             <div className="flex justify-between items-center">
                                 <h3 className="text-sm font-medium">Portada (Banner)</h3>
-                                {bannerUrl && <span className="text-xs text-green-500 font-medium flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Listo</span>}
+                                {bannerPreview && <span className="text-xs text-green-500 font-medium flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Seleccionado</span>}
                             </div>
 
                             <input type="file" ref={bannerInputRef} onChange={(e) => handleFileChange(e, 'banner')} className="hidden" accept="image/*" />
@@ -66,7 +87,7 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
                                 className={cn(
                                     "relative group border-2 border-dashed border-border rounded-xl h-32 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 overflow-hidden",
                                     "hover:border-primary hover:bg-primary/5",
-                                    bannerUrl ? "border-green-500/50 bg-green-500/5" : ""
+                                    bannerPreview ? "border-green-500/50 bg-green-500/5" : ""
                                 )}
                             >
                                 {uploading === 'banner' ? (
@@ -74,9 +95,9 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
                                         <Loader2 className="h-6 w-6 animate-spin text-primary mb-2" />
                                         <p className="text-xs text-muted-foreground">Subiendo...</p>
                                     </div>
-                                ) : bannerUrl ? (
+                                ) : bannerPreview ? (
                                     <>
-                                        <img src={bannerUrl} alt="Banner Preview" className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-30 transition-opacity" />
+                                        <img src={bannerPreview} alt="Banner Preview" className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-30 transition-opacity" />
                                         <div className="z-10 bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full border border-border flex items-center gap-2">
                                             <Upload className="h-3 w-3" />
                                             <span className="text-xs font-medium">Cambiar imagen</span>
@@ -96,7 +117,7 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
                         <div className="space-y-3">
                             <div className="flex justify-between items-center">
                                 <h3 className="text-sm font-medium">Icono / Avatar</h3>
-                                {iconUrl && <span className="text-xs text-green-500 font-medium flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Listo</span>}
+                                {iconPreview && <span className="text-xs text-green-500 font-medium flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Seleccionado</span>}
                             </div>
 
                             <input type="file" ref={iconInputRef} onChange={(e) => handleFileChange(e, 'icon')} className="hidden" accept="image/*" />
@@ -107,14 +128,14 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
                                     className={cn(
                                         "relative group h-24 w-24 rounded-full border-2 border-dashed border-border flex items-center justify-center cursor-pointer transition-all overflow-hidden shrink-0",
                                         "hover:border-primary hover:bg-primary/5",
-                                        iconUrl ? "border-green-500/50" : ""
+                                        iconPreview ? "border-green-500/50" : ""
                                     )}
                                 >
                                     {uploading === 'icon' ? (
                                         <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                                    ) : iconUrl ? (
+                                    ) : iconPreview ? (
                                         <>
-                                            <img src={iconUrl} alt="Icon" className="absolute inset-0 w-full h-full object-cover" />
+                                            <img src={iconPreview} alt="Icon" className="absolute inset-0 w-full h-full object-cover" />
                                             <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <Upload className="h-5 w-5 text-white" />
                                             </div>
@@ -139,12 +160,16 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
                 </Card>
 
                 <div className="flex flex-col gap-3">
-                    <Link href={`/chat/${room.id}`} passHref className="w-full">
-                        <Button className="w-full cursor-pointer h-12 text-base shadow-lg shadow-primary/20" size="lg">
-                            Finalizar y entrar a la Sala
-                            <ArrowRight className="ml-2 h-4 w-4" />
-                        </Button>
-                    </Link>
+                    <Button
+                        onClick={handleFinalize}
+                        disabled={isUploading}
+                        className="w-full cursor-pointer h-12 text-base shadow-lg shadow-primary/20"
+                        size="lg"
+                    >
+                        {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                        Finalizar y entrar a la Sala
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
                     <p className="text-xs text-center text-muted-foreground">
                         Puedes cambiar esto más tarde en la configuración.
                     </p>
@@ -162,8 +187,8 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
                 <div className="relative group rounded-xl overflow-hidden border border-border bg-card shadow-2xl transition-all duration-300 hover:shadow-primary/10 hover:-translate-y-1">
                     {/* Mock Banner */}
                     <div className="h-40 w-full bg-secondary/50 relative overflow-hidden">
-                        {bannerUrl ? (
-                            <img src={bannerUrl} alt="Banner" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        {bannerPreview ? (
+                            <img src={bannerPreview} alt="Banner" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-secondary to-secondary/50">
                                 <span className="text-muted-foreground/50 text-sm">Sin Banner</span>
@@ -177,8 +202,8 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
                         {/* Mock Icon - Floating above the banner */}
                         <div className="absolute -top-10 left-5">
                             <div className="h-20 w-20 rounded-2xl border-4 border-card bg-secondary shadow-lg overflow-hidden flex items-center justify-center">
-                                {iconUrl ? (
-                                    <img src={iconUrl} alt="Icon" className="w-full h-full object-cover" />
+                                {iconPreview ? (
+                                    <img src={iconPreview} alt="Icon" className="w-full h-full object-cover" />
                                 ) : (
                                     <span className="text-2xl font-bold text-muted-foreground/50 uppercase">
                                         {room.name.charAt(0)}
