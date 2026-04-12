@@ -22,8 +22,7 @@ En un mundo digital saturado, encontrar comunidades con intereses específicos p
 
 | Modo Oscuro (Chat) | Modo Claro (Chat) |
 | :---: | :---: |
-| ![Dark Mode Placeholder](/public/images/doc/dark_room.png) | 
-! [Light Mode Placeholder](/public/images/doc/light_room.png) |
+| ![Dark Mode Placeholder](/public/images/doc/dark_room.png) | ! [Light Mode Placeholder](/public/images/doc/light_room.png) |
 | *Inmersión total para largas sesiones nocturnas.* | *Claridad y limpieza para el uso diario.* |
 
 ---
