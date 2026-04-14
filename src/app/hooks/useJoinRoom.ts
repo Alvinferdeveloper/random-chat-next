@@ -32,9 +32,11 @@ export function useJoinRoom(roomId: string, username: string) {
             trackActivity();
 
             setConnecting(false);
+            sessionStorage.setItem('last_chat_room', roomId);
 
             return () => {
                 socket.emit("leave-room", roomId);
+                sessionStorage.removeItem('last_chat_room');
             };
         }
     }, [roomId, socket, username, session]);

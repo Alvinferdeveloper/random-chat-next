@@ -23,6 +23,14 @@ export const SocketEventProvider = ({ children }: { children: React.ReactNode })
 
         const onConnect = () => {
             console.log('Socket conectado exitosamente');
+            
+            // Re-join logic after reconnecting
+            const lastRoom = sessionStorage.getItem('last_chat_room');
+            const storedUsername = localStorage.getItem('username');
+            if (lastRoom && storedUsername) {
+                console.log(`Re-uniéndose a sala ${lastRoom} tras reconexión...`);
+                socket.emit('join-room', lastRoom, storedUsername);
+            }
         };
 
         const onDisconnect = (reason: string) => {
