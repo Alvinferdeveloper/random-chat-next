@@ -90,7 +90,8 @@ export function useImageHandling() {
                 socket.emit("image", {
                     imageUrl: publicUrl,
                     description,
-                    replyTo
+                    replyTo,
+                    tempId // Added to track optimistic message
                 });
 
             } catch (error) {

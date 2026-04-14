@@ -100,8 +100,8 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
             ref={messageRef}
             className={cn(
                 "max-w-xs rounded-2xl text-sm md:max-w-md relative mb-4",
-                isMyMessage ? "bg-blue-700 text-white rounded-br-none" : "bg-muted rounded-bl-none",
-                isImageMessage(msg) ? "p-1" : "p-3 shadow-sm"
+                isMyMessage ? "bg-blue-700 text-white rounded-tr-none" : "bg-muted rounded-tl-none",
+                isImageMessage(msg) ? "p-0.5" : "p-3 shadow-sm"
             )}
             {...(!hasHover && longPressHandlers)}
             {...(!hasHover && { onContextMenu: (e) => handleLongPress(e) })}

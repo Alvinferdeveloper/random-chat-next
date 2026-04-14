@@ -47,13 +47,17 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
     useEffect(() => {
         if (!socket) return;
 
-        const handleMessage = (msg: Message) => {
+        const handleMessage = (msg: Message & { tempId?: string }) => {
             setMessages(prev => produce(prev, draft => {
                 if (msg.username === username) {
-                    const uploadingIndex = draft.findIndex(m =>
-                        (m as Message & { isUploading?: boolean }).isUploading
-                    );
-                    if (uploadingIndex !== -1) draft.splice(uploadingIndex, 1);
+                    // Try to find the optimistic message by tempId first, then by isUploading flag
+                    const targetIndex = msg.tempId 
+                        ? draft.findIndex(m => m.id === msg.tempId)
+                        : draft.findIndex(m => (m as Message & { isUploading?: boolean }).isUploading);
+                    
+                    if (targetIndex !== -1) {
+                        draft.splice(targetIndex, 1);
+                    }
                 }
                 draft.push(msg);
             }));
