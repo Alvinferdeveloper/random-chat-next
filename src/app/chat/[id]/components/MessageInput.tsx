@@ -2,10 +2,15 @@
 import React, { useState, useRef } from "react";
 import { Input } from "@/src/components/ui/input";
 import { Button } from "@/src/components/ui/button";
-import { Send, Smile, Paperclip, X, Reply as ReplyIcon } from "lucide-react";
+import { Send, Smile, Paperclip, X, Reply as ReplyIcon, Mic } from "lucide-react";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
-import { Message } from "@/src/types/chat";
+import { Message, isTextMessage, isImageMessage, isAudioMessage } from "@/src/types/chat";
 import { MentionList } from "@/src/app/chat/[id]/components/MentionList";
+import { useAudioRecording } from "@/src/app/chat/[id]/hooks/useAudioRecording";
+import { useSocketHandler } from "@/src/app/hooks/useSocketHandler";
+import { useUsername } from "@/src/app/hooks/useUsername";
+import VoiceNotePreview from "@/src/app/chat/[id]/components/VoiceNotePreview";
+import { formatTime } from "@/src/app/chat/[id]/utils/time";
 
 interface User {
     id: string;
@@ -46,6 +51,18 @@ export function MessageInput({
     const inputRef = useRef<HTMLInputElement>(null);
     const [isTyping, setIsTyping] = useState(false);
     const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const { addOptimisticMessage } = useSocketHandler();
+    const { username } = useUsername();
+    const {
+        isRecording,
+        recordingTime,
+        startRecording,
+        stopRecording,
+        cancelRecording,
+        sendAudioNote,
+        audioBlob
+    } = useAudioRecording();
 
     const onEmojiClick = (emojiData: EmojiClickData) => {
         setNewMessage(prev => prev + emojiData.emoji);
@@ -101,13 +118,28 @@ export function MessageInput({
         if (value.trim().length > 0) {
             handleTypingInput();
         } else if (isTyping) {
-            // If field is cleared, stop typing immediately
             setIsTyping(false);
             onStopTyping?.();
             if (typingTimeoutRef.current) {
                 clearTimeout(typingTimeoutRef.current);
             }
         }
+    };
+
+    const handleSendAudio = async () => {
+        let replyContext = undefined;
+        if (replyingToMessage) {
+            const messageSnippet = isTextMessage(replyingToMessage)
+                ? replyingToMessage.message.substring(0, 50)
+                : '[Imagen]';
+
+            replyContext = {
+                id: replyingToMessage.id,
+                author: replyingToMessage.username,
+                messageSnippet: messageSnippet.length === 50 ? `${messageSnippet}...` : messageSnippet,
+            };
+        }
+        await sendAudioNote(replyContext, addOptimisticMessage, username);
     };
 
     return (
@@ -119,7 +151,7 @@ export function MessageInput({
                         <ReplyIcon className="h-4 w-4 text-primary" />
                         <span>Respondiendo a <span className="font-semibold">{replyingToMessage.username}</span>:</span>
                         <span className="truncate italic max-w-[200px]">
-                            {"message" in replyingToMessage ? replyingToMessage.message : (replyingToMessage.description || '[Imagen]')}
+                            {isTextMessage(replyingToMessage) ? replyingToMessage.message : (isImageMessage(replyingToMessage) ? replyingToMessage.description : (isAudioMessage(replyingToMessage) ? 'Nota de voz' : ''))}
                         </span>
                     </div>
                     <Button variant="ghost" size="icon" onClick={handleCancelReply} className="h-6 w-6">
@@ -140,51 +172,111 @@ export function MessageInput({
                         <EmojiPicker onEmojiClick={onEmojiClick} />
                     </div>
                 )}
-                <form onSubmit={onSubmit} className="flex items-center gap-2">
-                    <Button
-                        type="button"
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="flex-shrink-0"
-                    >
-                        <Paperclip className="h-5 w-5 text-muted-foreground" />
-                    </Button>
-                    <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={onFileChange}
-                        className="hidden"
-                        accept="image/*"
+
+                {/* Voice Note Preview Overlay */}
+                {audioBlob && !isRecording && (
+                    <VoiceNotePreview
+                        recordingTime={recordingTime}
+                        cancelRecording={cancelRecording}
+                        handleSendAudio={handleSendAudio}
                     />
-                    <div className="relative flex-grow">
-                        <Input
-                            ref={inputRef}
-                            value={newMessage}
-                            onChange={onInputChange}
-                            placeholder="Escribe un mensaje..."
-                            className="pr-12 bg-background/90"
-                        />
-                        <Button
-                            type="button"
-                            size="icon"
-                            variant="ghost"
-                            onClick={() => setShowPicker(!showPicker)}
-                            className="absolute inset-y-0 right-0 flex items-center justify-center"
-                        >
-                            <Smile className="h-5 w-5 text-muted-foreground" />
-                        </Button>
+                )}
+
+                <div className="flex items-center gap-2">
+                    {isRecording ? (
+                        <div className="flex-1 flex items-center justify-between px-4 h-10 bg-red-500/10 rounded-xl animate-pulse">
+                            <div className="flex items-center gap-2 text-red-500">
+                                <div className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                                <span className="text-sm font-bold uppercase tracking-tighter">GRABANDO {formatTime(recordingTime)}</span>
+                            </div>
+                            <button
+                                onClick={cancelRecording}
+                                className="text-xs font-bold text-gray-500 hover:text-gray-700 uppercase tracking-wider"
+                            >
+                                Cancelar
+                            </button>
+                        </div>
+                    ) : (
+                        <>
+                            <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => fileInputRef.current?.click()}
+                                className="flex-shrink-0"
+                            >
+                                <Paperclip className="h-5 w-5 text-muted-foreground" />
+                            </Button>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={onFileChange}
+                                className="hidden"
+                                accept="image/*"
+                            />
+                            <div className="relative flex-grow">
+                                <Input
+                                    ref={inputRef}
+                                    value={newMessage}
+                                    onChange={onInputChange}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter" && !e.shiftKey && !isMentionListVisible) {
+                                            e.preventDefault();
+                                            if (newMessage.trim()) {
+                                                onSubmit(e as any);
+                                            }
+                                        }
+                                    }}
+                                    placeholder="Escribe un mensaje..."
+                                    className="pr-12 bg-background/90"
+                                />
+                                <Button
+                                    type="button"
+                                    size="icon"
+                                    variant="ghost"
+                                    onClick={() => setShowPicker(!showPicker)}
+                                    className="absolute inset-y-0 right-0 flex items-center justify-center"
+                                >
+                                    <Smile className="h-5 w-5 text-muted-foreground" />
+                                </Button>
+                            </div>
+                        </>
+                    )}
+
+                    <div className="flex items-center gap-1">
+                        {isRecording ? (
+                            <Button
+                                onClick={() => stopRecording()}
+                                className="h-10 w-10 cursor-pointer bg-red-500 hover:bg-red-600 text-white rounded-full shrink-0 shadow-lg shadow-red-500/20 transition-all"
+                                size="icon"
+                            >
+                                <Mic className="h-5 w-5" />
+                            </Button>
+                        ) : newMessage.trim() === "" ? (
+                            <Button
+                                type="button"
+                                onClick={startRecording}
+                                variant="ghost"
+                                size="icon"
+                                className="h-10 w-10 cursor-pointer text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full shrink-0 transition-colors"
+                            >
+                                <Mic className="h-5 w-5" />
+                            </Button>
+                        ) : (
+                            <form onSubmit={onSubmit}>
+                                <Button
+                                    type="submit"
+                                    size="icon"
+                                    disabled={!newMessage.trim()}
+                                    className={`flex-shrink-0 transition-all duration-300 h-10 w-10 rounded-full cursor-pointer ${newMessage.trim() ? "bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20" : "bg-muted text-muted-foreground"
+                                        }`}
+                                >
+                                    <Send className="w-4 h-4" />
+                                </Button>
+                            </form>
+                        )}
                     </div>
-                    <Button
-                        type="submit"
-                        size="icon"
-                        disabled={!newMessage.trim()}
-                        className={`flex-shrink-0 transition-all duration-300 ${newMessage.trim() ? "bg-primary hover:bg-primary/90" : "bg-muted text-muted-foreground"
-                            }`}
-                    >
-                        <Send className="w-4 h-4" />
-                    </Button>
-                </form>
+                </div>
             </div>
         </div>
     );

@@ -66,7 +66,7 @@ const FeaturesSection = forwardRef<HTMLDivElement>((props, ref) => {
 
                                     {/* Contenedor de la imagen (Z-10 para estar sobre el brillo) */}
                                     <div className="relative z-10 aspect-square md:aspect-[4/3] w-full rounded-[3rem] overflow-hidden shadow-2xl border border-white/60 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
-                                        <ParallaxImage speed={0.3} className="w-full h-full">
+                                        <ParallaxImage speed={0.3} className="relative w-full h-full">
                                             <Image
                                                 src={feature.illustration}
                                                 alt={feature.title}

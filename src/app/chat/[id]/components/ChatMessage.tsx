@@ -1,5 +1,5 @@
 "use client"
-import { Message, isTextMessage, isImageMessage, Reaction } from "@/src/types/chat";
+import { Message, isTextMessage, isImageMessage, isAudioMessage, Reaction } from "@/src/types/chat";
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
 import { Reply, ChevronRight, SmilePlus, Loader2 } from "lucide-react";
@@ -8,6 +8,7 @@ import { useLongPress } from "@/src/app/chat/[id]/hooks/useLongPress";
 import { useHover } from "@/src/app/hooks/useHover";
 import { ReactionPicker } from "@/src/app/chat/[id]/components/ReactionPicker";
 import { cn } from "@/src/lib/utils";
+import { AudioPlayer } from "@/src/app/chat/[id]/components/AudioPlayer";
 
 interface User {
     id: string;
@@ -56,6 +57,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
     const longPressHandlers = useLongPress(handleLongPress, handleClick, { delay: 300 });
 
     const imageUrl = isImageMessage(msg) ? msg.imageUrl : null;
+    const audioUrl = isAudioMessage(msg) ? msg.audioUrl : null;
 
     const getInitials = (name: string) => {
         return name.charAt(0).toUpperCase();
@@ -131,6 +133,11 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                     {msg.description && <p className="p-2 text-sm">{msg.description}</p>}
                 </div>
             )}
+
+            {isAudioMessage(msg) && audioUrl && (
+                <AudioPlayer url={audioUrl} isUploading={msg.isUploading} duration={msg.duration} />
+            )}
+
             {msg.reactions && msg.reactions.length > 0 && (
                 <div className={cn(
                     "absolute -bottom-3 flex gap-1 items-center z-10",
@@ -231,3 +238,4 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
         </>
     );
 }
+

@@ -137,6 +137,7 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
 
         socket.on('message', handleMessage);
         socket.on('image', handleMessage);
+        socket.on('audio', handleMessage);
         socket.on('message-history', handleMessageHistory);
         socket.on('user-joined', handleUserJoined);
         socket.on('room_users', handleRoomUsers);
@@ -148,6 +149,7 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
         return () => {
             socket.off('message', handleMessage);
             socket.off('image', handleMessage);
+            socket.off('audio', handleMessage);
             socket.off('message-history', handleMessageHistory);
             socket.off('user-joined', handleUserJoined);
             socket.off('room_users', handleRoomUsers);

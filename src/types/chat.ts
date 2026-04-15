@@ -29,7 +29,13 @@ export interface ImageMessage extends BaseMessage {
     isUploading?: boolean;
 }
 
-export type Message = TextMessage | ImageMessage;
+export interface AudioMessage extends BaseMessage {
+    audioUrl: string;
+    duration?: number;
+    isUploading?: boolean;
+}
+
+export type Message = TextMessage | ImageMessage | AudioMessage;
 
 // Type guard to check if a message is a TextMessage
 export function isTextMessage(message: Message): message is TextMessage {
@@ -39,4 +45,9 @@ export function isTextMessage(message: Message): message is TextMessage {
 // Type guard to check if a message is an ImageMessage
 export function isImageMessage(message: Message): message is ImageMessage {
     return (message as ImageMessage).imageUrl !== undefined;
+}
+
+// Type guard to check if a message is an AudioMessage
+export function isAudioMessage(message: Message): message is AudioMessage {
+    return (message as AudioMessage).audioUrl !== undefined;
 }
