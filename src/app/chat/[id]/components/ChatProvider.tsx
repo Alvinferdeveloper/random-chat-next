@@ -138,6 +138,7 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
         socket.on('message', handleMessage);
         socket.on('image', handleMessage);
         socket.on('audio', handleMessage);
+        socket.on('gif', handleMessage);
         socket.on('message-history', handleMessageHistory);
         socket.on('user-joined', handleUserJoined);
         socket.on('room_users', handleRoomUsers);

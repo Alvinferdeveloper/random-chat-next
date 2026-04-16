@@ -2,7 +2,7 @@
 import React, { useState, useRef } from "react";
 import { Input } from "@/src/components/ui/input";
 import { Button } from "@/src/components/ui/button";
-import { Send, Smile, Paperclip, X, Reply as ReplyIcon, Mic } from "lucide-react";
+import { Send, Smile, Paperclip, X, Reply as ReplyIcon, Mic, Film } from "lucide-react";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import { Message, isTextMessage, isImageMessage, isAudioMessage } from "@/src/types/chat";
 import { MentionList } from "@/src/app/chat/[id]/components/MentionList";
@@ -11,6 +11,8 @@ import { useSocketHandler } from "@/src/app/hooks/useSocketHandler";
 import { useUsername } from "@/src/app/hooks/useUsername";
 import VoiceNotePreview from "@/src/app/chat/[id]/components/VoiceNotePreview";
 import { formatTime } from "@/src/app/chat/[id]/utils/time";
+import { GifPicker } from "./GifPicker";
+import { useSocket } from "@/src/app/components/providers/SocketEventProvider";
 
 interface User {
     id: string;
@@ -46,12 +48,15 @@ export function MessageInput({
     onStartTyping,
     onStopTyping
 }: MessageInputProps) {
-    const [showPicker, setShowPicker] = useState(false);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [showGifPicker, setShowGifPicker] = useState(false);
+    
     const fileInputRef = useRef<HTMLInputElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const [isTyping, setIsTyping] = useState(false);
     const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+    const socket = useSocket();
     const { addOptimisticMessage } = useSocketHandler();
     const { username } = useUsername();
     const {
@@ -66,9 +71,34 @@ export function MessageInput({
 
     const onEmojiClick = (emojiData: EmojiClickData) => {
         setNewMessage(prev => prev + emojiData.emoji);
-        setShowPicker(false);
+        setShowEmojiPicker(false);
         inputRef.current?.focus();
         handleTypingInput();
+    };
+
+    const handleGifSelect = (gifUrl: string) => {
+        if (!socket) return;
+
+        let replyContext = undefined;
+        if (replyingToMessage) {
+            const snippet = isTextMessage(replyingToMessage) 
+                ? replyingToMessage.message.substring(0, 50) 
+                : '[Multimedia]';
+            
+            replyContext = {
+                id: replyingToMessage.id,
+                author: replyingToMessage.username,
+                messageSnippet: snippet
+            };
+        }
+
+        socket.emit('gif', {
+            gifUrl,
+            replyTo: replyContext
+        });
+
+        setShowGifPicker(false);
+        setReplyingToMessage(null);
     };
 
     const handleTypingInput = () => {
@@ -143,7 +173,7 @@ export function MessageInput({
     };
 
     return (
-        <div className="sticky bottom-0  p-4 border-t bg-transparent z-10 
+        <div className="sticky bottom-0  p-4 border-t bg-transparent z-30 
                         transition-[padding] duration-300 ease-in-out pb-[calc(1rem+var(--bottom-inset,0px))]">
             {replyingToMessage && (
                 <div className="flex items-center justify-between p-2 mb-2 text-sm bg-muted rounded-t-lg border-b border-border">
@@ -167,9 +197,15 @@ export function MessageInput({
                         onSelect={handleSelectMention}
                     />
                 )}
-                {showPicker && (
+                {showEmojiPicker && (
                     <div className="absolute bottom-full mb-2 z-20">
                         <EmojiPicker onEmojiClick={onEmojiClick} />
+                    </div>
+                )}
+                
+                {showGifPicker && (
+                    <div className="absolute bottom-full mb-2 z-20">
+                        <GifPicker onSelect={handleGifSelect} />
                     </div>
                 )}
 
@@ -228,17 +264,34 @@ export function MessageInput({
                                         }
                                     }}
                                     placeholder="Escribe un mensaje..."
-                                    className="pr-12 bg-background/90"
+                                    className="pr-20 bg-background/90"
                                 />
-                                <Button
-                                    type="button"
-                                    size="icon"
-                                    variant="ghost"
-                                    onClick={() => setShowPicker(!showPicker)}
-                                    className="absolute inset-y-0 right-0 flex items-center justify-center"
-                                >
-                                    <Smile className="h-5 w-5 text-muted-foreground" />
-                                </Button>
+                                <div className="absolute inset-y-0 right-0 flex items-center gap-0.5 px-1">
+                                    <Button
+                                        type="button"
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={() => {
+                                            setShowGifPicker(!showGifPicker);
+                                            setShowEmojiPicker(false);
+                                        }}
+                                        className={showGifPicker ? "text-primary" : "text-muted-foreground"}
+                                    >
+                                        <Film className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={() => {
+                                            setShowEmojiPicker(!showEmojiPicker);
+                                            setShowGifPicker(false);
+                                        }}
+                                        className={showEmojiPicker ? "text-primary" : "text-muted-foreground"}
+                                    >
+                                        <Smile className="h-5 w-5" />
+                                    </Button>
+                                </div>
                             </div>
                         </>
                     )}

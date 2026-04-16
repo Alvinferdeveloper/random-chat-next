@@ -5,7 +5,7 @@ import { useState } from 'react';
 import useRoom from '@/src/app/rooms/hooks/useRoom';
 import { useAuth } from '@/src/app/hooks/useAuth';
 import { Loader2, ArrowLeft } from 'lucide-react';
-import { useInfiniteScroll } from '@/src/app/rooms/hooks/useInfiniteScroll';
+import { useInfiniteScroll } from '@/src/app/hooks/useInfiniteScroll';
 import { Variants } from 'framer-motion';
 import { RoomCard } from '@/src/app/rooms/components/RoomCard';
 import { useRoomUserCounts } from '@/src/app/rooms/hooks/useRoomUserCounts';

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import useRoom from '@/src/app/rooms/hooks/useRoom';
 import { AdditionalInfoModal } from '@/src/app/components/auth/AdditionalInfoModal';
 import { useAuth } from '@/src/app/hooks/useAuth';
-import { useInfiniteScroll } from '@/src/app/rooms/hooks/useInfiniteScroll';
+import { useInfiniteScroll } from '@/src/app/hooks/useInfiniteScroll';
 import { Variants } from 'framer-motion';
 import { RoomCard } from '@/src/app/rooms/components/RoomCard';
 import { RoomSkeleton } from '@/src/app/rooms/components/RoomSkeleton';

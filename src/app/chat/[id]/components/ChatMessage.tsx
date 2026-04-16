@@ -1,5 +1,5 @@
 "use client"
-import { Message, isTextMessage, isImageMessage, isAudioMessage, Reaction } from "@/src/types/chat";
+import { Message, isTextMessage, isImageMessage, isAudioMessage, isGifMessage, Reaction } from "@/src/types/chat";
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
 import { Reply, ChevronRight, SmilePlus, Loader2 } from "lucide-react";
@@ -51,6 +51,8 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
     const handleClick = () => {
         if (isImageMessage(msg) && msg.imageUrl) {
             openImageViewer(msg.imageUrl)
+        } else if (isGifMessage(msg) && msg.gifUrl) {
+            openImageViewer(msg.gifUrl)
         }
     }
 
@@ -58,6 +60,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
 
     const imageUrl = isImageMessage(msg) ? msg.imageUrl : null;
     const audioUrl = isAudioMessage(msg) ? msg.audioUrl : null;
+    const gifUrl = isGifMessage(msg) ? msg.gifUrl : null;
 
     const getInitials = (name: string) => {
         return name.charAt(0).toUpperCase();
@@ -102,8 +105,8 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
             ref={messageRef}
             className={cn(
                 "max-w-xs rounded-2xl text-sm md:max-w-md relative mb-4",
-                isMyMessage ? "bg-blue-700 text-white rounded-tr-none" : "bg-muted rounded-tl-none",
-                isImageMessage(msg) ? "p-0.5" : "p-3 shadow-sm"
+                isMyMessage ? "bg-blue-700 text-white rounded-br-none" : "bg-muted rounded-bl-none",
+                isImageMessage(msg) || isGifMessage(msg) ? "p-0.5" : "p-3 shadow-sm"
             )}
             {...(!hasHover && longPressHandlers)}
             {...(!hasHover && { onContextMenu: (e) => handleLongPress(e) })}
@@ -117,6 +120,8 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                 </div>
             )}
             {isTextMessage(msg) && <p className="leading-relaxed">{highlightMentions(msg.message)}</p>}
+            
+            {/* Image Rendering */}
             {isImageMessage(msg) && imageUrl && (
                 <div className="cursor-pointer overflow-hidden rounded-xl relative" onClick={handleClick}>
                     <img
@@ -134,6 +139,22 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                 </div>
             )}
 
+            {/* GIF Rendering */}
+            {isGifMessage(msg) && gifUrl && (
+                <div className="cursor-pointer overflow-hidden rounded-xl relative" onClick={handleClick}>
+                    <img
+                        src={gifUrl}
+                        alt="GIF"
+                        className="w-full object-cover"
+                        onLoad={scrollToBottom}
+                    />
+                    <div className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/60 backdrop-blur-sm rounded text-[10px] font-bold text-white uppercase tracking-wider border border-white/20">
+                        GIF
+                    </div>
+                </div>
+            )}
+
+            {/* Audio Rendering */}
             {isAudioMessage(msg) && audioUrl && (
                 <AudioPlayer url={audioUrl} isUploading={msg.isUploading} duration={msg.duration} />
             )}
@@ -238,4 +259,3 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
         </>
     );
 }
-
