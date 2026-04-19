@@ -51,10 +51,10 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
             setMessages(prev => produce(prev, draft => {
                 if (msg.username === username) {
                     // Try to find the optimistic message by tempId first, then by isUploading flag
-                    const targetIndex = msg.tempId 
+                    const targetIndex = msg.tempId
                         ? draft.findIndex(m => m.id === msg.tempId)
                         : draft.findIndex(m => (m as Message & { isUploading?: boolean }).isUploading);
-                    
+
                     if (targetIndex !== -1) {
                         draft.splice(targetIndex, 1);
                     }
@@ -151,6 +151,7 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
             socket.off('message', handleMessage);
             socket.off('image', handleMessage);
             socket.off('audio', handleMessage);
+            socket.off("gif", handleMessage)
             socket.off('message-history', handleMessageHistory);
             socket.off('user-joined', handleUserJoined);
             socket.off('room_users', handleRoomUsers);
