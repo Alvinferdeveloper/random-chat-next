@@ -13,6 +13,8 @@ import VoiceNotePreview from "@/src/app/chat/[id]/components/VoiceNotePreview";
 import { formatTime } from "@/src/app/chat/[id]/utils/time";
 import { GifPicker } from "./GifPicker";
 import { useSocket } from "@/src/app/components/providers/SocketEventProvider";
+import { useClickOutside } from "@/src/app/hooks/useClickOutside";
+import { cn } from "@/src/lib/utils";
 
 interface User {
     id: string;
@@ -50,7 +52,7 @@ export function MessageInput({
 }: MessageInputProps) {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [showGifPicker, setShowGifPicker] = useState(false);
-    
+
     const fileInputRef = useRef<HTMLInputElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const [isTyping, setIsTyping] = useState(false);
@@ -69,6 +71,13 @@ export function MessageInput({
         audioBlob
     } = useAudioRecording();
 
+    // Reference for closing pickers when clicking outside
+    const pickerRef = useRef<HTMLDivElement>(null);
+    useClickOutside(pickerRef, () => {
+        setShowEmojiPicker(false);
+        setShowGifPicker(false);
+    });
+
     const onEmojiClick = (emojiData: EmojiClickData) => {
         setNewMessage(prev => prev + emojiData.emoji);
         setShowEmojiPicker(false);
@@ -81,10 +90,10 @@ export function MessageInput({
 
         let replyContext = undefined;
         if (replyingToMessage) {
-            const snippet = isTextMessage(replyingToMessage) 
-                ? replyingToMessage.message.substring(0, 50) 
+            const snippet = isTextMessage(replyingToMessage)
+                ? replyingToMessage.message.substring(0, 50)
                 : '[Multimedia]';
-            
+
             replyContext = {
                 id: replyingToMessage.id,
                 author: replyingToMessage.username,
@@ -197,18 +206,20 @@ export function MessageInput({
                         onSelect={handleSelectMention}
                     />
                 )}
-                {showEmojiPicker && (
-                    <div className="absolute bottom-full mb-2 z-20">
-                        <EmojiPicker onEmojiClick={onEmojiClick} />
-                    </div>
-                )}
-                
-                {showGifPicker && (
-                    <div className="absolute bottom-full mb-2 z-20">
-                        <GifPicker onSelect={handleGifSelect} />
-                    </div>
-                )}
 
+                <div ref={pickerRef}>
+                    {showEmojiPicker && (
+                        <div className="absolute bottom-full mb-2 z-20">
+                            <EmojiPicker onEmojiClick={onEmojiClick} />
+                        </div>
+                    )}
+
+                    {showGifPicker && (
+                        <div className="absolute bottom-full mb-2 z-20">
+                            <GifPicker onSelect={handleGifSelect} />
+                        </div>
+                    )}
+                </div>
                 {/* Voice Note Preview Overlay */}
                 {audioBlob && !isRecording && (
                     <VoiceNotePreview
@@ -275,7 +286,10 @@ export function MessageInput({
                                             setShowGifPicker(!showGifPicker);
                                             setShowEmojiPicker(false);
                                         }}
-                                        className={showGifPicker ? "text-primary" : "text-muted-foreground"}
+                                        className={cn(
+                                            "cursor-pointer",
+                                            showGifPicker ? "text-primary" : "text-muted-foreground"
+                                        )}
                                     >
                                         <Film className="h-4 w-4" />
                                     </Button>
@@ -287,7 +301,10 @@ export function MessageInput({
                                             setShowEmojiPicker(!showEmojiPicker);
                                             setShowGifPicker(false);
                                         }}
-                                        className={showEmojiPicker ? "text-primary" : "text-muted-foreground"}
+                                        className={cn(
+                                            "cursor-pointer",
+                                            showEmojiPicker ? "text-primary" : "text-muted-foreground"
+                                        )}
                                     >
                                         <Smile className="h-5 w-5" />
                                     </Button>
