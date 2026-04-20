@@ -14,9 +14,15 @@ interface GifPickerProps {
 
 type Tab = "search" | "favorites";
 
+const ENABLE_GIPHY = process.env.NEXT_PUBLIC_ENABLE_GIPHY === "true";
+
 export function GifPicker({ onSelect }: GifPickerProps) {
     const { session } = useAuth();
-    const [activeTab, setActiveTab] = useState<Tab>(session ? "favorites" : "search");
+
+    // Default logic: If Giphy is disabled, must be favorites. 
+    // If Giphy enabled, priority to favorites for logged in, search for anonymous.
+    const initialTab = !ENABLE_GIPHY ? "favorites" : (session ? "favorites" : "search");
+    const [activeTab, setActiveTab] = useState<Tab>(initialTab);
 
     const {
         search,
@@ -67,19 +73,22 @@ export function GifPicker({ onSelect }: GifPickerProps) {
                         Favoritos
                     </button>
                 )}
-                <button
-                    onClick={() => setActiveTab("search")}
-                    className={cn(
-                        "flex-1 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer",
-                        activeTab === "search" ? "bg-background shadow-sm text-primary" : "text-muted-foreground hover:text-foreground"
-                    )}
-                >
-                    Explorar
-                </button>
+
+                {ENABLE_GIPHY && (
+                    <button
+                        onClick={() => setActiveTab("search")}
+                        className={cn(
+                            "flex-1 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer",
+                            activeTab === "search" ? "bg-background shadow-sm text-primary" : "text-muted-foreground hover:text-foreground"
+                        )}
+                    >
+                        Explorar
+                    </button>
+                )}
             </div>
 
-            {/* Search Input */}
-            {activeTab === "search" && (
+            {/* Search Input - Only shown if Giphy is enabled AND search tab is active */}
+            {activeTab === "search" && ENABLE_GIPHY && (
                 <div className="p-3 border-b border-border">
                     <div className="relative">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -95,7 +104,7 @@ export function GifPicker({ onSelect }: GifPickerProps) {
 
             {/* Content Grid */}
             <div className="flex-1 overflow-y-auto p-2 scrollbar-hide">
-                {activeTab === "favorites" && session ? (
+                {activeTab === "favorites" ? (
                     loadingFavorites ? (
                         <div className="h-full flex items-center justify-center">
                             <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -103,7 +112,9 @@ export function GifPicker({ onSelect }: GifPickerProps) {
                     ) : favoriteGifs.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center text-center space-y-2 p-4">
                             <Heart className="h-8 w-8 text-muted-foreground/30" />
-                            <p className="text-xs text-muted-foreground font-medium">Aún no tienes GIFs favoritos</p>
+                            <p className="text-xs text-muted-foreground font-medium">
+                                {session ? "Aún no tienes GIFs favoritos" : "Inicia sesión para guardar GIFs"}
+                            </p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-2 gap-2">
@@ -115,20 +126,23 @@ export function GifPicker({ onSelect }: GifPickerProps) {
                                 >
                                     <img
                                         src={gif.url}
-                                        alt={gif.title}
+                                        alt={gif.title || "GIF"}
                                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                                     />
-                                    <button
-                                        onClick={(e) => handleToggleFavorite(e, gif)}
-                                        className="absolute cursor-pointer top-1 right-1 p-1.5 rounded-full bg-black/40 backdrop-blur-md"
-                                    >
-                                        <Heart className="h-3.5 w-3.5 fill-red-500 text-red-500" />
-                                    </button>
+                                    {session && (
+                                        <button
+                                            onClick={(e) => handleToggleFavorite(e, gif)}
+                                            className="absolute cursor-pointer top-1 right-1 p-1.5 rounded-full bg-black/40 backdrop-blur-md"
+                                        >
+                                            <Heart className="h-3.5 w-3.5 fill-red-500 text-red-500" />
+                                        </button>
+                                    )}
                                 </div>
                             ))}
                         </div>
                     )
                 ) : (
+                    /* Search Tab View (Only accessible if ENABLE_GIPHY is true) */
                     loading && gifs.length === 0 ? (
                         <div className="h-full flex items-center justify-center">
                             <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -169,7 +183,7 @@ export function GifPicker({ onSelect }: GifPickerProps) {
                     )
                 )}
 
-                {activeTab === "search" && !loading && gifs.length === 0 && (
+                {activeTab === "search" && ENABLE_GIPHY && !loading && gifs.length === 0 && (
                     <div className="text-center py-10 text-muted-foreground text-xs font-medium">
                         No se encontraron GIFs
                     </div>
