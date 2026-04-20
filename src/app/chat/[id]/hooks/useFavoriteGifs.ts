@@ -1,11 +1,15 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
+import { useAuth } from "@/src/app/hooks/useAuth";
 
 export function useFavoriteGifs() {
+    const { session } = useAuth();
     const [favoriteGifs, setFavoriteGifs] = useState<any[]>([]);
     const [loadingFavorites, setLoadingFavorites] = useState(false);
 
     const fetchFavorites = useCallback(async () => {
+        if (!session) return;
+
         setLoadingFavorites(true);
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/favorites/gifs`, {
@@ -18,9 +22,11 @@ export function useFavoriteGifs() {
         } finally {
             setLoadingFavorites(false);
         }
-    }, []);
+    }, [session]);
 
     const toggleFavorite = async (giphyId: string, url: string, title?: string) => {
+        if (!session) return;
+
         const isFavorite = favoriteGifs.some(g => g.giphyId === giphyId);
 
         try {
@@ -46,8 +52,12 @@ export function useFavoriteGifs() {
     };
 
     useEffect(() => {
-        fetchFavorites();
-    }, [fetchFavorites]);
+        if (session) {
+            fetchFavorites();
+        } else {
+            setFavoriteGifs([]);
+        }
+    }, [session, fetchFavorites]);
 
     return {
         favoriteGifs,
