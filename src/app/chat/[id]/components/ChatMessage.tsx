@@ -2,13 +2,15 @@
 import { Message, isTextMessage, isImageMessage, isAudioMessage, isGifMessage, Reaction } from "@/src/types/chat";
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
-import { Reply, ChevronRight, SmilePlus, Loader2 } from "lucide-react";
+import { Reply, ChevronRight, SmilePlus, Loader2, Heart } from "lucide-react";
 import React, { useState, useRef } from "react";
 import { useLongPress } from "@/src/app/chat/[id]/hooks/useLongPress";
 import { useHover } from "@/src/app/hooks/useHover";
 import { ReactionPicker } from "@/src/app/chat/[id]/components/ReactionPicker";
 import { cn } from "@/src/lib/utils";
 import { AudioPlayer } from "@/src/app/chat/[id]/components/AudioPlayer";
+import { useFavoriteGifs } from "@/src/app/chat/[id]/hooks/useFavoriteGifs";
+import { useAuth } from "@/src/app/hooks/useAuth";
 
 interface User {
     id: string;
@@ -38,6 +40,8 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
     const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
     const messageRef = useRef<HTMLDivElement>(null);
     const hasHover = useHover();
+    const { session } = useAuth();
+    const { favoriteGifs, toggleFavorite } = useFavoriteGifs();
 
     const handleLongPress = (event: React.MouseEvent | React.TouchEvent) => {
         event.preventDefault();
@@ -76,6 +80,14 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
         setPickerVisible(false);
         setMenuVisible(false);
     }
+
+    const isGifFavorite = (giphyId: string) => favoriteGifs.some(g => g.giphyId === giphyId);
+
+    const handleToggleGifFavorite = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!session || !isGifMessage(msg)) return;
+        toggleFavorite(msg.giphyId, msg.gifUrl, "GIF del chat");
+    };
 
     const highlightMentions = (text: string) => {
         const mentionRegex = /@([a-zA-Z0-9_]+)/g;
@@ -120,7 +132,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                 </div>
             )}
             {isTextMessage(msg) && <p className="leading-relaxed">{highlightMentions(msg.message)}</p>}
-            
+
             {/* Image Rendering */}
             {isImageMessage(msg) && imageUrl && (
                 <div className="cursor-pointer overflow-hidden rounded-xl relative" onClick={handleClick}>
@@ -141,13 +153,28 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
 
             {/* GIF Rendering */}
             {isGifMessage(msg) && gifUrl && (
-                <div className="cursor-pointer overflow-hidden rounded-xl relative" onClick={handleClick}>
+                <div className="group/gif cursor-pointer overflow-hidden rounded-xl relative" onClick={handleClick}>
                     <img
                         src={gifUrl}
                         alt="GIF"
                         className="w-full object-cover"
                         onLoad={scrollToBottom}
                     />
+
+                    {/* Favorite Button (steal GIF) */}
+                    {session && (
+                        <button
+                            onClick={handleToggleGifFavorite}
+                            className="absolute cursor-pointer top-2 right-2 p-1.5 rounded-full bg-black/40 backdrop-blur-md opacity-0 group-hover/gif:opacity-100 transition-opacity hover:bg-black/60"
+                            title={isGifFavorite(msg.giphyId) ? "Quitar de favoritos" : "Robar GIF (Añadir a favoritos)"}
+                        >
+                            <Heart className={cn(
+                                "h-4 w-4 transition-colors",
+                                isGifFavorite(msg.giphyId) ? "fill-red-500 text-red-500" : "text-white"
+                            )} />
+                        </button>
+                    )}
+
                     <div className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/60 backdrop-blur-sm rounded text-[10px] font-bold text-white uppercase tracking-wider border border-white/20">
                         GIF
                     </div>

@@ -3,19 +3,19 @@ import { useState } from "react";
 import { Input } from "@/src/components/ui/input";
 import { Loader2, Search, Heart } from "lucide-react";
 import { useGifSearch } from "@/src/app/chat/[id]/hooks/useGifSearch";
+import { useFavoriteGifs } from "@/src/app/chat/[id]/hooks/useFavoriteGifs";
 import { useInfiniteScroll } from "@/src/app/hooks/useInfiniteScroll";
 import { cn } from "@/src/lib/utils";
 import { useAuth } from "@/src/app/hooks/useAuth";
 
 interface GifPickerProps {
-    onSelect: (gifUrl: string) => void;
+    onSelect: (gifUrl: string, giphyId: string) => void;
 }
 
 type Tab = "search" | "favorites";
 
 export function GifPicker({ onSelect }: GifPickerProps) {
     const { session } = useAuth();
-    // Default to favorites if logged in, otherwise search
     const [activeTab, setActiveTab] = useState<Tab>(session ? "favorites" : "search");
 
     const {
@@ -25,11 +25,14 @@ export function GifPicker({ onSelect }: GifPickerProps) {
         loading,
         loadingMore,
         loadMore,
-        hasMore,
+        hasMore
+    } = useGifSearch();
+
+    const {
         favoriteGifs,
         toggleFavorite,
         loadingFavorites
-    } = useGifSearch();
+    } = useFavoriteGifs();
 
     const { sentinelRef } = useInfiniteScroll({
         loading: loading || loadingMore,
@@ -75,7 +78,7 @@ export function GifPicker({ onSelect }: GifPickerProps) {
                 </button>
             </div>
 
-            {/* Search Input (Only for search tab) */}
+            {/* Search Input */}
             {activeTab === "search" && (
                 <div className="p-3 border-b border-border">
                     <div className="relative">
@@ -93,7 +96,6 @@ export function GifPicker({ onSelect }: GifPickerProps) {
             {/* Content Grid */}
             <div className="flex-1 overflow-y-auto p-2 scrollbar-hide">
                 {activeTab === "favorites" && session ? (
-                    /* Favorites Tab View (Now First) */
                     loadingFavorites ? (
                         <div className="h-full flex items-center justify-center">
                             <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -108,7 +110,7 @@ export function GifPicker({ onSelect }: GifPickerProps) {
                             {favoriteGifs.map((gif) => (
                                 <div
                                     key={gif.id}
-                                    onClick={() => onSelect(gif.url)}
+                                    onClick={() => onSelect(gif.url, gif.giphyId)}
                                     className="group relative cursor-pointer rounded-lg overflow-hidden aspect-video bg-muted"
                                 >
                                     <img
@@ -127,7 +129,6 @@ export function GifPicker({ onSelect }: GifPickerProps) {
                         </div>
                     )
                 ) : (
-                    /* Search Tab View */
                     loading && gifs.length === 0 ? (
                         <div className="h-full flex items-center justify-center">
                             <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -138,7 +139,7 @@ export function GifPicker({ onSelect }: GifPickerProps) {
                                 {gifs.map((gif, index) => (
                                     <div
                                         key={`${gif.id}-${index}`}
-                                        onClick={() => onSelect(gif.images.fixed_height.url)}
+                                        onClick={() => onSelect(gif.images.fixed_height.url, gif.id)}
                                         className="group relative cursor-pointer rounded-lg overflow-hidden aspect-video bg-muted"
                                     >
                                         <img
@@ -147,7 +148,6 @@ export function GifPicker({ onSelect }: GifPickerProps) {
                                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                                             loading="lazy"
                                         />
-                                        {/* Favorite Toggle Overlay */}
                                         {session && (
                                             <button
                                                 onClick={(e) => handleToggleFavorite(e, gif)}

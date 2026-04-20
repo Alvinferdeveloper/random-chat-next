@@ -52,6 +52,13 @@ export function MessageInput({
 }: MessageInputProps) {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [showGifPicker, setShowGifPicker] = useState(false);
+    
+    // Reference for closing pickers when clicking outside
+    const pickerRef = useRef<HTMLDivElement>(null);
+    useClickOutside(pickerRef, () => {
+        setShowEmojiPicker(false);
+        setShowGifPicker(false);
+    });
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -71,13 +78,6 @@ export function MessageInput({
         audioBlob
     } = useAudioRecording();
 
-    // Reference for closing pickers when clicking outside
-    const pickerRef = useRef<HTMLDivElement>(null);
-    useClickOutside(pickerRef, () => {
-        setShowEmojiPicker(false);
-        setShowGifPicker(false);
-    });
-
     const onEmojiClick = (emojiData: EmojiClickData) => {
         setNewMessage(prev => prev + emojiData.emoji);
         setShowEmojiPicker(false);
@@ -85,15 +85,16 @@ export function MessageInput({
         handleTypingInput();
     };
 
-    const handleGifSelect = (gifUrl: string) => {
-        if (!socket) return;
+    const handleGifSelect = (gifUrl: string, giphyId: string) => {
+        if (!socket || !username) return;
 
+        const tempId = crypto.randomUUID();
         let replyContext = undefined;
         if (replyingToMessage) {
-            const snippet = isTextMessage(replyingToMessage)
-                ? replyingToMessage.message.substring(0, 50)
+            const snippet = isTextMessage(replyingToMessage) 
+                ? replyingToMessage.message.substring(0, 50) 
                 : '[Multimedia]';
-
+            
             replyContext = {
                 id: replyingToMessage.id,
                 author: replyingToMessage.username,
@@ -101,9 +102,25 @@ export function MessageInput({
             };
         }
 
+        // Optimistic UI for GIF
+        const optimisticGif = {
+            id: tempId,
+            username: username,
+            userProfileImage: null,
+            timestamp: new Date().toISOString(),
+            gifUrl: gifUrl,
+            giphyId: giphyId,
+            replyTo: replyContext || null,
+            reactions: [],
+            isUploading: false
+        };
+        addOptimisticMessage(optimisticGif as any);
+
         socket.emit('gif', {
             gifUrl,
-            replyTo: replyContext
+            giphyId,
+            replyTo: replyContext,
+            tempId
         });
 
         setShowGifPicker(false);
@@ -206,20 +223,22 @@ export function MessageInput({
                         onSelect={handleSelectMention}
                     />
                 )}
-
+                
+                {/* Pickers container with click-outside detection */}
                 <div ref={pickerRef}>
                     {showEmojiPicker && (
                         <div className="absolute bottom-full mb-2 z-20">
                             <EmojiPicker onEmojiClick={onEmojiClick} />
                         </div>
                     )}
-
+                    
                     {showGifPicker && (
                         <div className="absolute bottom-full mb-2 z-20">
                             <GifPicker onSelect={handleGifSelect} />
                         </div>
                     )}
                 </div>
+
                 {/* Voice Note Preview Overlay */}
                 {audioBlob && !isRecording && (
                     <VoiceNotePreview

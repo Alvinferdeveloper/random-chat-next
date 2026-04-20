@@ -37,6 +37,7 @@ export interface AudioMessage extends BaseMessage {
 
 export interface GifMessage extends BaseMessage {
     gifUrl: string;
+    giphyId: string;
 }
 
 export type Message = TextMessage | ImageMessage | AudioMessage | GifMessage;
