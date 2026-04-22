@@ -88,7 +88,9 @@ export function MessageInput({
     const handleGifSelect = (gifUrl: string, giphyId: string) => {
         if (!socket || !username) return;
 
-        const tempId = crypto.randomUUID();
+        const tempId = typeof crypto !== 'undefined' && crypto.randomUUID 
+            ? crypto.randomUUID() 
+            : `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
         let replyContext = undefined;
         if (replyingToMessage) {
             const snippet = isTextMessage(replyingToMessage) 

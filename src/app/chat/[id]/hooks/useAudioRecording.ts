@@ -65,7 +65,9 @@ export function useAudioRecording() {
     ) => {
         if (!socket || !audioBlob || !username) return;
 
-        const tempId = crypto.randomUUID();
+        const tempId = typeof crypto !== 'undefined' && crypto.randomUUID 
+            ? crypto.randomUUID() 
+            : `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
         const duration = recordingTime;
         const localUrl = URL.createObjectURL(audioBlob);
 

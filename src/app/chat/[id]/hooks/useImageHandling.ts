@@ -39,7 +39,9 @@ export function useImageHandling() {
         if (!socket || !fileToUpload) return;
 
         // Optimistic UI
-        const tempId = crypto.randomUUID();
+        const tempId = typeof crypto !== 'undefined' && crypto.randomUUID 
+            ? crypto.randomUUID() 
+            : `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
         if (onOptimisticAdd && username && blobUrl) {
             const tempMsg = {
                 id: tempId,
