@@ -49,7 +49,7 @@ export function RoomCard({
             className="h-full"
         >
             <Card
-                className={`h-full flex flex-col bg-[#2f3136] border-none rounded-lg py-0 overflow-hidden hover:bg-[#32353b] transition-all duration-200 cursor-pointer group ${isConnecting ? "scale-[0.98] opacity-75" : ""
+                className={`h-full flex flex-col bg-[#24262b] border-none rounded-lg py-0 overflow-hidden hover:bg-[#32353b] transition-all duration-200 cursor-pointer group ${isConnecting ? "scale-[0.98] opacity-75" : ""
                     } ${hovered ? "scale-[1.02] shadow-xl" : ""}`}
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}

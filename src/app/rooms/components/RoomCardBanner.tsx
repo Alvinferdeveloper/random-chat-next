@@ -16,7 +16,7 @@ export function RoomCardBanner({ roomName, serverBanner, serverIcon, children }:
     return (
         <div className="relative shrink-0">
             {/* Banner Image */}
-            <div className="h-[170px] relative w-full bg-gray-700">
+            <div className="h-[140px] relative w-full bg-gray-700">
                 {serverBanner && !bannerError ? (
                     <img
                         src={serverBanner}
@@ -29,13 +29,13 @@ export function RoomCardBanner({ roomName, serverBanner, serverIcon, children }:
                         <span className="text-white/70 text-xs font-medium select-none">{roomName}</span>
                     </div>
                 )}
-                
+
                 {children}
             </div>
 
             {/* Icon Image */}
-            <div className="absolute -bottom-5 left-4 z-10">
-                <div className="w-16 h-16 bg-[#5865f2] rounded-full flex items-center justify-center border-[4px] border-[#2f3136] overflow-hidden shadow-sm">
+            <div className="absolute -bottom-4 left-3 z-10">
+                <div className="w-12 h-12 bg-[#5865f2] rounded-full flex items-center justify-center border-[3px] border-[#2f3136] overflow-hidden shadow-sm">
                     {serverIcon && !iconError ? (
                         <img
                             src={serverIcon}
@@ -44,7 +44,7 @@ export function RoomCardBanner({ roomName, serverBanner, serverIcon, children }:
                             onError={() => setIconError(true)}
                         />
                     ) : (
-                        <span className="text-white font-bold text-xl select-none">
+                        <span className="text-white font-bold text-lg select-none">
                             {roomName.charAt(0).toUpperCase()}
                         </span>
                     )}

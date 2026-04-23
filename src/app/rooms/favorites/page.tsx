@@ -80,7 +80,7 @@ export default function FavoritesPage() {
                 />
             </div>
 
-            <main className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 p-6">
+            <main className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-6">
                 {rooms.length === 0 && !loading && !error && (
                     <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
                         <p className="text-gray-400 text-lg mb-4">No tienes salas favoritas todavía.</p>

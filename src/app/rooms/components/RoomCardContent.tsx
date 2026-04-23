@@ -15,7 +15,7 @@ interface RoomCardContentProps {
 
 export function RoomCardContent({ name, description, verified, userCount, isConnecting, footer }: RoomCardContentProps) {
     return (
-        <CardContent className="pt-4 pb-4 px-4 flex flex-col flex-1">
+        <CardContent className="pt-3 pb-3 px-3 flex flex-col flex-1">
             {/* Room Name */}
             <div className="flex items-center gap-2 mb-2">
                 {verified && (
@@ -23,7 +23,7 @@ export function RoomCardContent({ name, description, verified, userCount, isConn
                         <Check className="w-3 h-3 text-white" />
                     </div>
                 )}
-                <h3 className="text-white font-bold text-lg truncate pr-2">
+                <h3 className="text-white font-bold text-base truncate pr-2">
                     {name}
                 </h3>
             </div>
@@ -35,7 +35,7 @@ export function RoomCardContent({ name, description, verified, userCount, isConn
                         <ConnectingAnimation text="Conectando..." />
                     </div>
                 ) : (
-                    <p className="text-[#b9bbbe] text-sm leading-relaxed line-clamp-2 text-ellipsis overflow-hidden">
+                    <p className="text-white text-xs leading-relaxed line-clamp-2 text-ellipsis overflow-hidden">
                         {description}
                     </p>
                 )}
@@ -52,7 +52,7 @@ export function RoomCardContent({ name, description, verified, userCount, isConn
             </div>
 
             {footer && (
-                <div className="mt-4 pt-4 border-t border-gray-700/50" onClick={(e) => e.stopPropagation()}>
+                <div className="mt-3 pt-3 border-t border-gray-700/50" onClick={(e) => e.stopPropagation()}>
                     {footer}
                 </div>
             )}
