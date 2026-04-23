@@ -43,10 +43,10 @@ export function UserNav() {
 
     if (!session?.user) {
         return (
-            <a href="/login">
-                <Button size="sm" className="hidden md:flex gap-2 cursor-pointer">
-                    <Users className="w-4 h-4" />
-                    Iniciar sesión
+            <a href="/login" title="Iniciar sesión">
+                <Button size="sm" className="flex items-center justify-center gap-2 cursor-pointer h-9 w-9 p-0 md:w-auto md:px-4 shrink-0 transition-all">
+                    <UserIcon className="w-4 h-4" />
+                    <span className="hidden md:inline">Iniciar sesión</span>
                 </Button>
             </a>
         );
