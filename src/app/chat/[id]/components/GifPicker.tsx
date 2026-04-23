@@ -3,20 +3,22 @@ import { useState } from "react";
 import { Input } from "@/src/components/ui/input";
 import { Loader2, Search, Heart } from "lucide-react";
 import { useGifSearch } from "@/src/app/chat/[id]/hooks/useGifSearch";
-import { useFavoriteGifs } from "@/src/app/chat/[id]/hooks/useFavoriteGifs";
 import { useInfiniteScroll } from "@/src/app/hooks/useInfiniteScroll";
 import { cn } from "@/src/lib/utils";
 import { useAuth } from "@/src/app/hooks/useAuth";
 
 interface GifPickerProps {
     onSelect: (gifUrl: string, giphyId: string) => void;
+    favoriteGifs: any[];
+    toggleFavorite: (giphyId: string, url: string, title?: string) => void;
+    loadingFavorites: boolean;
 }
 
 type Tab = "search" | "favorites";
 
 const ENABLE_GIPHY = process.env.NEXT_PUBLIC_ENABLE_GIPHY === "true";
 
-export function GifPicker({ onSelect }: GifPickerProps) {
+export function GifPicker({ onSelect, favoriteGifs, toggleFavorite, loadingFavorites }: GifPickerProps) {
     const { session } = useAuth();
 
     // Default logic: If Giphy is disabled, must be favorites. 
@@ -33,12 +35,6 @@ export function GifPicker({ onSelect }: GifPickerProps) {
         loadMore,
         hasMore
     } = useGifSearch();
-
-    const {
-        favoriteGifs,
-        toggleFavorite,
-        loadingFavorites
-    } = useFavoriteGifs();
 
     const { sentinelRef } = useInfiniteScroll({
         loading: loading || loadingMore,

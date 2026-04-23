@@ -34,6 +34,9 @@ interface MessageInputProps {
     handleSelectMention: (username: string) => void;
     onStartTyping?: () => void;
     onStopTyping?: () => void;
+    favoriteGifs: any[];
+    toggleFavorite: (giphyId: string, url: string, title?: string) => void;
+    loadingFavorites: boolean;
 }
 
 export function MessageInput({
@@ -48,7 +51,10 @@ export function MessageInput({
     mentionQuery,
     handleSelectMention,
     onStartTyping,
-    onStopTyping
+    onStopTyping,
+    favoriteGifs,
+    toggleFavorite,
+    loadingFavorites
 }: MessageInputProps) {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [showGifPicker, setShowGifPicker] = useState(false);
@@ -160,7 +166,12 @@ export function MessageInput({
     };
 
     const onSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
         handleSendMessage(e);
+        
+        // Mantener el foco en el input para que no se cierre el teclado en móviles
+        inputRef.current?.focus();
+
         if (isTyping) {
             setIsTyping(false);
             onStopTyping?.();
@@ -236,7 +247,12 @@ export function MessageInput({
                     
                     {showGifPicker && (
                         <div className="absolute bottom-full mb-2 z-20">
-                            <GifPicker onSelect={handleGifSelect} />
+                            <GifPicker
+                                onSelect={handleGifSelect}
+                                favoriteGifs={favoriteGifs}
+                                toggleFavorite={toggleFavorite}
+                                loadingFavorites={loadingFavorites}
+                            />
                         </div>
                     )}
                 </div>
@@ -359,6 +375,7 @@ export function MessageInput({
                                     type="submit"
                                     size="icon"
                                     disabled={!newMessage.trim()}
+                                    onMouseDown={(e) => e.preventDefault()} // Evita que el botón robe el foco del input
                                     className={`flex-shrink-0 transition-all duration-300 h-10 w-10 rounded-full cursor-pointer ${newMessage.trim() ? "bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20" : "bg-muted text-muted-foreground"
                                         }`}
                                 >

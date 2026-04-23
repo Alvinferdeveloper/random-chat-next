@@ -18,11 +18,13 @@ interface MessageListProps {
     setReplyingToMessage: (message: Message) => void;
     sendReaction: (messageId: string, emoji: string) => void;
     usersInRoom: User[];
+    favoriteGifs: any[];
+    toggleFavorite: (giphyId: string, url: string, title?: string) => void;
 }
 
-export function MessageList({ messages, username, messagesEndRef, openImageViewer, scrollToBottom, setReplyingToMessage, sendReaction, usersInRoom }: MessageListProps) {
+export function MessageList({ messages, username, messagesEndRef, openImageViewer, scrollToBottom, setReplyingToMessage, sendReaction, usersInRoom, favoriteGifs, toggleFavorite }: MessageListProps) {
     return (
-        <div className="flex-1 p-4 overflow-y-auto scrollbar-thin-light">
+        <div className="flex-1 p-4">
             <div className="space-y-4">
                 {messages.map((msg, idx) => (
                     <ChatMessage
@@ -34,6 +36,8 @@ export function MessageList({ messages, username, messagesEndRef, openImageViewe
                         setReplyingToMessage={setReplyingToMessage}
                         sendReaction={sendReaction}
                         usersInRoom={usersInRoom}
+                        favoriteGifs={favoriteGifs}
+                        toggleFavorite={toggleFavorite}
                     />
                 ))}
                 <div ref={messagesEndRef} />

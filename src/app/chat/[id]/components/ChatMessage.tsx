@@ -3,13 +3,12 @@ import { Message, isTextMessage, isImageMessage, isAudioMessage, isGifMessage, R
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
 import { Reply, ChevronRight, SmilePlus, Loader2, Heart } from "lucide-react";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useLongPress } from "@/src/app/chat/[id]/hooks/useLongPress";
 import { useHover } from "@/src/app/hooks/useHover";
 import { ReactionPicker } from "@/src/app/chat/[id]/components/ReactionPicker";
 import { cn } from "@/src/lib/utils";
 import { AudioPlayer } from "@/src/app/chat/[id]/components/AudioPlayer";
-import { useFavoriteGifs } from "@/src/app/chat/[id]/hooks/useFavoriteGifs";
 import { useAuth } from "@/src/app/hooks/useAuth";
 
 interface User {
@@ -26,6 +25,8 @@ interface ChatMessageProps {
     setReplyingToMessage: (message: Message) => void;
     sendReaction: (messageId: string, emoji: string) => void;
     usersInRoom: User[];
+    favoriteGifs: any[];
+    toggleFavorite: (giphyId: string, url: string, title?: string) => void;
 }
 
 function formatTime(dateStr: string) {
@@ -33,7 +34,7 @@ function formatTime(dateStr: string) {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
-export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, setReplyingToMessage, sendReaction, usersInRoom }: ChatMessageProps) {
+export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, setReplyingToMessage, sendReaction, usersInRoom, favoriteGifs, toggleFavorite }: ChatMessageProps) {
     const isMyMessage = msg.username === username;
     const [menuVisible, setMenuVisible] = useState(false);
     const [pickerVisible, setPickerVisible] = useState(false);
@@ -41,7 +42,6 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
     const messageRef = useRef<HTMLDivElement>(null);
     const hasHover = useHover();
     const { session } = useAuth();
-    const { favoriteGifs, toggleFavorite } = useFavoriteGifs();
 
     const handleLongPress = (event: React.MouseEvent | React.TouchEvent) => {
         event.preventDefault();
@@ -61,6 +61,32 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
     }
 
     const longPressHandlers = useLongPress(handleLongPress, handleClick, { delay: 300 });
+
+    // Close menu on scroll
+    const dismissMenu = useCallback(() => {
+        if (menuVisible) {
+            setMenuVisible(false);
+            setPickerVisible(false);
+        }
+    }, [menuVisible]);
+
+    useEffect(() => {
+        if (!menuVisible) return;
+
+        // Listen to scroll on the nearest scrollable ancestor and window
+        const scrollParent = messageRef.current?.closest('[class*="overflow-y"]') as HTMLElement | null;
+        const handler = () => dismissMenu();
+
+        window.addEventListener('scroll', handler, true); // capture phase to catch all scrolls
+        scrollParent?.addEventListener('scroll', handler);
+        window.addEventListener('touchmove', handler, { passive: true });
+
+        return () => {
+            window.removeEventListener('scroll', handler, true);
+            scrollParent?.removeEventListener('scroll', handler);
+            window.removeEventListener('touchmove', handler);
+        };
+    }, [menuVisible, dismissMenu]);
 
     const imageUrl = isImageMessage(msg) ? msg.imageUrl : null;
     const audioUrl = isAudioMessage(msg) ? msg.audioUrl : null;
@@ -117,7 +143,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
             ref={messageRef}
             className={cn(
                 "max-w-xs rounded-2xl text-sm md:max-w-md relative mb-4",
-                isMyMessage ? "bg-blue-700 text-white rounded-br-none" : "bg-muted rounded-bl-none",
+                isMyMessage ? "bg-blue-700 text-white rounded-tr-none" : "bg-muted rounded-tl-none",
                 isImageMessage(msg) || isGifMessage(msg) ? "p-0.5" : "p-3 shadow-sm"
             )}
             {...(!hasHover && longPressHandlers)}
@@ -260,22 +286,29 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
 
             {menuVisible && !hasHover && (
                 <>
-                    <div className="fixed inset-0 z-40" onClick={() => { setMenuVisible(false); setPickerVisible(false); }} />
+                    <div
+                        className="fixed inset-0 z-40"
+                        onClick={dismissMenu}
+                        onTouchMove={dismissMenu}
+                    />
                     <div
                         className={cn(
-                            "fixed z-50 bg-background border rounded-lg shadow-lg p-1 flex items-center gap-1 right-6",
+                            "fixed z-50 bg-background/95 backdrop-blur-sm border rounded-xl shadow-xl p-1 flex items-center gap-1",
+                            "animate-in fade-in zoom-in-95 duration-200",
                             isMyMessage ? "right-6" : "left-6"
                         )}
                         style={{ top: menuPosition.y - 45 }}
                     >
                         {pickerVisible ? (
-                            <ReactionPicker onSelect={handleReact} />
+                            <div className="animate-in fade-in slide-in-from-left-2 duration-150">
+                                <ReactionPicker onSelect={handleReact} />
+                            </div>
                         ) : (
                             <>
-                                <Button variant="ghost" size="sm" onClick={() => { setPickerVisible(true); }} className="flex items-center gap-2">
+                                <Button variant="ghost" size="sm" onClick={() => { setPickerVisible(true); }} className="flex items-center gap-2 rounded-lg">
                                     <SmilePlus className="h-4 w-4" /> React
                                 </Button>
-                                <Button variant="ghost" size="sm" onClick={handleReply} className="flex items-center gap-2">
+                                <Button variant="ghost" size="sm" onClick={handleReply} className="flex items-center gap-2 rounded-lg">
                                     <Reply className="h-4 w-4" /> Responder
                                 </Button>
                             </>

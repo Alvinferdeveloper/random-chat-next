@@ -42,14 +42,14 @@ export default function Rooms() {
     const { session, isPending } = useAuth();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const isCompleteProfile = (session?.user as any)?.isCompleteProfile ?? true;
+
     useEffect(() => {
         if (isPending) return;
-        if (session?.user) {
-            if (!(session.user as any).isCompleteProfile) {
-                setIsModalOpen(true);
-            }
+        if (session?.user && !isCompleteProfile) {
+            setIsModalOpen(true);
         }
-    }, [isPending, session]);
+    }, [isPending, isCompleteProfile, session?.user]);
 
     const handleProfileComplete = () => {
         setIsModalOpen(false);

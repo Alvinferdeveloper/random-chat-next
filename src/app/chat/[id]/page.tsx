@@ -10,6 +10,7 @@ import { useImageViewer } from "@/src/app/chat/[id]/hooks/useImageViewer";
 import { ChatHeader } from "@/src/app/chat/[id]/components/ChatHeader";
 import { MessageList } from "@/src/app/chat/[id]/components/MessageList";
 import { MessageInput } from "@/src/app/chat/[id]/components/MessageInput";
+import { useFavoriteGifs } from "@/src/app/chat/[id]/hooks/useFavoriteGifs";
 import { ChatConnecting } from "@/src/app/chat/[id]/components/ChatConnecting";
 import { ImagePreviewModal } from "@/src/app/chat/[id]/components/ImagePreviewModal";
 import { ImageViewerModal } from "@/src/app/chat/[id]/components/ImageViewerModal";
@@ -60,6 +61,9 @@ export default function ChatPage() {
     } = useMessageInput();
 
     const { messagesEndRef, scrollToBottom } = useAutoScroll(messages);
+
+    // Single instance of favorites for the entire chat page
+    const { favoriteGifs, toggleFavorite, loadingFavorites } = useFavoriteGifs();
 
     const hasHover = useHover();
     const [isUserListVisible, setIsUserListVisible] = useState(false);
@@ -131,7 +135,7 @@ export default function ChatPage() {
                             <CampfireLottie src="/illustrations/fire/animations/12345.json" className="w-64 h-64 opacity-80" />
                         ))}
                     </div>
-                    <div className="relative z-10 flex-1 overflow-y-auto">
+                    <div className="relative z-10 flex-1 scrollbar-thin-light">
                         <MessageList
                             messages={messages}
                             username={username}
@@ -141,6 +145,8 @@ export default function ChatPage() {
                             usersInRoom={usersInRoom}
                             setReplyingToMessage={setReplyingToMessage}
                             sendReaction={sendReaction}
+                            favoriteGifs={favoriteGifs}
+                            toggleFavorite={toggleFavorite}
                         />
                     </div>
                     <TypingIndicator typingUsers={typingUsers} />
@@ -157,6 +163,9 @@ export default function ChatPage() {
                         handleSelectMention={handleSelectMention}
                         onStartTyping={startTyping}
                         onStopTyping={stopTyping}
+                        favoriteGifs={favoriteGifs}
+                        toggleFavorite={toggleFavorite}
+                        loadingFavorites={loadingFavorites}
                     />
                 </main>
 

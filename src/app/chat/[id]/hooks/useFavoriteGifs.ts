@@ -1,14 +1,17 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "@/src/app/hooks/useAuth";
 
 export function useFavoriteGifs() {
     const { session } = useAuth();
     const [favoriteGifs, setFavoriteGifs] = useState<any[]>([]);
     const [loadingFavorites, setLoadingFavorites] = useState(false);
+    const hasFetched = useRef(false);
+
+    const isAuthenticated = !!session;
 
     const fetchFavorites = useCallback(async () => {
-        if (!session) return;
+        if (!isAuthenticated) return;
 
         setLoadingFavorites(true);
         try {
@@ -22,10 +25,10 @@ export function useFavoriteGifs() {
         } finally {
             setLoadingFavorites(false);
         }
-    }, [session]);
+    }, [isAuthenticated]);
 
-    const toggleFavorite = async (giphyId: string, url: string, title?: string) => {
-        if (!session) return;
+    const toggleFavorite = useCallback(async (giphyId: string, url: string, title?: string) => {
+        if (!isAuthenticated) return;
 
         const isFavorite = favoriteGifs.some(g => g.giphyId === giphyId);
 
@@ -49,15 +52,17 @@ export function useFavoriteGifs() {
         } catch (error) {
             console.error("Error toggling favorite gif:", error);
         }
-    };
+    }, [isAuthenticated, favoriteGifs]);
 
     useEffect(() => {
-        if (session) {
+        if (isAuthenticated && !hasFetched.current) {
+            hasFetched.current = true;
             fetchFavorites();
-        } else {
+        } else if (!isAuthenticated) {
+            hasFetched.current = false;
             setFavoriteGifs([]);
         }
-    }, [session, fetchFavorites]);
+    }, [isAuthenticated, fetchFavorites]);
 
     return {
         favoriteGifs,

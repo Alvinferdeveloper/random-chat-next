@@ -16,6 +16,8 @@ export function useUsername() {
     const [username, setUsername] = useState<string>("");
     const { session, isPending } = useAuth();
 
+    const sessionUserName = session?.user?.name ?? null;
+
     const removeStoredUsername = () => {
         localStorage.removeItem("username");
     };
@@ -23,9 +25,9 @@ export function useUsername() {
     useEffect(() => {
         if (isPending) return;
 
-        if (session && session.user.name) {
-            setUsername(session.user.name);
-            localStorage.setItem("username", session.user.name);
+        if (sessionUserName) {
+            setUsername(sessionUserName);
+            localStorage.setItem("username", sessionUserName);
         } else {
             let storedUsername = localStorage.getItem("username");
             // If stored name is the old "Usuario..." format or doesn't exist, generate a new fun one
@@ -35,7 +37,7 @@ export function useUsername() {
             }
             setUsername(storedUsername);
         }
-    }, [session, isPending]);
+    }, [sessionUserName, isPending]);
 
     return { username, removeStoredUsername };
 }
