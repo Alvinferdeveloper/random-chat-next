@@ -12,7 +12,7 @@ import { RoomSkeleton } from '@/src/app/rooms/components/RoomSkeleton';
 
 import { useRoomUserCounts } from '@/src/app/rooms/hooks/useRoomUserCounts';
 import { useDebounce } from '@/src/app/hooks/useDebounce';
-import { Search, X } from 'lucide-react';
+import { Search, X, Loader2 } from 'lucide-react';
 
 const cardVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
@@ -163,9 +163,6 @@ export default function Rooms() {
                                             cardVariants={cardVariants}
                                         />
                                     ))}
-                                    {loading && [...Array(3)].map((_, i) => (
-                                        <RoomSkeleton key={`loading-${i}`} />
-                                    ))}
                                 </>
                             )}
                         </main>
@@ -183,6 +180,12 @@ export default function Rooms() {
                         )}
 
                         <div ref={sentinelRef} className="flex justify-center items-center h-20">
+                            {loading && rooms.length > 0 && (
+                                <div className="flex items-center gap-2 text-muted-foreground">
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                    <span>Cargando más salas...</span>
+                                </div>
+                            )}
                             {!loading && !hasMore && rooms.length > 0 && (
                                 <p className="text-muted-foreground">No hay más salas para mostrar.</p>
                             )}
