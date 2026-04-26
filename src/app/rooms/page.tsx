@@ -90,7 +90,7 @@ export default function Rooms() {
             {/* HERO SECTION */}
             <div className="relative w-full h-[340px] md:h-[400px] flex flex-col items-center justify-center p-6 overflow-hidden">
                 {/* Background Image Placeholder */}
-                <div className="absolute inset-0 z-0 px-2 rounded-lg">
+                <div className="absolute inset-0 z-0 px-6 rounded-lg">
                     <img
                         src="/illustrations/room_background.png"
                         alt="Background Banner"
@@ -139,7 +139,6 @@ export default function Rooms() {
             </div>
 
             <div className="max-w-[1600px] mx-auto pt-4">
-                <h2 className="px-6 text-xl font-bold text-white mb-2">Comunidades destacadas</h2>
 
                 {error && rooms.length === 0 ? (
                     <ErrorView />

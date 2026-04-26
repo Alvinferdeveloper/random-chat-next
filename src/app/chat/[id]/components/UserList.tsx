@@ -3,6 +3,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSocketHandler } from "@/src/app/hooks/useSocketHandler";
+import Link from "next/link";
+import { cn } from "@/src/lib/utils";
 
 interface User {
     id: string;
@@ -62,21 +64,22 @@ export function UserList({ users }: UserListProps) {
                 <AnimatePresence mode="popLayout">
                     {users.map((user, index) => {
                         const isTyping = typingUsers.has(user.username);
+                        const isAnonymous = user.id === user.username;
 
-                        return (
+                        const userContent = (
                             <motion.div
-                                key={user.id}
                                 layout
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0, transition: { delay: index * 0.05 } }}
                                 exit={{ opacity: 0, x: 10 }}
-                                className={`
-                                    group flex items-center gap-3 p-2.5 rounded-xl transition-all duration-200
-                                    ${isTyping ? 'bg-emerald-500/5 hover:bg-emerald-500/10' : 'hover:bg-muted/60'}
-                                `}
+                                className={cn(
+                                    "group flex items-center gap-3 p-2.5 rounded-xl transition-all duration-200",
+                                    !isAnonymous && "cursor-pointer hover:bg-muted/60",
+                                    isTyping && "bg-emerald-500/5 hover:bg-emerald-500/10"
+                                )}
                             >
                                 <div className="relative">
-                                    <Avatar className="h-10 w-10 border border-background shadow-sm">
+                                    <Avatar className="h-10 w-10 border border-background shadow-sm transition-transform group-hover:scale-105">
                                         <AvatarImage
                                             src={user.profileImage || `https://api.dicebear.com/9.x/avataaars/svg?seed=${user.username}`}
                                             alt={`${user.username}'s profile picture`}
@@ -85,12 +88,14 @@ export function UserList({ users }: UserListProps) {
                                             {getInitials(user.username)}
                                         </AvatarFallback>
                                     </Avatar>
-                                    {/* Indicador de estado online (opcional, visual) */}
                                     <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-background rounded-full"></span>
                                 </div>
 
                                 <div className="flex flex-col justify-center min-w-0 flex-1">
-                                    <span className="font-semibold text-sm truncate leading-none mb-1">
+                                    <span className={cn(
+                                        "font-semibold text-sm truncate leading-none mb-1 transition-colors",
+                                        !isAnonymous && "group-hover:text-primary"
+                                    )}>
                                         {user.username}
                                     </span>
 
@@ -114,13 +119,23 @@ export function UserList({ users }: UserListProps) {
                                                     animate={{ opacity: 1 }}
                                                     className="text-xs text-muted-foreground/70 truncate"
                                                 >
-                                                    En línea
+                                                    {isAnonymous ? 'Invitado' : 'Ver perfil'}
                                                 </motion.span>
                                             )}
                                         </AnimatePresence>
                                     </div>
                                 </div>
                             </motion.div>
+                        );
+
+                        if (isAnonymous) {
+                            return <div key={user.id}>{userContent}</div>;
+                        }
+
+                        return (
+                            <Link key={user.id} href={`/profile/${encodeURIComponent(user.username)}`}>
+                                {userContent}
+                            </Link>
                         );
                     })}
                 </AnimatePresence>

@@ -7,7 +7,7 @@ import { EditableSelectField } from './EditableSelectField';
 import { EditableHobbies } from './EditableHobbies';
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar';
 import { Button } from '@/src/components/ui/button';
-import { Mail, Upload, Loader2 } from 'lucide-react';
+import { Mail, Upload, Loader2, ShieldAlert } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card';
 import { Label } from '@/src/components/ui/label';
 import { ageRangeOptions, conversationTypeOptions } from '@/src/app/constants';
@@ -27,28 +27,33 @@ const itemVariants = {
     visible: { opacity: 1, scale: 1 }
 };
 
-export function UserProfile() {
-    const { user, loading, error, form, updateProfileField, allHobbies, hobbiesLoading, uploadImage, isUploading } = useUserProfile();
+export function UserProfile({ targetUsername }: { targetUsername?: string }) {
+    const { user, loading, error, form, updateProfileField, allHobbies, hobbiesLoading, uploadImage, isUploading } = useUserProfile(targetUsername);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const isReadOnly = !!targetUsername;
 
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center space-y-4 h-64">
                 <div className="h-12 w-12 border-4 border-primary/30 border-t-primary animate-spin rounded-full" />
-                <p className="text-muted-foreground animate-pulse">Cargando tu perfil...</p>
+                <p className="text-muted-foreground animate-pulse">
+                    {isReadOnly ? `Cargando el perfil de ${targetUsername}...` : 'Cargando tu perfil...'}
+                </p>
             </div>
         );
     }
 
     if (error) {
-        return <p className="text-center text-red-500">{error}</p>;
+        return <p className="text-center text-red-500 mt-10">{error}</p>;
     }
 
     if (!user) {
-        return <p className="text-center text-muted-foreground">No se pudo encontrar el perfil del usuario.</p>;
+        return <p className="text-center text-muted-foreground mt-10">No se pudo encontrar el perfil del usuario.</p>;
     }
 
     const handleImageUpload = () => {
+        if (isReadOnly) return;
         fileInputRef.current?.click();
     };
 
@@ -66,13 +71,15 @@ export function UserProfile() {
             animate="visible"
             variants={containerVariants}
             className="mx-auto pb-12">
-            <input
-                type="file"
-                ref={fileInputRef}
-                onChange={onFileChange}
-                className="hidden"
-                accept="image/png, image/jpeg, image/gif"
-            />
+            {!isReadOnly && (
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={onFileChange}
+                    className="hidden"
+                    accept="image/png, image/jpeg, image/gif"
+                />
+            )}
             <motion.div variants={itemVariants}>
                 <Card className="overflow-hidden shadow-xl border-border/40 bg-card/60 backdrop-blur-xl mb-8">
                     <CardHeader className="p-8">
@@ -90,14 +97,16 @@ export function UserProfile() {
                                         </div>
                                     )}
                                 </Avatar>
-                                <Button
-                                    size="icon"
-                                    className="absolute bottom-2 right-2 rounded-full h-10 w-10 shadow-lg scale-0 group-hover:scale-100 transition-transform duration-300"
-                                    onClick={handleImageUpload}
-                                    disabled={isUploading}
-                                >
-                                    <Upload className="h-5 w-5" />
-                                </Button>
+                                {!isReadOnly && (
+                                    <Button
+                                        size="icon"
+                                        className="absolute bottom-2 right-2 rounded-full h-10 w-10 shadow-lg scale-0 group-hover:scale-100 transition-transform duration-300"
+                                        onClick={handleImageUpload}
+                                        disabled={isUploading}
+                                    >
+                                        <Upload className="h-5 w-5" />
+                                    </Button>
+                                )}
                             </div>
                             <div className="flex-1 text-center md:text-left space-y-2">
                                 <EditableField
@@ -106,10 +115,11 @@ export function UserProfile() {
                                     value={user.username}
                                     updateFn={updateProfileField}
                                     inputClassName="text-4xl font-black tracking-tight"
-                                    labelClassName="hidden" // Escondemos el label arriba para usar el diseño gigante
+                                    labelClassName="hidden"
+                                    readOnly={isReadOnly}
                                 />
                                 <p className="text-muted-foreground flex items-center justify-center md:justify-start gap-2">
-                                    <Mail className="h-4 w-4" /> {user.email}
+                                    <Mail className="h-4 w-4" /> {isReadOnly ? 'Correo Privado' : user.email}
                                 </p>
                             </div>
                         </div>
@@ -123,7 +133,9 @@ export function UserProfile() {
                         <Card className="shadow-lg border-border/40 bg-card/80 backdrop-blur-sm">
                             <CardHeader>
                                 <CardTitle>Detalles Personales</CardTitle>
-                                <CardDescription>Esta información ayuda a otros a conocerte mejor.</CardDescription>
+                                <CardDescription>
+                                    {isReadOnly ? `Conoce un poco más sobre ${user.username}.` : 'Esta información ayuda a otros a conocerte mejor.'}
+                                </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-2">
                                 <EditableField
@@ -134,6 +146,7 @@ export function UserProfile() {
                                     isTextarea
                                     placeholder="Cuéntanos un poco sobre ti..."
                                     maxLength={200}
+                                    readOnly={isReadOnly}
                                 />
                                 <EditableField
                                     name="location"
@@ -141,6 +154,7 @@ export function UserProfile() {
                                     value={user.location}
                                     updateFn={updateProfileField}
                                     placeholder="Ciudad, País"
+                                    readOnly={isReadOnly}
                                 />
                             </CardContent>
                         </Card>
@@ -149,7 +163,9 @@ export function UserProfile() {
                         <Card className="shadow-lg border-border/40 bg-card/80 backdrop-blur-sm">
                             <CardHeader>
                                 <CardTitle>Aficiones</CardTitle>
-                                <CardDescription>Selecciona las aficiones que te representan.</CardDescription>
+                                <CardDescription>
+                                    {isReadOnly ? `Las aficiones que representan a ${user.username}.` : 'Selecciona las aficiones que te representan.'}
+                                </CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <EditableHobbies
@@ -160,6 +176,7 @@ export function UserProfile() {
                                     hobbiesLoading={hobbiesLoading}
                                     control={form.control}
                                     updateFn={updateProfileField}
+                                    readOnly={isReadOnly}
                                 />
                             </CardContent>
                         </Card>
@@ -177,8 +194,17 @@ export function UserProfile() {
                                     <div>
                                         <Label className="text-sm font-medium text-muted-foreground">Correo Electrónico</Label>
                                         <div className="mt-1 flex items-center gap-2">
-                                            <Mail className="h-4 w-4 text-muted-foreground" />
-                                            <p className="text-base break-all">{user.email}</p>
+                                            {isReadOnly ? (
+                                                <>
+                                                    <ShieldAlert className="h-4 w-4 text-amber-500" />
+                                                    <p className="text-base text-muted-foreground italic">Protegido</p>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Mail className="h-4 w-4 text-muted-foreground" />
+                                                    <p className="text-base break-all">{user.email}</p>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -198,6 +224,7 @@ export function UserProfile() {
                                     updateFn={updateProfileField}
                                     options={ageRangeOptions}
                                     placeholder="Selecciona tu edad"
+                                    readOnly={isReadOnly}
                                 />
 
                                 <EditableSelectField
@@ -207,6 +234,7 @@ export function UserProfile() {
                                     updateFn={updateProfileField}
                                     options={conversationTypeOptions}
                                     placeholder="¿Qué tipo de chat prefieres?"
+                                    readOnly={isReadOnly}
                                 />
                             </CardContent>
                         </Card>

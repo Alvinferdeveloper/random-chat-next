@@ -16,7 +16,7 @@ export function useUsername() {
     const [username, setUsername] = useState<string>("");
     const { session, isPending } = useAuth();
 
-    const sessionUserName = session?.user?.name ?? null;
+    const sessionUserName = (session?.user as any)?.username ?? null;
 
     const removeStoredUsername = () => {
         localStorage.removeItem("username");

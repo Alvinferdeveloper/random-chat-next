@@ -25,6 +25,7 @@ interface EditableHobbiesProps<T extends FieldValues, Name extends Path<T> = Pat
     hobbiesLoading: boolean;
     control: any;
     updateFn: (field: Name, value: any) => Promise<void>;
+    readOnly?: boolean;
 }
 
 export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Path<T>>({
@@ -35,6 +36,7 @@ export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Pa
     hobbiesLoading,
     control,
     updateFn,
+    readOnly = false,
 }: EditableHobbiesProps<T, Name>) {
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -69,7 +71,7 @@ export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Pa
         <div className="border-b border-border/50 py-4">
             <div className="flex items-start justify-between mb-2">
                 <Label className="text-sm font-medium text-muted-foreground">{label}</Label>
-                {!isEditing && (
+                {!isEditing && !readOnly && (
                     <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)}>
                         <Pencil className="h-4 w-4 text-muted-foreground" />
                     </Button>

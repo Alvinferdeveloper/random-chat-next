@@ -7,7 +7,13 @@ const SESSION_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001
 
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
-    const isPublicRoute = publicRoutes.includes(pathname) || pathname.startsWith('/chat/');
+
+    // Check if it's a public profile route: /profile/username but NOT exactly /profile
+    const isPublicProfile = pathname.startsWith('/profile/') && pathname !== '/profile';
+
+    const isPublicRoute = publicRoutes.includes(pathname) ||
+        pathname.startsWith('/chat/') ||
+        isPublicProfile;
 
     let isAuthenticated = false;
     try {

@@ -19,11 +19,13 @@ interface EditableFieldProps<T extends FieldValues, Name extends Path<T> = Path<
     maxLength?: number;
     inputClassName?: string;
     labelClassName?: string;
+    readOnly?: boolean;
 }
 
 export function EditableField<T extends FieldValues, Name extends Path<T> = Path<T>>({
     name, label, value, updateFn, isTextarea = false,
     placeholder = '', maxLength, inputClassName = '', labelClassName = '',
+    readOnly = false,
 }: EditableFieldProps<T, Name>) {
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -61,14 +63,16 @@ export function EditableField<T extends FieldValues, Name extends Path<T> = Path
                             <p className={`mt-1.5 text-base leading-relaxed ${inputClassName}`}>
                                 {value || <span className="text-muted-foreground/50 italic">No establecido</span>}
                             </p>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                                onClick={() => setIsEditing(true)}
-                            >
-                                <Pencil className="h-4 w-4 text-muted-foreground" />
-                            </Button>
+                            {!readOnly && (
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onClick={() => setIsEditing(true)}
+                                >
+                                    <Pencil className="h-4 w-4 text-muted-foreground" />
+                                </Button>
+                            )}
                         </motion.div>
                     ) : (
                         <motion.form

@@ -19,6 +19,7 @@ interface EditableSelectFieldProps<T extends FieldValues, Name extends Path<T> =
     updateFn: (field: Name, value: any) => Promise<void>;
     options: Option[];
     placeholder?: string;
+    readOnly?: boolean;
 }
 
 export function EditableSelectField<T extends FieldValues, Name extends Path<T> = Path<T>>({
@@ -28,6 +29,7 @@ export function EditableSelectField<T extends FieldValues, Name extends Path<T> 
     updateFn,
     options,
     placeholder = '',
+    readOnly = false,
 }: EditableSelectFieldProps<T, Name>) {
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -90,7 +92,7 @@ export function EditableSelectField<T extends FieldValues, Name extends Path<T> 
                     </form>
                 )}
             </div>
-            {!isEditing && (
+            {!isEditing && !readOnly && (
                 <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)}>
                     <Pencil className="h-4 w-4 text-muted-foreground" />
                 </Button>

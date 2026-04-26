@@ -12,7 +12,7 @@ interface Hobby {
     icon: string;
 }
 
-export function useUserProfile() {
+export function useUserProfile(targetUsername?: string) {
     const [user, setUser] = useState<ProfileData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -28,7 +28,11 @@ export function useUserProfile() {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/users/profile`, {
+            const endpoint = targetUsername 
+                ? `/api/v1/users/profile/${encodeURIComponent(targetUsername)}`
+                : `/api/v1/users/profile`;
+                
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${endpoint}`, {
                 credentials: 'include',
             });
             if (!response.ok) {
@@ -43,14 +47,14 @@ export function useUserProfile() {
         } finally {
             setLoading(false);
         }
-    }, [form]);
+    }, [form, targetUsername]);
 
     useEffect(() => {
         fetchUserProfile();
     }, [fetchUserProfile]);
 
     const updateProfileField = async <T extends keyof ProfileData>(field: T, value: ProfileData[T]) => {
-        if (!user) return;
+        if (!user || targetUsername) return; // Prevent updates if viewing another user's profile
 
         const originalValue = user[field];
         setUser(prevUser => prevUser ? { ...prevUser, [field]: value } : null);
