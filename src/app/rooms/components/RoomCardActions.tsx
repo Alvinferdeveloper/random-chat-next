@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Room } from '@/src/app/rooms/hooks/useRoom';
 import { Settings, Trash2, Heart, Loader2 } from 'lucide-react';
 import { RoomEditDialog } from '@/src/app/rooms/components/RoomEditDialog';
+import { useAuth } from '../../hooks/useAuth';
 
 interface RoomCardActionsProps {
     room: Room;
@@ -16,7 +17,7 @@ interface RoomCardActionsProps {
 export function RoomCardActions({ room, isOwner, isFavorite, onToggleFavorite, onDelete }: RoomCardActionsProps) {
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-
+    const { session } = useAuth();
     const handleDelete = async (e: React.MouseEvent) => {
         e.stopPropagation();
         if (!onDelete) return;
@@ -65,7 +66,7 @@ export function RoomCardActions({ room, isOwner, isFavorite, onToggleFavorite, o
                 </>
             )}
 
-            <button
+            {session?.user && <button
                 onClick={(e) => {
                     e.stopPropagation();
                     onToggleFavorite(e);
@@ -76,7 +77,7 @@ export function RoomCardActions({ room, isOwner, isFavorite, onToggleFavorite, o
                 <Heart
                     className={`w-5 h-5 transition-colors ${isFavorite ? "fill-red-500 text-red-500" : "text-white group-hover/heart:text-red-400"}`}
                 />
-            </button>
+            </button>}
         </div>
     );
 }
