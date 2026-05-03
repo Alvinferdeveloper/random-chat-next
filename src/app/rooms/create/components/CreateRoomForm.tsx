@@ -1,12 +1,15 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateRoom, RoomSchema, RoomFormValues } from '../hooks/useCreateRoom';
+import { useCategories } from '../hooks/useCategories';
 import { Button } from '@/src/components/ui/button';
 import { Input } from '@/src/components/ui/input';
 import { Textarea } from '@/src/components/ui/textarea';
 import { Label } from '@/src/components/ui/label';
+import { CategorySelector } from './CategorySelector';
 import { Loader2, Type, FileText, AlignLeft, Rocket } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/src/components/ui/card';
 
@@ -21,13 +24,21 @@ interface CreateRoomFormProps {
 
 export function CreateRoomForm({ onRoomCreated }: CreateRoomFormProps) {
     const { createRoom, loading, error } = useCreateRoom();
+    const { categories, loading: categoriesLoading } = useCategories();
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
     const {
         register,
         handleSubmit,
+        setValue,
         formState: { errors },
     } = useForm<RoomFormValues>({
         resolver: zodResolver(RoomSchema),
     });
+
+    useEffect(() => {
+        setValue('categoryIds', selectedCategories);
+    }, [selectedCategories, setValue]);
 
     const onSubmit = async (data: RoomFormValues) => {
         const newRoom = await createRoom(data);
@@ -91,6 +102,15 @@ export function CreateRoomForm({ onRoomCreated }: CreateRoomFormProps) {
                         </div>
                         {errors.full_description && <p className="text-sm text-destructive font-medium animate-pulse">{errors.full_description.message}</p>}
                     </div>
+
+                    {/* Categories */}
+                    <CategorySelector
+                        categories={categories}
+                        selectedIds={selectedCategories}
+                        onChange={setSelectedCategories}
+                        loading={categoriesLoading}
+                    />
+                    {errors.categoryIds && <p className="text-sm text-destructive font-medium animate-pulse">{errors.categoryIds.message}</p>}
                 </CardContent>
 
                 <CardFooter className="flex flex-col gap-4 bg-secondary/10 pt-6 border-t border-border/50">

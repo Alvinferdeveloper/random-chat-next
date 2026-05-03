@@ -8,6 +8,7 @@ export const RoomSchema = z.object({
     name: z.string().min(3, "El nombre debe tener al menos 3 caracteres.").max(45, "El nombre no puede exceder los 45 caracteres."),
     short_description: z.string().min(10, "La descripción corta debe tener al menos 10 caracteres.").max(45, "La descripción corta no puede exceder los 100 caracteres."),
     full_description: z.string().min(20, "La descripción completa debe tener al menos 20 caracteres.").max(300, "La descripción completa no puede exceder los 500 caracteres."),
+    categoryIds: z.array(z.string()).max(3, "Máximo 3 categorías").optional(),
 });
 
 export type RoomFormValues = z.infer<typeof RoomSchema>;
