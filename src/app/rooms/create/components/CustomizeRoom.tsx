@@ -3,8 +3,9 @@
 import { useState, useRef } from 'react';
 import { useCreateRoom } from '../hooks/useCreateRoom';
 import { Button } from '@/src/components/ui/button';
-import { Loader2, Upload, Image as ImageIcon, CheckCircle2, Eye, ArrowRight } from 'lucide-react';
+import { Loader2, Upload, Image as ImageIcon, CheckCircle2, Eye, ArrowRight, CheckCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card';
+import SuccessDialog from '@/src/app/rooms/create/components/SuccessDialog';
 import { cn } from '@/src/lib/utils';
 import { useRouter } from 'next/navigation';
 
@@ -27,6 +28,7 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
     const [iconFile, setIconFile] = useState<File | null>(null);
     const [bannerPreview, setBannerPreview] = useState<string | null>(null);
     const [iconPreview, setIconPreview] = useState<string | null>(null);
+    const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
     const bannerInputRef = useRef<HTMLInputElement>(null);
     const iconInputRef = useRef<HTMLInputElement>(null);
@@ -53,10 +55,15 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
             if (iconFile) {
                 await uploadRoomImage(room.id, 'icon', iconFile);
             }
-            router.push(`/chat/${room.id}`);
+            setShowSuccessDialog(true);
         } catch (error) {
             console.error("Error finalizing room customization:", error);
         }
+    };
+
+    const handleDialogClose = () => {
+        setShowSuccessDialog(false);
+        router.push('/rooms');
     };
 
     const isUploading = !!uploading;
@@ -166,8 +173,8 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
                         className="w-full cursor-pointer h-12 text-base shadow-lg shadow-primary/20"
                         size="lg"
                     >
-                        {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                        Finalizar y entrar a la Sala
+                        {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
+                        Finalizar creación
                         <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                     <p className="text-xs text-center text-muted-foreground">
@@ -235,6 +242,14 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
                     </p>
                 </div>
             </div>
+
+            {/* Success Dialog */}
+            <SuccessDialog
+                showSuccessDialog={showSuccessDialog}
+                setShowSuccessDialog={setShowSuccessDialog}
+                handleDialogClose={handleDialogClose}
+                room={room}
+            />
         </div>
     );
 }
