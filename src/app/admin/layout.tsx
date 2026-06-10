@@ -1,15 +1,17 @@
 'use client';
 
 import { useAuth } from '@/src/app/hooks/useAuth';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { Loader2, ShieldCheck, LayoutDashboard, MessageSquare } from 'lucide-react';
+import { Loader2, ShieldCheck, LayoutDashboard, MessageSquare, Users } from 'lucide-react';
 import { Button } from '@/src/components/ui/button';
+import { cn } from '@/src/lib/utils';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const { session, isPending } = useAuth();
     const router = useRouter();
+    const pathname = usePathname();
 
     useEffect(() => {
         if (!isPending) {
@@ -43,15 +45,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </div>
                 <nav className="p-4 space-y-2">
                     <Link href="/admin">
-                        <Button variant="ghost" className="w-full justify-start gap-2">
+                        <Button variant="ghost" className={cn("w-full justify-start gap-2", pathname === '/admin' && "bg-secondary")}>
                             <LayoutDashboard className="w-4 h-4" />
                             Dashboard
                         </Button>
                     </Link>
                     <Link href="/admin/rooms">
-                        <Button variant="ghost" className="w-full justify-start gap-2">
+                        <Button variant="ghost" className={cn("w-full justify-start gap-2", pathname === '/admin/rooms' && "bg-secondary")}>
                             <MessageSquare className="w-4 h-4" />
                             Salas Pendientes
+                        </Button>
+                    </Link>
+                    <Link href="/admin/users">
+                        <Button variant="ghost" className={cn("w-full justify-start gap-2", pathname === '/admin/users' && "bg-secondary")}>
+                            <Users className="w-4 h-4" />
+                            Usuarios
                         </Button>
                     </Link>
                 </nav>
