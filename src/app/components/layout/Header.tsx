@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { ThemeToggle } from './ThemeToggle';
 import { UserNav } from '@/src/app/components/layout/ProfileDropDown';
 import { GlobalSearch } from './GlobalSearch';
-import { Compass, LayoutDashboard, Menu, Search, X, HelpCircle, Users } from 'lucide-react';
+import { Compass, Menu, Search, X, HelpCircle, Users } from 'lucide-react';
 import { Button } from '@/src/components/ui/button';
 import {
   Sheet,
@@ -26,7 +26,6 @@ export default function Header() {
 
   const navItems = isAppView ? [
     { href: '/rooms', label: 'Explorar', icon: Compass },
-    { href: '/dashboard', label: 'Panel', icon: LayoutDashboard },
   ] : [
     { href: '/rooms', label: 'Explorar', icon: Compass },
     { href: '/faq', label: 'FAQ', icon: HelpCircle },
@@ -34,7 +33,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex items-center h-16 px-4 md:px-8 mx-auto gap-2">
 
         {/* Mobile: Menu Trigger */}
