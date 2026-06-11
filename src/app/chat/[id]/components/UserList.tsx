@@ -5,6 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useSocketHandler } from "@/src/app/hooks/useSocketHandler";
 import Link from "next/link";
 import { cn } from "@/src/lib/utils";
+import { Flag } from 'lucide-react';
+import { useState } from 'react';
+import { ReportUserDialog } from './ReportUserDialog';
+import { Button } from '@/src/components/ui/button';
 
 interface User {
     id: string;
@@ -14,6 +18,7 @@ interface User {
 
 interface UserListProps {
     users: User[];
+    roomId?: string;
 }
 
 const TypingDots = () => {
@@ -44,8 +49,17 @@ const TypingDots = () => {
     );
 };
 
-export function UserList({ users }: UserListProps) {
+export function UserList({ users, roomId }: UserListProps) {
     const { typingUsers } = useSocketHandler();
+    const [reportDialogOpen, setReportDialogOpen] = useState(false);
+    const [userToReport, setUserToReport] = useState<{ id: string, username: string } | null>(null);
+
+    const handleReportClick = (e: React.MouseEvent, user: User) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setUserToReport({ id: user.id, username: user.username });
+        setReportDialogOpen(true);
+    };
 
     const getInitials = (name: string) => {
         return name.charAt(0).toUpperCase();
@@ -125,6 +139,17 @@ export function UserList({ users }: UserListProps) {
                                         </AnimatePresence>
                                     </div>
                                 </div>
+
+                                {!isAnonymous && (
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg"
+                                        onClick={(e) => handleReportClick(e, user)}
+                                    >
+                                        <Flag className="w-4 h-4" />
+                                    </Button>
+                                )}
                             </motion.div>
                         );
 
@@ -140,6 +165,14 @@ export function UserList({ users }: UserListProps) {
                     })}
                 </AnimatePresence>
             </div>
+
+            <ReportUserDialog
+                isOpen={reportDialogOpen}
+                onClose={() => setReportDialogOpen(false)}
+                reportedUsername={userToReport?.username || ''}
+                reportedUserId={userToReport?.id || ''}
+                roomId={roomId}
+            />
         </div>
     );
 }
