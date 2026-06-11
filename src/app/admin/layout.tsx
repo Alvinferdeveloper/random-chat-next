@@ -4,7 +4,7 @@ import { useAuth } from '@/src/app/hooks/useAuth';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { Loader2, ShieldCheck, LayoutDashboard, MessageSquare, Users } from 'lucide-react';
+import { Loader2, ShieldCheck, LayoutDashboard, MessageSquare, Users, AlertCircle } from 'lucide-react';
 import { Button } from '@/src/components/ui/button';
 import { cn } from '@/src/lib/utils';
 
@@ -60,6 +60,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         <Button variant="ghost" className={cn("w-full justify-start gap-2", pathname === '/admin/users' && "bg-secondary")}>
                             <Users className="w-4 h-4" />
                             Usuarios
+                        </Button>
+                    </Link>
+                    <Link href="/admin/reports">
+                        <Button variant="ghost" className={cn("w-full justify-start gap-2", pathname === '/admin/reports' && "bg-secondary")}>
+                            <AlertCircle className="w-4 h-4" />
+                            Reportes
                         </Button>
                     </Link>
                 </nav>
