@@ -77,7 +77,7 @@ export function CategorySelector({ categories, selectedIds, onChange, loading }:
                             />
                         </div>
                     )}
-                    
+
                     <div className="flex flex-wrap gap-1.5">
                         {showSearch && searchLoading || loading ? (
                             <div className="flex items-center gap-2 text-muted-foreground">
@@ -103,7 +103,7 @@ export function CategorySelector({ categories, selectedIds, onChange, loading }:
                             ))
                         )}
                     </div>
-                    
+
                     {categories.length > 3 && !showSearch && (
                         <button
                             type="button"

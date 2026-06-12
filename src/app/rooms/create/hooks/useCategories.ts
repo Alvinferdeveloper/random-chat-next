@@ -31,7 +31,7 @@ export function useCategories() {
             }
 
             const result = await response.json();
-            setCategories(result);
+            setCategories(result.data || []);
         } catch (err: any) {
             setError(err.message);
         } finally {
