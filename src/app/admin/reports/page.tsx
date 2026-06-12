@@ -1,7 +1,7 @@
 'use client';
 
-import { useAdminReports } from '@/src/app/admin/hooks/useAdminReports';
-import { useAdminUsers } from '@/src/app/admin/hooks/useAdminUsers';
+import { useAdminReports } from './hooks/useAdminReports';
+import { useAdminUsers } from '../users/hooks/useAdminUsers';
 import { Button } from '@/src/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar';

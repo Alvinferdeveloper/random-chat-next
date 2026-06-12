@@ -1,18 +1,31 @@
 'use client';
 
-import { useAdminRooms } from '@/src/app/admin/hooks/useAdminRooms';
+import { useState } from 'react';
+import { useAdminRooms } from './hooks/useAdminRooms';
 import { Button } from '@/src/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { Check, X, Loader2 } from 'lucide-react';
 import { Badge } from '@/src/components/ui/badge';
+import { ConfirmDialog } from '@/src/app/components/shared/ConfirmDialog';
 
 export default function PendingRoomsPage() {
     const { rooms, loading, error, updateStatus } = useAdminRooms('IN_REVISION');
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [actionData, setActionData] = useState<{ id: string, status: 'ACCEPTED' | 'REJECTED' } | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleAction = async (roomId: string, status: 'ACCEPTED' | 'REJECTED') => {
-        if (confirm(`¿Estás seguro de que quieres ${status === 'ACCEPTED' ? 'aceptar' : 'rechazar'} esta sala?`)) {
-            await updateStatus(roomId, status);
-        }
+    const handleActionClick = (roomId: string, status: 'ACCEPTED' | 'REJECTED') => {
+        setActionData({ id: roomId, status });
+        setIsConfirmOpen(true);
+    };
+
+    const handleConfirmAction = async () => {
+        if (!actionData) return;
+        setIsSubmitting(true);
+        await updateStatus(actionData.id, actionData.status);
+        setIsSubmitting(false);
+        setIsConfirmOpen(false);
+        setActionData(null);
     };
 
     if (loading) {
@@ -92,14 +105,16 @@ export default function PendingRoomsPage() {
                                 <Button
                                     variant="destructive"
                                     className="flex-1 gap-2 bg-red-600 hover:bg-red-700 text-white"
-                                    onClick={() => handleAction(room.id, 'REJECTED')}
+                                    onClick={() => handleActionClick(room.id, 'REJECTED')}
+                                    disabled={isSubmitting}
                                 >
                                     <X className="h-4 w-4" />
                                     Rechazar
                                 </Button>
                                 <Button
                                     className="flex-1 gap-2 bg-green-600 hover:bg-green-700 text-white"
-                                    onClick={() => handleAction(room.id, 'ACCEPTED')}
+                                    onClick={() => handleActionClick(room.id, 'ACCEPTED')}
+                                    disabled={isSubmitting}
                                 >
                                     <Check className="h-4 w-4" />
                                     Aceptar
@@ -109,6 +124,17 @@ export default function PendingRoomsPage() {
                     ))}
                 </div>
             )}
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                onClose={() => setIsConfirmOpen(false)}
+                onConfirm={handleConfirmAction}
+                title={actionData?.status === 'ACCEPTED' ? 'Aceptar Sala' : 'Rechazar Sala'}
+                description={`¿Estás seguro de que deseas ${actionData?.status === 'ACCEPTED' ? 'aceptar' : 'rechazar'} esta sala?`}
+                confirmText={actionData?.status === 'ACCEPTED' ? 'Aceptar' : 'Rechazar'}
+                variant={actionData?.status === 'ACCEPTED' ? 'primary' : 'destructive'}
+                isLoading={isSubmitting}
+            />
         </div>
     );
 }

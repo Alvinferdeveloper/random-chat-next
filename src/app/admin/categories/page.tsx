@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useAdminCategories } from '@/src/app/admin/hooks/useAdminCategories';
+import { useAdminCategories } from './hooks/useAdminCategories';
 import { Button } from '@/src/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { Input } from '@/src/components/ui/input';

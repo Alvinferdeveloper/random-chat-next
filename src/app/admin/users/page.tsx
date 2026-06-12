@@ -1,6 +1,6 @@
 'use client';
 
-import { useAdminUsers } from '@/src/app/admin/hooks/useAdminUsers';
+import { useAdminUsers } from './hooks/useAdminUsers';
 import { Button } from '@/src/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { Input } from '@/src/components/ui/input';
