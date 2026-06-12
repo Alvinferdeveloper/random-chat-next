@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { BanDialog } from '@/src/app/admin/users/components/BanDialog';
+import { Pagination } from '@/src/app/components/shared/Pagination';
 
 const REASON_LABELS: Record<string, string> = {
     SPAM: 'Spam',
@@ -31,7 +32,10 @@ const REASON_LABELS: Record<string, string> = {
 export default function AdminReportsPage() {
     const { 
         offenders, 
+        pagination,
         loading, 
+        page,
+        setPage,
         resolveReports, 
         refresh: refreshReports 
     } = useAdminReports();
@@ -157,6 +161,17 @@ export default function AdminReportsPage() {
                             </CardContent>
                         </Card>
                     ))}
+                    
+                    {pagination && pagination.totalPages > 1 && (
+                        <Card className="p-2">
+                            <Pagination 
+                                currentPage={page}
+                                totalPages={pagination.totalPages}
+                                onPageChange={setPage}
+                                isLoading={loading}
+                            />
+                        </Card>
+                    )}
                 </div>
             )}
 

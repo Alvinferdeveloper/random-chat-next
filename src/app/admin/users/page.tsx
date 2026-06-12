@@ -2,28 +2,33 @@
 
 import { useAdminUsers } from '@/src/app/admin/hooks/useAdminUsers';
 import { Button } from '@/src/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/src/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { Input } from '@/src/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar';
 import { Badge } from '@/src/components/ui/badge';
-import {
-    Search,
-    UserX,
-    UserCheck,
-    Loader2,
+import { 
+    Search, 
+    UserX, 
+    UserCheck, 
+    Loader2, 
+    MoreHorizontal,
     Mail,
     Calendar
 } from 'lucide-react';
 import { useState } from 'react';
 import { BanDialog } from './components/BanDialog';
+import { Pagination } from '@/src/app/components/shared/Pagination';
 
 export default function AdminUsersPage() {
-    const {
-        users,
-        loading,
-        search,
+    const { 
+        users, 
+        pagination,
+        loading, 
+        search, 
         setSearch,
-        toggleBan
+        page,
+        setPage, 
+        toggleBan 
     } = useAdminUsers();
 
     const [processingId, setProcessingId] = useState<string | null>(null);
@@ -82,8 +87,8 @@ export default function AdminUsersPage() {
                     ) : (
                         <div className="grid gap-4">
                             {users.map((user) => (
-                                <div
-                                    key={user.id}
+                                <div 
+                                    key={user.id} 
                                     className="flex items-center justify-between p-4 border rounded-xl hover:bg-secondary/20 transition-colors"
                                 >
                                     <div className="flex items-center gap-4">
@@ -113,7 +118,7 @@ export default function AdminUsersPage() {
                                             </div>
                                         </div>
                                     </div>
-
+                                    
                                     <div className="flex items-center gap-2">
                                         <Button
                                             variant={user.isBanned ? "outline" : "destructive"}
@@ -137,6 +142,16 @@ export default function AdminUsersPage() {
                         </div>
                     )}
                 </CardContent>
+                {pagination && pagination.totalPages > 1 && (
+                    <div className="border-t p-4">
+                        <Pagination 
+                            currentPage={page}
+                            totalPages={pagination.totalPages}
+                            onPageChange={setPage}
+                            isLoading={loading}
+                        />
+                    </div>
+                )}
             </Card>
 
             <BanDialog

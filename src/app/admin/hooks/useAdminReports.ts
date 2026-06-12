@@ -33,7 +33,7 @@ export function useAdminReports() {
         try {
             setLoading(true);
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/reports/admin/top-offenders?page=${page}`, {
-                credentials: 'include',
+                credentials: 'include'
             });
             const data = await response.json();
 
@@ -59,7 +59,7 @@ export function useAdminReports() {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status }),
-                credentials: 'include',
+                credentials: 'include'
             });
 
             if (!response.ok) {

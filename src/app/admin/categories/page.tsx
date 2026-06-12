@@ -23,13 +23,17 @@ import {
     DialogFooter,
 } from '@/src/components/ui/dialog';
 import { ConfirmDialog } from '@/src/app/components/shared/ConfirmDialog';
+import { Pagination } from '@/src/app/components/shared/Pagination';
 
 export default function AdminCategoriesPage() {
     const { 
         categories, 
+        pagination,
         loading, 
         search, 
-        setSearch, 
+        setSearch,
+        page,
+        setPage, 
         createCategory, 
         updateCategory, 
         deleteCategory 
@@ -158,6 +162,16 @@ export default function AdminCategoriesPage() {
                         </div>
                     )}
                 </CardContent>
+                {pagination && pagination.totalPages > 1 && (
+                    <div className="border-t p-4">
+                        <Pagination 
+                            currentPage={page}
+                            totalPages={pagination.totalPages}
+                            onPageChange={setPage}
+                            isLoading={loading}
+                        />
+                    </div>
+                )}
             </Card>
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
