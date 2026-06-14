@@ -2,7 +2,7 @@
 import { Message, isTextMessage, isImageMessage, isAudioMessage, isGifMessage, Reaction } from "@/src/types/chat";
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
-import { Reply, ChevronRight, SmilePlus, Loader2, Heart } from "lucide-react";
+import { Reply, ChevronRight, SmilePlus, Loader2, Heart, Megaphone, ShieldCheck } from "lucide-react";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useLongPress } from "@/src/app/chat/[id]/hooks/useLongPress";
 import { useHover } from "@/src/app/hooks/useHover";
@@ -137,6 +137,42 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
         });
     };
 
+    // System and Global Announcement rendering
+    if ((msg as any).system) {
+        if ((msg as any).isGlobal) {
+            return (
+                <div className="w-full flex justify-center my-6 px-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="max-w-md bg-primary/10 border-2 border-primary/20 backdrop-blur-md rounded-2xl p-4 shadow-xl relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:scale-110 transition-transform">
+                            <Megaphone className="w-12 h-12 rotate-12" />
+                        </div>
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="p-2 rounded-lg bg-primary text-primary-foreground">
+                                <ShieldCheck className="w-4 h-4" />
+                            </div>
+                            <span className="font-bold text-xs uppercase tracking-widest text-primary">Anuncio Oficial</span>
+                        </div>
+                        {isTextMessage(msg) && (
+                            <p className="text-sm font-medium leading-relaxed italic">
+                                "{msg.message}"
+                            </p>
+                        )}
+                        <div className="mt-3 text-[10px] text-muted-foreground flex justify-end">
+                            {formatTime(msg.timestamp)}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        return (
+            <div className="w-full flex justify-center my-2 animate-in fade-in duration-300">
+                <div className="px-3 py-1 rounded-full bg-muted/50 border text-[11px] text-muted-foreground font-medium">
+                    {isTextMessage(msg) ? msg.message : 'Mensaje de sistema'}
+                </div>
+            </div>
+        );
+    }
 
     const messageContent = (
         <div

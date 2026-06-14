@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Check, X, Loader2 } from 'lucide-react';
 import { Badge } from '@/src/components/ui/badge';
 import { ConfirmDialog } from '@/src/app/components/shared/ConfirmDialog';
+import { toast } from 'sonner';
 
 export default function PendingRoomsPage() {
     const { rooms, loading, error, updateStatus } = useAdminRooms('IN_REVISION');
@@ -22,7 +23,10 @@ export default function PendingRoomsPage() {
     const handleConfirmAction = async () => {
         if (!actionData) return;
         setIsSubmitting(true);
-        await updateStatus(actionData.id, actionData.status);
+        const success = await updateStatus(actionData.id, actionData.status);
+        if (success) {
+            toast.success(actionData.status === 'ACCEPTED' ? 'Sala aceptada.' : 'Sala rechazada.');
+        }
         setIsSubmitting(false);
         setIsConfirmOpen(false);
         setActionData(null);

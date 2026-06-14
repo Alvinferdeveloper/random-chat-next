@@ -24,6 +24,7 @@ import {
 } from '@/src/components/ui/dialog';
 import { ConfirmDialog } from '@/src/app/components/shared/ConfirmDialog';
 import { Pagination } from '@/src/app/components/shared/Pagination';
+import { toast } from 'sonner';
 
 export default function AdminCategoriesPage() {
     const { 
@@ -65,8 +66,10 @@ export default function AdminCategoriesPage() {
         
         if (editingCategory) {
             success = await updateCategory(editingCategory.id, formData.name, formData.icon);
+            if (success) toast.success('Categoría actualizada correctamente.');
         } else {
             success = await createCategory(formData.name, formData.icon);
+            if (success) toast.success('Categoría creada correctamente.');
         }
 
         if (success) {
@@ -83,7 +86,8 @@ export default function AdminCategoriesPage() {
     const handleConfirmDelete = async () => {
         if (categoryToDelete) {
             setIsSubmitting(true);
-            await deleteCategory(categoryToDelete);
+            const success = await deleteCategory(categoryToDelete);
+            if (success) toast.success('Categoría eliminada.');
             setIsSubmitting(false);
             setIsConfirmOpen(false);
             setCategoryToDelete(null);

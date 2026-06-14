@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/src/app/components/providers/ThemeProvider";
 import "./globals.css";
 import { SocketEventProvider } from "@/src/app/components/providers/SocketEventProvider";
 import { SessionProvider } from "@/src/app/components/providers/SessionProvider";
+import { Toaster } from "@/src/components/ui/sonner";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -90,6 +91,7 @@ export default function RootLayout({
               <div className="flex flex-col min-h-screen">
                 <div className="flex-1">{children}</div>
               </div>
+              <Toaster richColors closeButton position="top-right" />
             </ThemeProvider>
           </SocketEventProvider>
         </SessionProvider>

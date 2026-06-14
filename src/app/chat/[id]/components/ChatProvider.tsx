@@ -135,6 +135,16 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
             }));
         };
 
+        const handleGlobalSystemMessage = (msg: Message) => {
+            setMessages(prev => produce(prev, draft => {
+                draft.push({
+                    ...msg,
+                    system: true,
+                    isGlobal: true
+                });
+            }));
+        };
+
         socket.on('message', handleMessage);
         socket.on('image', handleMessage);
         socket.on('audio', handleMessage);
@@ -145,6 +155,7 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
         socket.on('user-started-typing', handleUserStartedTyping);
         socket.on('user-stopped-typing', handleUserStoppedTyping);
         socket.on('reaction_update', handleReactionUpdate);
+        socket.on('global_system_message', handleGlobalSystemMessage);
         socket.on('error', handleError);
 
         return () => {
@@ -158,6 +169,7 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
             socket.off('user-started-typing', handleUserStartedTyping);
             socket.off('user-stopped-typing', handleUserStoppedTyping);
             socket.off('reaction_update', handleReactionUpdate);
+            socket.off('global_system_message', handleGlobalSystemMessage);
             socket.off('error', handleError);
         };
     }, [socket, username]);

@@ -19,6 +19,7 @@ import {
 import { useState } from 'react';
 import { BanDialog } from '@/src/app/admin/users/components/BanDialog';
 import { Pagination } from '@/src/app/components/shared/Pagination';
+import { toast } from 'sonner';
 
 const REASON_LABELS: Record<string, string> = {
     SPAM: 'Spam',
@@ -48,7 +49,10 @@ export default function AdminReportsPage() {
 
     const handleResolve = async (userId: string, status: 'RESOLVED' | 'DISMISSED') => {
         setProcessingId(userId);
-        await resolveReports(userId, status);
+        const success = await resolveReports(userId, status);
+        if (success) {
+            toast.success(status === 'RESOLVED' ? 'Reportes resueltos.' : 'Reportes descartados.');
+        }
         setProcessingId(null);
     };
 
@@ -62,6 +66,7 @@ export default function AdminReportsPage() {
         setProcessingId(userToBan.id);
         const success = await toggleBan(userToBan.id, true, reason);
         if (success) {
+            toast.success(`Usuario @${userToBan.username} baneado.`);
             // After banning, mark reports as resolved
             await resolveReports(userToBan.id, 'RESOLVED');
         }

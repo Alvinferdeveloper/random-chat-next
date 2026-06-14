@@ -18,6 +18,7 @@ import {
 import { useState } from 'react';
 import { BanDialog } from './components/BanDialog';
 import { Pagination } from '@/src/app/components/shared/Pagination';
+import { toast } from 'sonner';
 
 export default function AdminUsersPage() {
     const { 
@@ -39,7 +40,8 @@ export default function AdminUsersPage() {
         if (user.isBanned) {
             // Unban directly
             setProcessingId(user.id);
-            await toggleBan(user.id, false);
+            const success = await toggleBan(user.id, false);
+            if (success) toast.success(`Usuario @${user.username} desbaneado.`);
             setProcessingId(null);
         } else {
             // Open ban dialog
@@ -51,7 +53,8 @@ export default function AdminUsersPage() {
     const handleConfirmBan = async (reason: string) => {
         if (!userToBan) return;
         setProcessingId(userToBan.id);
-        await toggleBan(userToBan.id, true, reason);
+        const success = await toggleBan(userToBan.id, true, reason);
+        if (success) toast.success(`Usuario @${userToBan.username} baneado.`);
         setProcessingId(null);
         setBanDialogOpen(false);
     };
