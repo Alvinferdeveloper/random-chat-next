@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { Message } from '@/src/types/chat';
 
-interface Offender {
+export interface Offender {
     user: {
         id: string;
         username: string;
@@ -13,6 +14,16 @@ interface Offender {
     reportCount: number;
     recentReasons: string[];
     lastReportedAt: string;
+}
+
+export interface DetailedReport {
+    id: string;
+    reason: string;
+    details: string | null;
+    chatContext: Message[] | null;
+    createdAt: string;
+    reporter: { username: string };
+    room: { name: string } | null;
 }
 
 interface Pagination {
@@ -76,6 +87,20 @@ export function useAdminReports() {
         }
     };
 
+    const fetchUserReports = async (userId: string): Promise<DetailedReport[]> => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/reports/admin/user/${userId}`, {
+                credentials: 'include'
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || 'Error fetching user reports');
+            return data;
+        } catch (err) {
+            setError((err as Error).message);
+            return [];
+        }
+    };
+
     return {
         offenders,
         pagination,
@@ -84,6 +109,7 @@ export function useAdminReports() {
         page,
         setPage,
         resolveReports,
+        fetchUserReports,
         refresh: fetchReports
     };
 }

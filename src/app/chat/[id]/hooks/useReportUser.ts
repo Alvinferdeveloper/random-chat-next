@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useSocket } from '@/src/app/components/providers/SocketEventProvider';
 
 export type ReportReason = 'SPAM' | 'HARASSMENT' | 'INAPPROPRIATE_CONTENT' | 'HATE_SPEECH' | 'ANNOYING_BEHAVIOR' | 'OTHER';
 
@@ -11,47 +12,50 @@ interface UseReportUserProps {
 }
 
 export function useReportUser({ reportedUserId, roomId, onSuccess }: UseReportUserProps) {
+    const socket = useSocket();
     const [selectedReason, setSelectedReason] = useState<ReportReason | null>(null);
     const [details, setDetails] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const handleSuccess = useCallback((msg: string) => {
+        setIsSuccess(true);
+        setIsSubmitting(false);
+        if (onSuccess) onSuccess();
+    }, [onSuccess]);
+
+    const handleError = useCallback((msg: string) => {
+        setError(msg);
+        setIsSubmitting(false);
+    }, []);
+
+    useEffect(() => {
+        if (!socket) return;
+
+        socket.on('report-success', handleSuccess);
+        socket.on('error', handleError);
+
+        return () => {
+            socket.off('report-success', handleSuccess);
+            socket.off('error', handleError);
+        };
+    }, [socket, handleSuccess, handleError]);
+
     const submitReport = async () => {
-        if (!selectedReason) return;
+        if (!selectedReason || !socket) return;
 
         setIsSubmitting(true);
         setError(null);
 
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/reports`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    reportedUserId,
-                    roomId,
-                    reason: selectedReason,
-                    details: details.trim() || undefined
-                }),
-                credentials: 'include',
-            });
+        socket.emit('report-user', {
+            reportedUserId,
+            reason: selectedReason,
+            details: details.trim() || undefined
+        });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Error al enviar el reporte');
-            }
-
-            setIsSuccess(true);
-            if (onSuccess) onSuccess();
-
-            return true;
-        } catch (err) {
-            setError((err as Error).message);
-            return false;
-        } finally {
-            setIsSubmitting(false);
-        }
+        // We don't await here as it's an event. Success/Error are handled by listeners.
+        return true;
     };
 
     const reset = () => {
@@ -73,3 +77,4 @@ export function useReportUser({ reportedUserId, roomId, onSuccess }: UseReportUs
         reset
     };
 }
+

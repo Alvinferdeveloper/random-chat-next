@@ -1,6 +1,6 @@
 'use client';
 
-import { useAdminReports } from './hooks/useAdminReports';
+import { useAdminReports, DetailedReport } from './hooks/useAdminReports';
 import { useAdminUsers } from '../users/hooks/useAdminUsers';
 import { Button } from '@/src/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
@@ -14,11 +14,13 @@ import {
     XCircle,
     Loader2,
     Calendar,
-    MessageCircle
+    Eye,
+    MessageSquare
 } from 'lucide-react';
 import { useState } from 'react';
 import { BanDialog } from '@/src/app/admin/users/components/BanDialog';
 import { Pagination } from '@/src/app/components/shared/Pagination';
+import { ChatContextDialog } from './components/ChatContextDialog';
 import { toast } from 'sonner';
 
 const REASON_LABELS: Record<string, string> = {
@@ -37,8 +39,8 @@ export default function AdminReportsPage() {
         loading, 
         page,
         setPage,
-        resolveReports, 
-        refresh: refreshReports 
+        resolveReports,
+        fetchUserReports 
     } = useAdminReports();
     
     const { toggleBan } = useAdminUsers();
@@ -46,6 +48,11 @@ export default function AdminReportsPage() {
     const [processingId, setProcessingId] = useState<string | null>(null);
     const [banDialogOpen, setBanDialogOpen] = useState(false);
     const [userToBan, setUserToBan] = useState<{ id: string, username: string } | null>(null);
+    
+    // Context Evidence State
+    const [isContextOpen, setIsContextOpen] = useState(false);
+    const [contextReports, setContextReports] = useState<DetailedReport[]>([]);
+    const [selectedUsername, setSelectedUsername] = useState('');
 
     const handleResolve = async (userId: string, status: 'RESOLVED' | 'DISMISSED') => {
         setProcessingId(userId);
@@ -67,11 +74,24 @@ export default function AdminReportsPage() {
         const success = await toggleBan(userToBan.id, true, reason);
         if (success) {
             toast.success(`Usuario @${userToBan.username} baneado.`);
-            // After banning, mark reports as resolved
             await resolveReports(userToBan.id, 'RESOLVED');
         }
         setProcessingId(null);
         setBanDialogOpen(false);
+    };
+
+    const handleViewContext = async (user: any) => {
+        setProcessingId(user.id);
+        const reports = await fetchUserReports(user.id);
+        
+        if (reports.length > 0) {
+            setContextReports(reports);
+            setSelectedUsername(user.username);
+            setIsContextOpen(true);
+        } else {
+            toast.info('No se encontró historial de chat para los reportes de este usuario.');
+        }
+        setProcessingId(null);
     };
 
     return (
@@ -120,6 +140,16 @@ export default function AdminReportsPage() {
                                             variant="outline" 
                                             size="sm" 
                                             className="h-8 gap-1.5"
+                                            onClick={() => handleViewContext(offender.user)}
+                                            disabled={processingId === offender.user.id}
+                                        >
+                                            {processingId === offender.user.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Eye className="w-3.5 h-3.5" />}
+                                            Ver Evidencia
+                                        </Button>
+                                        <Button 
+                                            variant="outline" 
+                                            size="sm" 
+                                            className="h-8 gap-1.5 text-muted-foreground"
                                             onClick={() => handleResolve(offender.user.id, 'DISMISSED')}
                                             disabled={processingId === offender.user.id}
                                         >
@@ -133,12 +163,8 @@ export default function AdminReportsPage() {
                                             onClick={() => handleBanClick(offender.user)}
                                             disabled={processingId === offender.user.id}
                                         >
-                                            {processingId === offender.user.id ? (
-                                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                            ) : (
-                                                <UserX className="w-3.5 h-3.5" />
-                                            )}
-                                            Banear Usuario
+                                            <UserX className="w-3.5 h-3.5" />
+                                            Banear
                                         </Button>
                                     </div>
                                 </div>
@@ -185,6 +211,13 @@ export default function AdminReportsPage() {
                 onClose={() => setBanDialogOpen(false)}
                 onConfirm={handleConfirmBan}
                 username={userToBan?.username || ''}
+            />
+
+            <ChatContextDialog
+                isOpen={isContextOpen}
+                onClose={() => setIsContextOpen(false)}
+                reports={contextReports}
+                reportedUsername={selectedUsername}
             />
         </div>
     );
