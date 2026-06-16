@@ -32,11 +32,12 @@ export function useAdminUsers() {
         try {
             setLoading(true);
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/users?page=${page}&search=${search}`, {
-                credentials: 'include',
+                credentials: 'include'
             });
             const data = await response.json();
 
             if (!response.ok) throw new Error(data.message || 'Error fetching users');
+
             setUsers(data.users);
             setPagination(data.pagination);
             setError(null);
@@ -57,7 +58,7 @@ export function useAdminUsers() {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ isBanned, banReason: reason }),
-                credentials: 'include',
+                credentials: 'include'
             });
 
             if (!response.ok) {
@@ -67,6 +68,29 @@ export function useAdminUsers() {
 
             // Update local state
             setUsers(prev => prev.map(u => u.id === userId ? { ...u, isBanned } : u));
+            return true;
+        } catch (err) {
+            setError((err as Error).message);
+            return false;
+        }
+    };
+
+    const changeRole = async (userId: string, role: string) => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/users/${userId}/role`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ role }),
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.message || 'Error updating role');
+            }
+
+            // Update local state
+            setUsers(prev => prev.map(u => u.id === userId ? { ...u, role } : u));
             return true;
         } catch (err) {
             setError((err as Error).message);
@@ -84,6 +108,7 @@ export function useAdminUsers() {
         page,
         setPage,
         toggleBan,
+        changeRole,
         refresh: fetchUsers
     };
 }

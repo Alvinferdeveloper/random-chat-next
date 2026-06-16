@@ -11,14 +11,21 @@ import {
     UserX, 
     UserCheck, 
     Loader2, 
-    MoreHorizontal,
     Mail,
-    Calendar
+    Calendar,
+    Shield
 } from 'lucide-react';
 import { useState } from 'react';
 import { BanDialog } from './components/BanDialog';
 import { Pagination } from '@/src/app/components/shared/Pagination';
 import { toast } from 'sonner';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/src/components/ui/dropdown-menu";
+import { useAuth } from '@/src/app/hooks/useAuth';
 
 export default function AdminUsersPage() {
     const { 
@@ -29,22 +36,22 @@ export default function AdminUsersPage() {
         setSearch,
         page,
         setPage, 
-        toggleBan 
+        toggleBan,
+        changeRole
     } = useAdminUsers();
 
+    const { session } = useAuth();
     const [processingId, setProcessingId] = useState<string | null>(null);
     const [banDialogOpen, setBanDialogOpen] = useState(false);
     const [userToBan, setUserToBan] = useState<{ id: string, username: string } | null>(null);
 
     const handleActionClick = async (user: any) => {
         if (user.isBanned) {
-            // Unban directly
             setProcessingId(user.id);
             const success = await toggleBan(user.id, false);
             if (success) toast.success(`Usuario @${user.username} desbaneado.`);
             setProcessingId(null);
         } else {
-            // Open ban dialog
             setUserToBan({ id: user.id, username: user.username });
             setBanDialogOpen(true);
         }
@@ -58,6 +65,15 @@ export default function AdminUsersPage() {
         setProcessingId(null);
         setBanDialogOpen(false);
     };
+
+    const handleChangeRole = async (userId: string, username: string, newRole: string) => {
+        setProcessingId(userId);
+        const success = await changeRole(userId, newRole);
+        if (success) toast.success(`Rol de @${username} actualizado a ${newRole}.`);
+        setProcessingId(null);
+    };
+
+    const isMe = (userId: string) => session?.user?.id === userId;
 
     return (
         <div className="space-y-6">
@@ -92,7 +108,7 @@ export default function AdminUsersPage() {
                             {users.map((user) => (
                                 <div 
                                     key={user.id} 
-                                    className="flex items-center justify-between p-4 border rounded-xl hover:bg-secondary/20 transition-colors"
+                                    className="flex items-center justify-between p-4 border rounded-xl hover:bg-secondary/20 transition-colors group"
                                 >
                                     <div className="flex items-center gap-4">
                                         <Avatar className="h-12 w-12 border">
@@ -103,10 +119,16 @@ export default function AdminUsersPage() {
                                             <div className="flex items-center gap-2">
                                                 <h3 className="font-semibold">{user.username}</h3>
                                                 {user.role === 'ADMIN' && (
-                                                    <Badge variant="secondary" className="text-[10px] uppercase font-bold">Admin</Badge>
+                                                    <Badge variant="secondary" className="text-[10px] uppercase font-bold bg-amber-500/10 text-amber-600 border-amber-500/20">Admin</Badge>
+                                                )}
+                                                {user.role === 'MODERATOR' && (
+                                                    <Badge variant="secondary" className="text-[10px] uppercase font-bold bg-blue-500/10 text-blue-600 border-blue-500/20">Moderador</Badge>
                                                 )}
                                                 {user.isBanned && (
                                                     <Badge variant="destructive" className="text-[10px] uppercase font-bold">Baneado</Badge>
+                                                )}
+                                                {isMe(user.id) && (
+                                                    <Badge variant="outline" className="text-[10px] uppercase font-bold italic">Tú</Badge>
                                                 )}
                                             </div>
                                             <div className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 mt-1 text-xs text-muted-foreground">
@@ -123,19 +145,44 @@ export default function AdminUsersPage() {
                                     </div>
                                     
                                     <div className="flex items-center gap-2">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button 
+                                                    variant="outline" 
+                                                    size="sm" 
+                                                    className="gap-2 h-8"
+                                                    disabled={processingId === user.id || isMe(user.id)}
+                                                >
+                                                    <Shield className="w-3.5 h-3.5" />
+                                                    Rol
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end" className="w-40">
+                                                <DropdownMenuItem onClick={() => handleChangeRole(user.id, user.username, 'USER')} className="text-xs font-medium">
+                                                    Usuario (USER)
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => handleChangeRole(user.id, user.username, 'MODERATOR')} className="text-xs font-medium text-blue-600">
+                                                    Moderador (MOD)
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => handleChangeRole(user.id, user.username, 'ADMIN')} className="text-xs font-medium text-amber-600">
+                                                    Administrador (ADMIN)
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+
                                         <Button
                                             variant={user.isBanned ? "outline" : "destructive"}
                                             size="sm"
-                                            className="gap-2"
+                                            className="gap-2 h-8"
                                             disabled={processingId === user.id || user.role === 'ADMIN'}
                                             onClick={() => handleActionClick(user)}
                                         >
                                             {processingId === user.id ? (
-                                                <Loader2 className="h-4 w-4 animate-spin" />
+                                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
                                             ) : user.isBanned ? (
-                                                <UserCheck className="h-4 w-4" />
+                                                <UserCheck className="h-3.5 w-3.5" />
                                             ) : (
-                                                <UserX className="h-4 w-4" />
+                                                <UserX className="h-3.5 w-3.5" />
                                             )}
                                             {user.isBanned ? 'Desbanear' : 'Banear'}
                                         </Button>
