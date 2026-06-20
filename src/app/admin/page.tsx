@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src
 import { Activity, Users, MessageSquare, Loader2, Megaphone, Send } from 'lucide-react';
 import { useAdminStats } from './hooks/useAdminStats';
 import { useAdminBroadcast } from './hooks/useAdminBroadcast';
+import { useAdminSettings } from './hooks/useAdminSettings';
 import { Button } from '@/src/components/ui/button';
 import { 
     Dialog, 
@@ -20,8 +21,19 @@ import { toast } from 'sonner';
 export default function AdminDashboard() {
     const { stats, loading } = useAdminStats();
     const { sendBroadcast, isSubmitting, error: broadcastError } = useAdminBroadcast();
+    const { settings, loading: settingsLoading, updateSetting } = useAdminSettings();
     const [isBroadcastOpen, setIsBroadcastOpen] = useState(false);
     const [broadcastMsg, setBroadcastMsg] = useState('');
+
+    const handleToggleSetting = async (key: string, currentValue: string) => {
+        const newValue = currentValue === 'true' ? 'false' : 'true';
+        const success = await updateSetting(key, newValue);
+        if (success) {
+            toast.success(`Configuración actualizada correctamente.`);
+        } else {
+            toast.error('Error al actualizar la configuración.');
+        }
+    };
 
     const handleSendBroadcast = async () => {
         if (!broadcastMsg.trim()) return;
@@ -97,6 +109,44 @@ export default function AdminDashboard() {
                         </CardHeader>
                     </Card>
                 </div>
+            </div>
+
+            {/* Ajustes Globales del Sistema */}
+            <div className="mt-8">
+                <h2 className="text-xl font-bold mb-4">Ajustes del Sistema</h2>
+                {settingsLoading ? (
+                    <div className="flex justify-center p-8">
+                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                    </div>
+                ) : (
+                    <div className="grid gap-4 md:grid-cols-2">
+                        {settings.map((setting) => (
+                            <Card key={setting.key} className="flex flex-col justify-between">
+                                <CardHeader className="pb-3">
+                                    <div className="flex items-center justify-between gap-4">
+                                        <CardTitle className="text-lg capitalize font-semibold">
+                                            {setting.key.replace(/_/g, ' ')}
+                                        </CardTitle>
+                                        <Button
+                                            size="sm"
+                                            variant={setting.value === 'true' ? "default" : "secondary"}
+                                            onClick={() => handleToggleSetting(setting.key, setting.value)}
+                                            className="rounded-full px-4"
+                                        >
+                                            {setting.value === 'true' ? 'Activo' : 'Desactivado'}
+                                        </Button>
+                                    </div>
+                                    <CardDescription className="mt-2 text-sm">
+                                        {setting.description || 'Sin descripción'}
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent className="pt-0 text-xs text-muted-foreground">
+                                    Última actualización: {setting.updatedAt ? new Date(setting.updatedAt).toLocaleString() : 'N/A'}
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                )}
             </div>
 
             <Dialog open={isBroadcastOpen} onOpenChange={setIsBroadcastOpen}>

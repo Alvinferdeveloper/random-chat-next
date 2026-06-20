@@ -257,6 +257,13 @@ El backend asigna al usuario a un "sub-room" específico dentro de la sala padre
 ### Salas con Status
 Solo las salas con `status: ACCEPTED` son accesibles para el chat. El backend rechaza conexiones a salas con otro status.
 
+### Ajustes del Sistema y Modo Mantenimiento
+La aplicación consume configuraciones globales desde `/api/v1/settings` (público) y `/api/v1/admin/settings` (admin).
+- `maintenance_mode`: Si está activo, el middleware del backend bloquea todos los requests HTTP que no pertenezcan al admin/health/auth devolviendo un 503, y el websocket del chat rechaza nuevas uniones a las salas.
+- `registration_enabled`: Controla si el registro está disponible.
+- `chat_enabled`: Si está apagado, se bloquea la unión a cualquier chat.
+- `room_creation_enabled`: Si está apagado, se bloquea el formulario de creación de salas en el backend.
+
 ### Imágenes en el Chat
 El flujo de subida de imágenes:
 1. Usuario selecciona imagen → `useImageHandling` la previewea localmente
