@@ -7,11 +7,14 @@ import Link from 'next/link';
 import { Loader2, ShieldCheck, LayoutDashboard, MessageSquare, Users, AlertCircle, Tag } from 'lucide-react';
 import { Button } from '@/src/components/ui/button';
 import { cn } from '@/src/lib/utils';
+import { useAdminNotifications } from '@/src/app/admin/hooks/useAdminNotifications';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const { session, isPending } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
+
+    useAdminNotifications();
 
     useEffect(() => {
         if (!isPending) {
