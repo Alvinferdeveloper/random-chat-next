@@ -2,6 +2,7 @@
 import { Message, isTextMessage, isImageMessage, isAudioMessage, isGifMessage, Reaction } from "@/src/types/chat";
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
+import Link from "next/link";
 import { Reply, ChevronRight, SmilePlus, Loader2, Heart, Megaphone, ShieldCheck } from "lucide-react";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useLongPress } from "@/src/app/chat/[id]/hooks/useLongPress";
@@ -124,13 +125,17 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                 const userExists = usersInRoom.some(u => u.username === part);
                 const isMe = part === username;
                 return (
-                    <span key={index} className={cn(
-                        "font-semibold rounded px-1",
-                        userExists ? "bg-blue-300/50 dark:bg-blue-700/50 text-blue-800 dark:text-blue-200" : "text-muted-foreground",
-                        isMe && "ring-1 ring-blue-500"
-                    )}>
+                    <Link
+                        key={index}
+                        href={`/profile/${encodeURIComponent(part)}`}
+                        className={cn(
+                            "font-semibold rounded px-1",
+                            userExists ? "bg-blue-300/50 dark:bg-blue-700/50 text-blue-800 dark:text-blue-200" : "text-muted-foreground",
+                            isMe && "ring-1 ring-blue-500"
+                        )}
+                    >
                         @{part}
-                    </span>
+                    </Link>
                 );
             }
             return part; // This is a normal text part
@@ -289,16 +294,35 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
         <>
             <div className={`group w-full flex flex-col gap-1 ${isMyMessage ? "items-end" : "items-start"}`}>
                 <div className={`flex items-center gap-2 ${isMyMessage ? "flex-row-reverse" : "flex-row"}`}>
-                    <Avatar className="h-6 w-6">
-                        <AvatarImage
-                            src={msg.userProfileImage || `https://api.dicebear.com/9.x/avataaars/svg?seed=${msg.username}`}
-                            alt={`${msg.username}'s profile picture`}
-                        />
-                        <AvatarFallback>{getInitials(msg.username)}</AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm font-semibold text-primary">
-                        {isMyMessage ? "Tú" : msg.username}
-                    </span>
+                    {isMyMessage ? (
+                        <Avatar className="h-6 w-6">
+                            <AvatarImage
+                                src={msg.userProfileImage || `https://api.dicebear.com/9.x/avataaars/svg?seed=${msg.username}`}
+                                alt={`${msg.username}'s profile picture`}
+                            />
+                            <AvatarFallback>{getInitials(msg.username)}</AvatarFallback>
+                        </Avatar>
+                    ) : (
+                        <Link href={`/profile/${encodeURIComponent(msg.username)}`}>
+                            <Avatar className="h-6 w-6 hover:ring-2 hover:ring-primary transition-all">
+                                <AvatarImage
+                                    src={msg.userProfileImage || `https://api.dicebear.com/9.x/avataaars/svg?seed=${msg.username}`}
+                                    alt={`${msg.username}'s profile picture`}
+                                />
+                                <AvatarFallback>{getInitials(msg.username)}</AvatarFallback>
+                            </Avatar>
+                        </Link>
+                    )}
+                    {isMyMessage ? (
+                        <span className="text-sm font-semibold text-primary">Tú</span>
+                    ) : (
+                        <Link
+                            href={`/profile/${encodeURIComponent(msg.username)}`}
+                            className="text-sm font-semibold text-primary hover:underline"
+                        >
+                            {msg.username}
+                        </Link>
+                    )}
                     <span className="text-xs text-muted-foreground">{formatTime(msg.timestamp)}</span>
                 </div>
 
