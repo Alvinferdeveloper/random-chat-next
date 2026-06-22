@@ -36,7 +36,7 @@ export function UserDetailSheet({ userId, open, onOpenChange }: UserDetailSheetP
 
     return (
         <Sheet open={open} onOpenChange={handleOpenChange}>
-            <SheetContent className="w-full sm:max-w-lg overflow-hidden flex flex-col">
+            <SheetContent className="w-full sm:max-w-lg flex flex-col overflow-hidden">
                 <SheetHeader className="shrink-0">
                     <SheetTitle>Detalle del Usuario</SheetTitle>
                     <p className="text-sm text-muted-foreground">Información completa del perfil y actividad</p>
@@ -48,8 +48,8 @@ export function UserDetailSheet({ userId, open, onOpenChange }: UserDetailSheetP
                         <p className="text-sm text-muted-foreground">Cargando detalles...</p>
                     </div>
                 ) : !details ? null : (
-                    <ScrollArea className="flex-1 pr-4">
-                        <div className="space-y-6 py-4">
+                    <ScrollArea className="flex-1 min-h-0 pr-4">
+                        <div className="space-y-6 pb-6">
                             {/* Perfil */}
                             <div className="flex items-start gap-4">
                                 <Avatar className="h-16 w-16 border">
