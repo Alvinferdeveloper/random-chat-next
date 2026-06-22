@@ -13,10 +13,12 @@ import {
     Loader2, 
     Mail,
     Calendar,
-    Shield
+    Shield,
+    Eye
 } from 'lucide-react';
 import { useState } from 'react';
 import { BanDialog } from './components/BanDialog';
+import { UserDetailSheet } from './components/UserDetailSheet';
 import { Pagination } from '@/src/app/components/shared/Pagination';
 import { toast } from 'sonner';
 import {
@@ -44,6 +46,8 @@ export default function AdminUsersPage() {
     const [processingId, setProcessingId] = useState<string | null>(null);
     const [banDialogOpen, setBanDialogOpen] = useState(false);
     const [userToBan, setUserToBan] = useState<{ id: string, username: string } | null>(null);
+    const [detailUserId, setDetailUserId] = useState<string | null>(null);
+    const [detailOpen, setDetailOpen] = useState(false);
 
     const handleActionClick = async (user: any) => {
         if (user.isBanned) {
@@ -145,6 +149,15 @@ export default function AdminUsersPage() {
                                     </div>
                                     
                                     <div className="flex items-center gap-2">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="gap-2 h-8"
+                                            onClick={() => { setDetailUserId(user.id); setDetailOpen(true); }}
+                                        >
+                                            <Eye className="w-3.5 h-3.5" />
+                                            Ver
+                                        </Button>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button 
@@ -204,6 +217,11 @@ export default function AdminUsersPage() {
                 )}
             </Card>
 
+            <UserDetailSheet
+                userId={detailUserId}
+                open={detailOpen}
+                onOpenChange={setDetailOpen}
+            />
             <BanDialog
                 isOpen={banDialogOpen}
                 onClose={() => setBanDialogOpen(false)}
