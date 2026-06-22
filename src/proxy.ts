@@ -30,7 +30,7 @@ export async function proxy(request: NextRequest) {
     }
 
     if (isPublicRoute && isAuthenticated) {
-        if (pathname !== '/rooms' && !pathname.startsWith('/chat/')) {
+        if (pathname !== '/rooms' && !pathname.startsWith('/chat/') && !isPublicProfile) {
             return NextResponse.redirect(new URL('/rooms', request.url));
         }
     }
