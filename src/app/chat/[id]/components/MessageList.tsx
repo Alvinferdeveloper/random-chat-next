@@ -20,9 +20,11 @@ interface MessageListProps {
     usersInRoom: User[];
     favoriteGifs: any[];
     toggleFavorite: (giphyId: string, url: string, title?: string) => void;
+    onEdit?: (message: Message) => void;
+    onDelete?: (messageId: string) => void;
 }
 
-export function MessageList({ messages, username, messagesEndRef, openImageViewer, scrollToBottom, setReplyingToMessage, sendReaction, usersInRoom, favoriteGifs, toggleFavorite }: MessageListProps) {
+export function MessageList({ messages, username, messagesEndRef, openImageViewer, scrollToBottom, setReplyingToMessage, sendReaction, usersInRoom, favoriteGifs, toggleFavorite, onEdit, onDelete }: MessageListProps) {
     return (
         <div className="flex-1 p-4">
             <div className="space-y-4">
@@ -38,6 +40,8 @@ export function MessageList({ messages, username, messagesEndRef, openImageViewe
                         usersInRoom={usersInRoom}
                         favoriteGifs={favoriteGifs}
                         toggleFavorite={toggleFavorite}
+                        onEdit={onEdit}
+                        onDelete={onDelete}
                     />
                 ))}
                 <div ref={messagesEndRef} />

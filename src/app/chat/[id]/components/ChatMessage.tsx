@@ -3,7 +3,7 @@ import { Message, isTextMessage, isImageMessage, isAudioMessage, isGifMessage, R
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
 import Link from "next/link";
-import { Reply, ChevronRight, SmilePlus, Loader2, Heart, Megaphone, ShieldCheck } from "lucide-react";
+import { Reply, ChevronRight, SmilePlus, Loader2, Heart, Megaphone, ShieldCheck, Pencil, Trash2 } from "lucide-react";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useLongPress } from "@/src/app/chat/[id]/hooks/useLongPress";
 import { useHover } from "@/src/app/hooks/useHover";
@@ -28,6 +28,8 @@ interface ChatMessageProps {
     usersInRoom: User[];
     favoriteGifs: any[];
     toggleFavorite: (giphyId: string, url: string, title?: string) => void;
+    onEdit?: (message: Message) => void;
+    onDelete?: (messageId: string) => void;
 }
 
 function formatTime(dateStr: string) {
@@ -35,7 +37,7 @@ function formatTime(dateStr: string) {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
-export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, setReplyingToMessage, sendReaction, usersInRoom, favoriteGifs, toggleFavorite }: ChatMessageProps) {
+export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, setReplyingToMessage, sendReaction, usersInRoom, favoriteGifs, toggleFavorite, onEdit, onDelete }: ChatMessageProps) {
     const isMyMessage = msg.username === username;
     const [menuVisible, setMenuVisible] = useState(false);
     const [pickerVisible, setPickerVisible] = useState(false);
@@ -324,6 +326,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                         </Link>
                     )}
                     <span className="text-xs text-muted-foreground">{formatTime(msg.timestamp)}</span>
+                    {msg.edited && <span className="text-[10px] text-muted-foreground/60 italic ml-1">(editado)</span>}
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -338,6 +341,16 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                             <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleReply}>
                                 <Reply className="h-4 w-4" />
                             </Button>
+                            {isMyMessage && isTextMessage(msg) && onEdit && (
+                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onEdit(msg)}>
+                                    <Pencil className="h-4 w-4" />
+                                </Button>
+                            )}
+                            {isMyMessage && onDelete && (
+                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onDelete(msg.id)}>
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            )}
                         </div>
                     )}
                     {messageContent}
@@ -353,7 +366,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                     />
                     <div
                         className={cn(
-                            "fixed z-50 bg-background/95 backdrop-blur-sm border rounded-xl shadow-xl p-1 flex items-center gap-1",
+                            "fixed z-50 bg-background/95 backdrop-blur-sm border rounded-xl shadow-xl p-1 flex flex-col items-stretch gap-0.5 min-w-[140px]",
                             "animate-in fade-in zoom-in-95 duration-200",
                             isMyMessage ? "right-6" : "left-6"
                         )}
@@ -364,14 +377,24 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                                 <ReactionPicker onSelect={handleReact} />
                             </div>
                         ) : (
-                            <>
-                                <Button variant="ghost" size="sm" onClick={() => { setPickerVisible(true); }} className="flex items-center gap-2 rounded-lg">
+                            <div className="flex flex-col w-full">
+                                <Button variant="ghost" size="sm" onClick={() => { setPickerVisible(true); }} className="flex items-center gap-3 rounded-lg justify-start px-3">
                                     <SmilePlus className="h-4 w-4" /> React
                                 </Button>
-                                <Button variant="ghost" size="sm" onClick={handleReply} className="flex items-center gap-2 rounded-lg">
+                                <Button variant="ghost" size="sm" onClick={handleReply} className="flex items-center gap-3 rounded-lg justify-start px-3">
                                     <Reply className="h-4 w-4" /> Responder
                                 </Button>
-                            </>
+                                {isMyMessage && isTextMessage(msg) && onEdit && (
+                                    <Button variant="ghost" size="sm" onClick={() => onEdit(msg)} className="flex items-center gap-3 rounded-lg justify-start px-3">
+                                        <Pencil className="h-4 w-4" /> Editar
+                                    </Button>
+                                )}
+                                {isMyMessage && onDelete && (
+                                    <Button variant="ghost" size="sm" onClick={() => onDelete(msg.id)} className="flex items-center gap-3 rounded-lg justify-start px-3">
+                                        <Trash2 className="h-4 w-4" /> Eliminar
+                                    </Button>
+                                )}
+                            </div>
                         )}
                     </div>
                 </>

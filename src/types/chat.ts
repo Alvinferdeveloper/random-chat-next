@@ -17,6 +17,7 @@ export interface BaseMessage {
     replyTo: ReplyContext | null;
     reactions?: Reaction[];
     system?: boolean;
+    edited?: boolean;
 }
 
 export interface TextMessage extends BaseMessage {

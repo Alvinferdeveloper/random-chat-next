@@ -21,6 +21,7 @@ import { TypingIndicator } from "@/src/app/chat/[id]/components/TypingIndicator"
 import { useHover } from "@/src/app/hooks/useHover";
 import { cn } from "@/src/lib/utils";
 import { isTextMessage } from "@/src/types/chat";
+import { ConfirmDialog } from "@/src/app/components/shared/ConfirmDialog";
 import { useTheme } from "next-themes";
 import CampfireBackground from "@/src/app/chat/[id]/components/CampfireBackground";
 import CampfireLottie from "@/src/app/chat/[id]/components/CampfireLottie";
@@ -46,7 +47,11 @@ export default function ChatPage() {
         startTyping,
         stopTyping,
         sendReaction,
-        addOptimisticMessage
+        addOptimisticMessage,
+        editingMessage,
+        setEditingMessage,
+        editMessage,
+        deleteMessage
     } = useSocketHandler();
 
     const {
@@ -57,8 +62,9 @@ export default function ChatPage() {
         isMentionListVisible,
         mentionQuery,
         handleSendMessage,
-        handleSelectMention
-    } = useMessageInput();
+        handleSelectMention,
+        cancelEdit
+    } = useMessageInput(editingMessage, setEditingMessage, editMessage);
 
     const { messagesEndRef, scrollToBottom } = useAutoScroll(messages);
 
@@ -67,6 +73,7 @@ export default function ChatPage() {
 
     const hasHover = useHover();
     const [isUserListVisible, setIsUserListVisible] = useState(false);
+    const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
     useEffect(() => {
         setMounted(true);
@@ -147,6 +154,8 @@ export default function ChatPage() {
                             sendReaction={sendReaction}
                             favoriteGifs={favoriteGifs}
                             toggleFavorite={toggleFavorite}
+                            onEdit={(msg) => setEditingMessage(msg)}
+                            onDelete={(id) => setDeleteConfirmId(id)}
                         />
                     </div>
                     <TypingIndicator typingUsers={typingUsers} />
@@ -166,6 +175,8 @@ export default function ChatPage() {
                         favoriteGifs={favoriteGifs}
                         toggleFavorite={toggleFavorite}
                         loadingFavorites={loadingFavorites}
+                        editingMessage={editingMessage}
+                        cancelEdit={cancelEdit}
                     />
                 </main>
 
@@ -203,6 +214,21 @@ export default function ChatPage() {
                 isOpen={isImageViewerOpen}
                 imageUrl={viewedImageUrl}
                 onClose={closeImageViewer}
+            />
+            <ConfirmDialog
+                isOpen={deleteConfirmId !== null}
+                onClose={() => setDeleteConfirmId(null)}
+                onConfirm={() => {
+                    if (deleteConfirmId) {
+                        deleteMessage(deleteConfirmId);
+                    }
+                    setDeleteConfirmId(null);
+                }}
+                title="Eliminar mensaje"
+                description="¿Estás seguro de que deseas eliminar este mensaje? Esta acción no se puede deshacer."
+                confirmText="Eliminar"
+                cancelText="Cancelar"
+                variant="destructive"
             />
         </div>
     );

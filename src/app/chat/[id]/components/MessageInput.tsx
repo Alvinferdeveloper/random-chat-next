@@ -1,8 +1,8 @@
 "use client"
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Input } from "@/src/components/ui/input";
 import { Button } from "@/src/components/ui/button";
-import { Send, Smile, Paperclip, X, Reply as ReplyIcon, Mic, Film } from "lucide-react";
+import { Send, Smile, Paperclip, X, Reply as ReplyIcon, Mic, Film, Pencil } from "lucide-react";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import { Message, isTextMessage, isImageMessage, isAudioMessage } from "@/src/types/chat";
 import { MentionList } from "@/src/app/chat/[id]/components/MentionList";
@@ -37,6 +37,8 @@ interface MessageInputProps {
     favoriteGifs: any[];
     toggleFavorite: (giphyId: string, url: string, title?: string) => void;
     loadingFavorites: boolean;
+    editingMessage: Message | null;
+    cancelEdit: () => void;
 }
 
 export function MessageInput({
@@ -54,7 +56,9 @@ export function MessageInput({
     onStopTyping,
     favoriteGifs,
     toggleFavorite,
-    loadingFavorites
+    loadingFavorites,
+    editingMessage,
+    cancelEdit
 }: MessageInputProps) {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [showGifPicker, setShowGifPicker] = useState(false);
@@ -83,6 +87,12 @@ export function MessageInput({
         sendAudioNote,
         audioBlob
     } = useAudioRecording();
+
+    useEffect(() => {
+        if (editingMessage) {
+            inputRef.current?.focus();
+        }
+    }, [editingMessage]);
 
     const onEmojiClick = (emojiData: EmojiClickData) => {
         setNewMessage(prev => prev + emojiData.emoji);
@@ -214,7 +224,18 @@ export function MessageInput({
     return (
         <div className="sticky bottom-0  p-4 border-t bg-transparent z-30 
                         transition-[padding] duration-300 ease-in-out pb-[calc(1rem+var(--bottom-inset,0px))]">
-            {replyingToMessage && (
+            {editingMessage && (
+                <div className="flex items-center justify-between p-2 mb-2 text-sm bg-blue-500/10 rounded-t-lg border-b border-blue-500/30">
+                    <div className="flex items-center gap-2">
+                        <Pencil className="h-4 w-4 text-blue-500" />
+                        <span>Editando mensaje</span>
+                    </div>
+                    <Button variant="ghost" size="icon" onClick={cancelEdit} className="h-6 w-6">
+                        <X className="h-4 w-4" />
+                    </Button>
+                </div>
+            )}
+            {replyingToMessage && !editingMessage && (
                 <div className="flex items-center justify-between p-2 mb-2 text-sm bg-muted rounded-t-lg border-b border-border">
                     <div className="flex items-center gap-2">
                         <ReplyIcon className="h-4 w-4 text-primary" />
@@ -311,7 +332,7 @@ export function MessageInput({
                                             }
                                         }
                                     }}
-                                    placeholder="Escribe un mensaje..."
+                                    placeholder={editingMessage ? "Edita tu mensaje..." : "Escribe un mensaje..."}
                                     className="pr-20 bg-background/90"
                                 />
                                 <div className="absolute inset-y-0 right-0 flex items-center gap-0.5 px-1">
@@ -359,6 +380,19 @@ export function MessageInput({
                             >
                                 <Mic className="h-5 w-5" />
                             </Button>
+                        ) : editingMessage ? (
+                            <form onSubmit={onSubmit}>
+                                <Button
+                                    type="submit"
+                                    size="icon"
+                                    disabled={!newMessage.trim()}
+                                    onMouseDown={(e) => e.preventDefault()}
+                                    className={`flex-shrink-0 transition-all duration-300 h-10 w-10 rounded-full cursor-pointer ${newMessage.trim() ? "bg-blue-500 hover:bg-blue-600 shadow-lg shadow-blue-500/20" : "bg-muted text-muted-foreground"
+                                        }`}
+                                >
+                                    <Pencil className="w-4 h-4" />
+                                </Button>
+                            </form>
                         ) : newMessage.trim() === "" ? (
                             <Button
                                 type="button"

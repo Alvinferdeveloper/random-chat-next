@@ -20,6 +20,10 @@ interface ChatContextType {
     stopTyping: () => void;
     sendReaction: (messageId: string, emoji: string) => void;
     addOptimisticMessage: (message: Message) => void;
+    editMessage: (messageId: string, message: string) => void;
+    deleteMessage: (messageId: string) => void;
+    editingMessage: Message | null;
+    setEditingMessage: (message: Message | null) => void;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -43,6 +47,7 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
     const [usersInRoom, setUsersInRoom] = useState<User[]>([]);
     const [notificationUser, setNotificationUser] = useState<string | null>(null);
     const [typingUsers, setTypingUsers] = useState<Set<string>>(new Set());
+    const [editingMessage, setEditingMessage] = useState<Message | null>(null);
 
     useEffect(() => {
         if (!socket) return;
@@ -140,8 +145,7 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
                 draft.push({
                     ...msg,
                     system: true,
-                    isGlobal: true
-                });
+                } as Message);
             }));
         };
 
@@ -155,7 +159,27 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
         socket.on('user-started-typing', handleUserStartedTyping);
         socket.on('user-stopped-typing', handleUserStoppedTyping);
         socket.on('reaction_update', handleReactionUpdate);
+        const handleMessageEdited = (payload: { id: string; message: string; edited: boolean }) => {
+            setMessages(prev => produce(prev, draft => {
+                const msg = draft.find(m => m.id === payload.id);
+                if (!msg || !('message' in msg)) return;
+                (msg as any).message = payload.message;
+                (msg as any).edited = true;
+            }));
+        };
+
+        const handleMessageDeleted = (payload: { id: string }) => {
+            setMessages(prev => produce(prev, draft => {
+                const index = draft.findIndex(m => m.id === payload.id);
+                if (index !== -1) {
+                    draft.splice(index, 1);
+                }
+            }));
+        };
+
         socket.on('global_system_message', handleGlobalSystemMessage);
+        socket.on('message-edited', handleMessageEdited);
+        socket.on('message-deleted', handleMessageDeleted);
         socket.on('error', handleError);
 
         return () => {
@@ -170,6 +194,8 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
             socket.off('user-stopped-typing', handleUserStoppedTyping);
             socket.off('reaction_update', handleReactionUpdate);
             socket.off('global_system_message', handleGlobalSystemMessage);
+            socket.off('message-edited', handleMessageEdited);
+            socket.off('message-deleted', handleMessageDeleted);
             socket.off('error', handleError);
         };
     }, [socket, username]);
@@ -183,6 +209,14 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
         setMessages(prev => produce(prev, draft => { draft.push(message); }));
     }, []);
 
+    const editMessage = useCallback((messageId: string, message: string) => {
+        socket?.emit('edit-message', { messageId, message });
+    }, [socket]);
+
+    const deleteMessage = useCallback((messageId: string) => {
+        socket?.emit('delete-message', { messageId });
+    }, [socket]);
+
     return (
         <ChatContext.Provider value={{
             messages,
@@ -193,6 +227,10 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
             stopTyping,
             sendReaction,
             addOptimisticMessage,
+            editMessage,
+            deleteMessage,
+            editingMessage,
+            setEditingMessage,
         }}>
             {children}
         </ChatContext.Provider>

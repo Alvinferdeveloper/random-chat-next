@@ -3,13 +3,23 @@ import { useState, useEffect } from "react";
 import { Message, isTextMessage } from "@/src/types/chat";
 import { useSocket } from "@/src/app/components/providers/SocketEventProvider";
 
-export function useMessageInput() {
+export function useMessageInput(
+    editingMessage: Message | null = null,
+    setEditingMessage: (msg: Message | null) => void = () => {},
+    editMessage: (messageId: string, message: string) => void = () => {}
+) {
     const socket = useSocket();
     const [newMessage, setNewMessage] = useState("");
     const [replyingToMessage, setReplyingToMessage] = useState<Message | null>(null);
     const [isMentionListVisible, setIsMentionListVisible] = useState(false);
     const [mentionQuery, setMentionQuery] = useState("");
     const [mentionStartIndex, setMentionStartIndex] = useState(-1);
+
+    useEffect(() => {
+        if (editingMessage && isTextMessage(editingMessage)) {
+            setNewMessage(editingMessage.message);
+        }
+    }, [editingMessage]);
 
     useEffect(() => {
         const atIndex = newMessage.lastIndexOf('@');
@@ -44,6 +54,13 @@ export function useMessageInput() {
     const handleSendMessage = (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         if (newMessage.trim() === "" || !socket) return;
+
+        if (editingMessage) {
+            editMessage(editingMessage.id, newMessage);
+            setEditingMessage(null);
+            setNewMessage("");
+            return;
+        }
 
         const payload: { message: string, replyTo?: object } = {
             message: newMessage,
@@ -80,6 +97,11 @@ export function useMessageInput() {
         setIsMentionListVisible(false);
     };
 
+    const cancelEdit = () => {
+        setEditingMessage(null);
+        setNewMessage("");
+    };
+
     return {
         newMessage,
         setNewMessage,
@@ -89,6 +111,7 @@ export function useMessageInput() {
         mentionQuery,
         handleSendMessage,
         sendImage,
-        handleSelectMention
+        handleSelectMention,
+        cancelEdit,
     };
 }
