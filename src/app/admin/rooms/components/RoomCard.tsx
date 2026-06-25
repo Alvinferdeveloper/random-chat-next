@@ -22,7 +22,7 @@ export default function RoomCard({ room, index, onAction, isSubmitting }: RoomCa
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1], delay: index * 0.05 }}
         >
-            <Card className="flex flex-col h-full overflow-hidden border-border/50 bg-gradient-to-br from-card to-muted/30 dark:from-zinc-900/90 dark:to-zinc-900/60">
+            <Card className="flex flex-col h-full overflow-hidden border-border/50 bg-gradient-to-br from-zinc-100 to-zinc-100/60 dark:from-zinc-900/90 dark:to-zinc-900/60">
                 <div className="relative h-44 w-full bg-muted">
                     {room.server_banner ? (
                         <Image

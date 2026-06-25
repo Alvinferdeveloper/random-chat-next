@@ -81,7 +81,7 @@ export function UserDetailSheet({ userId, open, onOpenChange }: UserDetailSheetP
 
     return (
         <Sheet open={open} onOpenChange={handleOpenChange}>
-            <SheetContent className="w-full sm:max-w-lg flex flex-col overflow-hidden bg-gradient-to-br from-card to-muted dark:from-zinc-900/90 dark:to-zinc-900/60">
+            <SheetContent className="w-full sm:max-w-lg flex flex-col overflow-hidden bg-gradient-to-br from-zinc-100 to-zinc-100/60 dark:from-zinc-900/90 dark:to-zinc-900/60">
                 <SheetHeader className="shrink-0">
                     <SheetTitle>Detalle del Usuario</SheetTitle>
                     <p className="text-sm text-muted-foreground">Informaci&oacute;n completa del perfil y actividad</p>

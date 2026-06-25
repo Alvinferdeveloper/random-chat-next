@@ -14,7 +14,7 @@ import { UserDetailSheet } from './components/UserDetailSheet';
 import { Pagination } from '@/src/app/components/shared/Pagination';
 import UserRow from './components/UserRow';
 
-const cardGradient = 'bg-gradient-to-br from-card to-muted/30 dark:from-zinc-900/90 dark:to-zinc-900/60';
+const cardGradient = 'bg-gradient-to-br from-zinc-100 to-zinc-100/60 dark:from-zinc-900/90 dark:to-zinc-900/60';
 
 function UserRowSkeleton() {
     return (

@@ -33,7 +33,7 @@ const fadeUp = {
     show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.23, 1, 0.32, 1] as [number, number, number, number] } },
 };
 
-const cardGradient = 'bg-gradient-to-br from-card to-muted/30 dark:from-zinc-900/90 dark:to-zinc-900/60';
+const cardGradient = 'bg-gradient-to-br from-zinc-100 to-zinc-100/60 dark:from-zinc-900/90 dark:to-zinc-900/60';
 
 export default function SecondaryStats({ stats, loading }: { stats: LiveStats | null; loading: boolean }) {
     const cards: StatCard[] = [

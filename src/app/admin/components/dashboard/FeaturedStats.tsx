@@ -22,7 +22,7 @@ export default function FeaturedStats({ stats, loading }: { stats: LiveStats | n
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
         >
-            <Card className="overflow-hidden bg-gradient-to-br from-card to-muted/30 dark:from-zinc-900/90 dark:to-zinc-900/60">
+            <Card className="overflow-hidden bg-gradient-to-br from-zinc-100 to-zinc-100/60 dark:from-zinc-900/90 dark:to-zinc-900/60">
                 <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border">
                     <div className="p-6 lg:p-8">
                         {loading ? (

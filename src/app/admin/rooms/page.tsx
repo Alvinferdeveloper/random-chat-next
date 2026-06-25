@@ -11,7 +11,7 @@ import RoomCard from './components/RoomCard';
 
 function RoomSkeleton() {
     return (
-        <div className="flex flex-col h-full overflow-hidden rounded-xl border border-border/50 bg-gradient-to-br from-card to-muted/30 dark:from-zinc-900/90 dark:to-zinc-900/60">
+        <div className="flex flex-col h-full overflow-hidden rounded-xl border border-border/50 bg-gradient-to-br from-zinc-100 to-zinc-100/60 dark:from-zinc-900/90 dark:to-zinc-900/60">
             <div className="h-44 w-full bg-muted animate-pulse" />
             <div className="p-6 pb-2 mt-6 space-y-3">
                 <div className="h-5 w-2/3 bg-muted rounded animate-pulse" />
