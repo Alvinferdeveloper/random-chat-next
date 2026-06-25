@@ -4,7 +4,8 @@ import { useAuth } from '@/src/app/hooks/useAuth';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { Loader2, ShieldCheck, LayoutDashboard, MessageSquare, Users, AlertCircle, Tag, LogOut, ChevronRight } from 'lucide-react';
+import { Loader2, ShieldCheck, LayoutDashboard, MessageSquare, Users, AlertCircle, Tag, LogOut, ChevronRight, SunMoon } from 'lucide-react';
+import { ThemeToggle } from '@/src/app/components/layout/ThemeToggle';
 import { cn } from '@/src/lib/utils';
 import { useAdminNotifications } from '@/src/app/admin/hooks/useAdminNotifications';
 
@@ -53,13 +54,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Admin Sidebar */}
             <aside className="w-64 shrink-0 hidden md:flex flex-col bg-admin-sidebar border-r border-admin-sidebar-border">
                 {/* Header */}
-                <div className="px-5 h-14 flex items-center border-b border-admin-sidebar-border">
+                <div className="px-5 h-14 flex items-center justify-between border-b border-admin-sidebar-border">
                     <div className="flex items-center gap-2.5 min-w-0">
                         <div className="w-7 h-7 rounded-lg bg-zinc-900 dark:bg-zinc-100 flex items-center justify-center">
                             <ShieldCheck className="w-4 h-4 text-white dark:text-zinc-900" />
                         </div>
                         <span className="text-sm font-semibold tracking-tight truncate">Admin Panel</span>
                     </div>
+                    <ThemeToggle />
                 </div>
 
                 {/* Navigation */}
