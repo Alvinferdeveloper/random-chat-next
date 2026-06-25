@@ -29,7 +29,7 @@ export default function UserRow({ user, index, isMe, processingId, onView, onCha
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1], delay: index * 0.03 }}
-            className="flex items-center justify-between p-4 border rounded-xl hover:bg-accent/30 transition-colors active:scale-[0.99] group"
+            className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/30 transition-colors active:scale-[0.99] group"
         >
             <div className="flex items-center gap-4 min-w-0">
                 <Avatar className="h-11 w-11 border shrink-0">
@@ -69,7 +69,7 @@ export default function UserRow({ user, index, isMe, processingId, onView, onCha
                 <Button
                     variant="ghost"
                     size="sm"
-                    className="gap-1.5 h-8 text-xs active:scale-[0.98]"
+                    className="gap-1.5 h-8 text-xs active:scale-[0.98] cursor-pointer"
                     onClick={() => onView(user.id)}
                 >
                     <Eye className="w-3.5 h-3.5" />
@@ -80,7 +80,7 @@ export default function UserRow({ user, index, isMe, processingId, onView, onCha
                         <Button
                             variant="outline"
                             size="sm"
-                            className="gap-1.5 h-8 text-xs active:scale-[0.98]"
+                            className="gap-1.5 h-8 text-xs active:scale-[0.98] cursor-pointer"
                             disabled={processingId === user.id || isMe}
                         >
                             <Shield className="w-3.5 h-3.5" />
@@ -103,7 +103,7 @@ export default function UserRow({ user, index, isMe, processingId, onView, onCha
                 <Button
                     variant={user.isBanned ? "outline" : "destructive"}
                     size="sm"
-                    className="gap-1.5 h-8 text-xs active:scale-[0.98]"
+                    className="gap-1.5 h-8 text-xs active:scale-[0.98] cursor-pointer"
                     disabled={processingId === user.id || user.role === 'ADMIN'}
                     onClick={() => onAction(user)}
                 >
