@@ -50,9 +50,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     };
 
     return (
-        <div className="flex min-h-screen bg-admin-surface">
+        <div className="h-screen overflow-hidden bg-admin-surface">
             {/* Admin Sidebar */}
-            <aside className="w-64 shrink-0 hidden md:flex flex-col bg-admin-sidebar border-r border-admin-sidebar-border">
+            <aside className="fixed left-0 top-0 z-30 w-64 h-screen hidden md:flex flex-col bg-admin-sidebar border-r border-admin-sidebar-border">
                 {/* Header */}
                 <div className="px-5 h-14 flex items-center justify-between border-b border-admin-sidebar-border">
                     <div className="flex items-center gap-2.5 min-w-0">
@@ -121,7 +121,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 overflow-y-auto relative">
+            <main className="flex-1 overflow-y-auto h-screen md:ml-64 relative">
                 {/* Subtle dot grid background */}
                 <div
                     className="absolute inset-0 pointer-events-none"
