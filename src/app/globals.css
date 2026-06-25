@@ -82,8 +82,8 @@
   --radius: 0.5rem;
   /* Admin Panel */
   --admin-surface: hsl(0 0% 98%);
-  --admin-sidebar: hsl(0 0% 100%);
-  --admin-sidebar-border: hsl(0 0% 89.8% / 0.5);
+  --admin-sidebar: hsl(0 0% 95%);
+  --admin-sidebar-border: hsl(0 0% 88% / 0.8);
   --admin-dot: rgba(0,0,0,0.04);
   --admin-nav: hsl(0 0% 64.9%);
   --admin-nav-hover: hsl(0 0% 38.8%);
