@@ -1,16 +1,43 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useAdminRooms } from './hooks/useAdminRooms';
-import { Button } from '@/src/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/src/components/ui/card';
-import { Check, X, Loader2 } from 'lucide-react';
 import { Badge } from '@/src/components/ui/badge';
 import { ConfirmDialog } from '@/src/app/components/shared/ConfirmDialog';
 import { toast } from 'sonner';
+import { MessageSquare, AlertCircle } from 'lucide-react';
+import RoomCard from './components/RoomCard';
+
+function RoomSkeleton() {
+    return (
+        <div className="flex flex-col h-full overflow-hidden rounded-xl border border-border/50 bg-gradient-to-br from-card to-muted/30 dark:from-zinc-900/90 dark:to-zinc-900/60">
+            <div className="h-44 w-full bg-muted animate-pulse" />
+            <div className="p-6 pb-2 mt-6 space-y-3">
+                <div className="h-5 w-2/3 bg-muted rounded animate-pulse" />
+                <div className="h-3 w-1/2 bg-muted rounded animate-pulse" />
+            </div>
+            <div className="p-6 pt-2 flex-1 space-y-3">
+                <div className="space-y-1.5">
+                    <div className="h-3 w-24 bg-muted rounded animate-pulse" />
+                    <div className="h-3 w-full bg-muted rounded animate-pulse" />
+                </div>
+                <div className="space-y-1.5">
+                    <div className="h-3 w-24 bg-muted rounded animate-pulse" />
+                    <div className="h-3 w-full bg-muted rounded animate-pulse" />
+                    <div className="h-3 w-3/4 bg-muted rounded animate-pulse" />
+                </div>
+            </div>
+            <div className="p-6 pt-4 border-t border-border flex gap-3">
+                <div className="h-9 flex-1 bg-muted rounded-md animate-pulse" />
+                <div className="h-9 flex-1 bg-muted rounded-md animate-pulse" />
+            </div>
+        </div>
+    );
+}
 
 export default function PendingRoomsPage() {
-    const { rooms, loading, error, updateStatus } = useAdminRooms('IN_REVISION');
+    const { rooms, loading, error, updateStatus, refetch } = useAdminRooms('IN_REVISION');
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [actionData, setActionData] = useState<{ id: string, status: 'ACCEPTED' | 'REJECTED' } | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,99 +59,74 @@ export default function PendingRoomsPage() {
         setActionData(null);
     };
 
-    if (loading) {
-        return (
-            <div className="flex h-64 items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-        );
-    }
-
-    if (error) {
-        return <div className="text-red-500">Error: {error}</div>;
-    }
-
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Salas Pendientes de Revisión</h1>
-                <Badge variant="outline" className="text-lg px-4 py-1">
-                    {rooms.length} pendientes
-                </Badge>
-            </div>
-
-            {rooms.length === 0 ? (
-                <div className="flex h-64 flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center animate-in fade-in-50">
-                    <p className="text-muted-foreground text-lg">No hay salas pendientes de revisión en este momento.</p>
+            <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                className="flex items-center justify-between"
+            >
+                <div>
+                    <h1 className="text-2xl font-bold tracking-tight">Salas Pendientes</h1>
+                    <p className="text-sm text-muted-foreground mt-1">Revisa y modera las salas creadas por los usuarios</p>
                 </div>
+                {!loading && !error && (
+                    <Badge variant="outline" className="text-sm px-3 py-1">
+                        {rooms.length} pendientes
+                    </Badge>
+                )}
+            </motion.div>
+
+            {loading ? (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.2 }}
+                    className="grid gap-6 md:grid-cols-2 xl:grid-cols-3"
+                >
+                    {[1, 2, 3].map((i) => (
+                        <RoomSkeleton key={i} />
+                    ))}
+                </motion.div>
+            ) : error ? (
+                <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                    className="flex flex-col items-center justify-center rounded-xl border border-dashed p-12 text-center"
+                >
+                    <AlertCircle className="h-10 w-10 text-destructive/60 mb-4" />
+                    <p className="text-lg font-medium mb-1">Error al cargar</p>
+                    <p className="text-sm text-muted-foreground mb-4">{error}</p>
+                    <button
+                        onClick={refetch}
+                        className="text-sm font-medium text-primary hover:underline active:scale-[0.98] transition-transform"
+                    >
+                        Intentar de nuevo
+                    </button>
+                </motion.div>
+            ) : rooms.length === 0 ? (
+                <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                    className="flex flex-col items-center justify-center rounded-xl border border-dashed p-12 text-center"
+                >
+                    <MessageSquare className="h-10 w-10 text-muted-foreground/30 mb-4" />
+                    <p className="text-lg font-medium mb-1">No hay salas pendientes</p>
+                    <p className="text-sm text-muted-foreground">Todas las salas han sido revisadas.</p>
+                </motion.div>
             ) : (
                 <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                    {rooms.map((room) => (
-                        <Card key={room.id} className="flex flex-col h-full bg-[#2f3136] border-none text-white overflow-hidden shadow-lg transition-all hover:shadow-xl">
-                            <div className="relative h-48 w-full bg-muted">
-                                {room.server_banner ? (
-                                    <img
-                                        src={room.server_banner}
-                                        alt={room.name}
-                                        className="h-full w-full object-cover"
-                                    />
-                                ) : (
-                                    <div className="flex h-full items-center justify-center bg-gray-700 text-gray-400">
-                                        Sin Banner
-                                    </div>
-                                )}
-                                <div className="absolute -bottom-6 left-6 h-16 w-16 overflow-hidden rounded-full border-4 border-[#2f3136] bg-background">
-                                    {room.server_icon ? (
-                                        <img
-                                            src={room.server_icon}
-                                            alt={room.name}
-                                            className="h-full w-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="flex h-full items-center justify-center bg-primary text-primary-foreground font-bold">
-                                            {room.name.charAt(0)}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            <CardHeader className="mt-6">
-                                <CardTitle className="flex items-center justify-between text-xl">
-                                    {room.name}
-                                </CardTitle>
-                                <CardDescription className="text-gray-400">
-                                    Creado por: <span className="text-blue-400 font-medium">@{room.owner?.username || 'Desconocido'}</span>
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="flex-1 space-y-4">
-                                <div>
-                                    <h4 className="text-sm font-semibold text-gray-300">Descripción Corta</h4>
-                                    <p className="text-sm text-gray-400">{room.short_description}</p>
-                                </div>
-                                <div>
-                                    <h4 className="text-sm font-semibold text-gray-300">Descripción Completa</h4>
-                                    <p className="text-sm text-gray-400 line-clamp-4">{room.full_description}</p>
-                                </div>
-                            </CardContent>
-                            <CardFooter className="flex justify-between gap-3 pt-4 border-t border-gray-700 bg-[#292b2f]">
-                                <Button
-                                    variant="destructive"
-                                    className="flex-1 gap-2 bg-red-600 hover:bg-red-700 text-white"
-                                    onClick={() => handleActionClick(room.id, 'REJECTED')}
-                                    disabled={isSubmitting}
-                                >
-                                    <X className="h-4 w-4" />
-                                    Rechazar
-                                </Button>
-                                <Button
-                                    className="flex-1 gap-2 bg-green-600 hover:bg-green-700 text-white"
-                                    onClick={() => handleActionClick(room.id, 'ACCEPTED')}
-                                    disabled={isSubmitting}
-                                >
-                                    <Check className="h-4 w-4" />
-                                    Aceptar
-                                </Button>
-                            </CardFooter>
-                        </Card>
+                    {rooms.map((room, index) => (
+                        <RoomCard
+                            key={room.id}
+                            room={room}
+                            index={index}
+                            onAction={handleActionClick}
+                            isSubmitting={isSubmitting}
+                        />
                     ))}
                 </div>
             )}
