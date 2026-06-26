@@ -37,14 +37,14 @@ export function BanDialog({ isOpen, onClose, onConfirm, username }: BanDialogPro
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !isSubmitting && !open && onClose()}>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[425px] bg-zinc-100 dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2 text-destructive">
                         <AlertTriangle className="h-5 w-5" />
                         Banear Usuario
                     </DialogTitle>
                     <DialogDescription>
-                        ¿Estás seguro de que deseas suspender a <strong>{username}</strong>? El usuario perderá acceso inmediato a la plataforma.
+                        Estas seguro de que deseas suspender a <strong>{username}</strong>? El usuario perdera acceso inmediato a la plataforma.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="py-4">
@@ -61,13 +61,14 @@ export function BanDialog({ isOpen, onClose, onConfirm, username }: BanDialogPro
                     />
                 </div>
                 <DialogFooter>
-                    <Button variant="ghost" onClick={onClose} disabled={isSubmitting}>
+                    <Button variant="ghost" onClick={onClose} disabled={isSubmitting} className="active:scale-[0.98] cursor-pointer">
                         Cancelar
                     </Button>
                     <Button 
                         variant="destructive" 
                         onClick={handleConfirm} 
                         disabled={isSubmitting}
+                        className="active:scale-[0.98] cursor-pointer"
                     >
                         {isSubmitting ? (
                             <>

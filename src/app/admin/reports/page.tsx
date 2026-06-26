@@ -1,55 +1,63 @@
 'use client';
 
-import { useAdminReports, DetailedReport } from './hooks/useAdminReports';
+import { useAdminReports } from './hooks/useAdminReports';
 import { useAdminUsers } from '../users/hooks/useAdminUsers';
-import { Button } from '@/src/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar';
+import { motion } from 'framer-motion';
 import { Badge } from '@/src/components/ui/badge';
-import { 
-    AlertCircle, 
-    ShieldAlert, 
-    UserX, 
-    CheckCircle2, 
-    XCircle,
-    Loader2,
-    Calendar,
-    Eye,
-    MessageSquare
-} from 'lucide-react';
+import { CheckCircle2, ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
 import { BanDialog } from '@/src/app/admin/users/components/BanDialog';
 import { Pagination } from '@/src/app/components/shared/Pagination';
 import { ChatContextDialog } from './components/ChatContextDialog';
+import { DetailedReport } from './hooks/useAdminReports';
 import { toast } from 'sonner';
+import OffenderCard from './components/OffenderCard';
 
-const REASON_LABELS: Record<string, string> = {
-    SPAM: 'Spam',
-    HARASSMENT: 'Acoso',
-    INAPPROPRIATE_CONTENT: 'Contenido NSFW',
-    HATE_SPEECH: 'Odio',
-    ANNOYING_BEHAVIOR: 'Molesto',
-    OTHER: 'Otro'
-};
+function ReportSkeleton() {
+    return (
+        <div className="rounded-xl border border-border/50 bg-gradient-to-br from-zinc-100 to-zinc-100/60 dark:from-zinc-900/90 dark:to-zinc-900/60 animate-pulse">
+            <div className="flex items-center gap-4 p-4 border-b border-border/50">
+                <div className="h-11 w-11 rounded-full bg-muted shrink-0" />
+                <div className="space-y-2 flex-1">
+                    <div className="h-4 w-48 bg-muted rounded" />
+                    <div className="h-3 w-64 bg-muted rounded" />
+                </div>
+                <div className="flex gap-2">
+                    <div className="h-8 w-20 bg-muted rounded-md" />
+                    <div className="h-8 w-20 bg-muted rounded-md" />
+                    <div className="h-8 w-20 bg-muted rounded-md" />
+                </div>
+            </div>
+            <div className="p-4 space-y-3">
+                <div className="h-3 w-32 bg-muted rounded" />
+                <div className="flex gap-1.5">
+                    <div className="h-5 w-16 bg-muted rounded-full" />
+                    <div className="h-5 w-20 bg-muted rounded-full" />
+                    <div className="h-5 w-14 bg-muted rounded-full" />
+                </div>
+                <div className="h-3 w-56 bg-muted rounded" />
+            </div>
+        </div>
+    );
+}
 
 export default function AdminReportsPage() {
-    const { 
-        offenders, 
+    const {
+        offenders,
         pagination,
-        loading, 
+        loading,
         page,
         setPage,
         resolveReports,
-        fetchUserReports 
+        fetchUserReports
     } = useAdminReports();
-    
+
     const { toggleBan } = useAdminUsers();
 
     const [processingId, setProcessingId] = useState<string | null>(null);
     const [banDialogOpen, setBanDialogOpen] = useState(false);
     const [userToBan, setUserToBan] = useState<{ id: string, username: string } | null>(null);
-    
-    // Context Evidence State
+
     const [isContextOpen, setIsContextOpen] = useState(false);
     const [contextReports, setContextReports] = useState<DetailedReport[]>([]);
     const [selectedUsername, setSelectedUsername] = useState('');
@@ -83,125 +91,82 @@ export default function AdminReportsPage() {
     const handleViewContext = async (user: any) => {
         setProcessingId(user.id);
         const reports = await fetchUserReports(user.id);
-        
+
         if (reports.length > 0) {
             setContextReports(reports);
             setSelectedUsername(user.username);
             setIsContextOpen(true);
         } else {
-            toast.info('No se encontró historial de chat para los reportes de este usuario.');
+            toast.info('No se encontro historial de chat para los reportes de este usuario.');
         }
         setProcessingId(null);
     };
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Reportes de Comunidad</h1>
-                <Badge variant="outline" className="px-3 py-1">
-                    Priorizando reincidentes
-                </Badge>
-            </div>
+            <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                className="flex items-center justify-between"
+            >
+                <div>
+                    <h1 className="text-2xl font-bold tracking-tight">Reportes de Comunidad</h1>
+                    <p className="text-sm text-muted-foreground mt-1">Gestiona los reportes de los usuarios en la plataforma</p>
+                </div>
+                {!loading && offenders.length > 0 && (
+                    <Badge variant="destructive" className="text-sm px-3 py-1 gap-1.5">
+                        <ShieldAlert className="w-3.5 h-3.5" />
+                        {offenders.length} pendientes
+                    </Badge>
+                )}
+            </motion.div>
 
             {loading ? (
-                <div className="flex flex-col items-center justify-center py-20 gap-4">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                    <p className="text-sm text-muted-foreground">Analizando reportes...</p>
-                </div>
-            ) : offenders.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-20 bg-muted/20 rounded-2xl border-2 border-dashed">
-                    <CheckCircle2 className="w-12 h-12 text-green-500 mb-4" />
-                    <h3 className="text-lg font-semibold">¡Todo despejado!</h3>
-                    <p className="text-muted-foreground text-sm">No hay reportes pendientes de resolución.</p>
-                </div>
-            ) : (
-                <div className="grid gap-6">
-                    {offenders.map((offender) => (
-                        <Card key={offender.user.id} className="overflow-hidden border-2 border-destructive/10">
-                            <CardHeader className="bg-muted/30 p-4 border-b">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <Avatar className="h-10 w-10">
-                                            <AvatarImage src={offender.user.image || ''} />
-                                            <AvatarFallback>{offender.user.username?.charAt(0)}</AvatarFallback>
-                                        </Avatar>
-                                        <div>
-                                            <h3 className="font-bold flex items-center gap-2">
-                                                {offender.user.username}
-                                                <Badge variant="destructive" className="h-5">
-                                                    {offender.reportCount} reportes
-                                                </Badge>
-                                            </h3>
-                                            <p className="text-xs text-muted-foreground">{offender.user.email}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Button 
-                                            variant="outline" 
-                                            size="sm" 
-                                            className="h-8 gap-1.5"
-                                            onClick={() => handleViewContext(offender.user)}
-                                            disabled={processingId === offender.user.id}
-                                        >
-                                            {processingId === offender.user.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Eye className="w-3.5 h-3.5" />}
-                                            Ver Evidencia
-                                        </Button>
-                                        <Button 
-                                            variant="outline" 
-                                            size="sm" 
-                                            className="h-8 gap-1.5 text-muted-foreground"
-                                            onClick={() => handleResolve(offender.user.id, 'DISMISSED')}
-                                            disabled={processingId === offender.user.id}
-                                        >
-                                            <XCircle className="w-3.5 h-3.5" />
-                                            Descartar
-                                        </Button>
-                                        <Button 
-                                            variant="destructive" 
-                                            size="sm" 
-                                            className="h-8 gap-1.5"
-                                            onClick={() => handleBanClick(offender.user)}
-                                            disabled={processingId === offender.user.id}
-                                        >
-                                            <UserX className="w-3.5 h-3.5" />
-                                            Banear
-                                        </Button>
-                                    </div>
-                                </div>
-                            </CardHeader>
-                            <CardContent className="p-0">
-                                <div className="p-4 bg-background">
-                                    <div className="flex flex-wrap gap-2 mb-4">
-                                        <span className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1.5 w-full mb-1">
-                                            <ShieldAlert className="w-3.5 h-3.5" />
-                                            Motivos Recientes:
-                                        </span>
-                                        {offender.recentReasons.map((reason, i) => (
-                                            <Badge key={i} variant="secondary" className="bg-secondary/50">
-                                                {REASON_LABELS[reason] || reason}
-                                            </Badge>
-                                        ))}
-                                    </div>
-                                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                                        <span className="flex items-center gap-1">
-                                            <Calendar className="w-3.5 h-3.5" />
-                                            Último reporte: {new Date(offender.lastReportedAt).toLocaleString()}
-                                        </span>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.2 }}
+                    className="space-y-3"
+                >
+                    {[1, 2, 3].map((i) => (
+                        <ReportSkeleton key={i} />
                     ))}
-                    
+                </motion.div>
+            ) : offenders.length === 0 ? (
+                <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                    className="flex flex-col items-center justify-center rounded-xl border border-dashed p-12 text-center"
+                >
+                    <CheckCircle2 className="w-12 h-12 text-green-500/60 mb-4" />
+                    <p className="text-lg font-medium mb-1">Todo despejado</p>
+                    <p className="text-sm text-muted-foreground">No hay reportes pendientes de resolucion.</p>
+                </motion.div>
+            ) : (
+                <div className="space-y-3">
+                    {offenders.map((offender, index) => (
+                        <OffenderCard
+                            key={offender.user.id}
+                            offender={offender}
+                            index={index}
+                            processingId={processingId}
+                            onResolve={handleResolve}
+                            onBanClick={handleBanClick}
+                            onViewContext={handleViewContext}
+                        />
+                    ))}
+
                     {pagination && pagination.totalPages > 1 && (
-                        <Card className="p-2">
-                            <Pagination 
+                        <div className="flex justify-center pt-2">
+                            <Pagination
                                 currentPage={page}
                                 totalPages={pagination.totalPages}
                                 onPageChange={setPage}
                                 isLoading={loading}
                             />
-                        </Card>
+                        </div>
                     )}
                 </div>
             )}

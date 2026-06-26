@@ -26,7 +26,7 @@ export function useAdminCategories() {
     const fetchCategories = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/categories?page=${page}&search=${search}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/categories?page=${page}&limit=20&search=${search}`, {
                 credentials: 'include'
             });
             const data = await response.json();

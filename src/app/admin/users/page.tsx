@@ -117,7 +117,7 @@ export default function AdminUsersPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1], delay: 0.05 }}
             >
-                <Card className={`overflow-hidden border-border/50 ${cardGradient}`}>
+                <Card className={`overflow-hidden border-border/50 rounded-lg ${cardGradient}`}>
                     <CardHeader className="pb-3">
                         <div className="relative w-full max-w-sm">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
