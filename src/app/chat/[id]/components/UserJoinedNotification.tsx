@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { User } from 'lucide-react'
+import { useTranslation } from 'react-i18next';
 
 interface UserJoinedNotificationProps {
     username: string | null;
 }
 
 export function UserJoinedNotification({ username }: UserJoinedNotificationProps) {
+    const { t } = useTranslation();
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -35,7 +37,7 @@ export function UserJoinedNotification({ username }: UserJoinedNotificationProps
             <div className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 px-4 py-1.5 text-sm font-semibold text-white shadow-lg">
                 <User className='h-4 w-4' />
                 <span>
-                    <span className="font-bold truncate">{username}</span> se ha unido a la sala.
+                    {t('chat.user_joined', { username })}
                 </span>
             </div>
         </div>

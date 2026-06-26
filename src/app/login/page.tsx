@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { Input } from "@/src/components/ui/input";
@@ -16,6 +17,7 @@ import Google from '@/src/app/components/svg/logos/Google';
 
 export default function LoginPage() {
     const router = useRouter();
+    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
@@ -50,9 +52,9 @@ export default function LoginPage() {
 
         if (error) {
             if (error.status === 403) {
-                setError('Por favor, verifica tu correo electrónico antes de iniciar sesión.');
+                setError(t('auth.login.error.verify_email'));
             } else {
-                setError(error.message || 'Credenciales incorrectas.');
+                setError(error.message || t('auth.login.error.invalid_credentials'));
             }
         } else {
             router.push('/rooms');
@@ -70,7 +72,7 @@ export default function LoginPage() {
                     className="group flex items-center gap-2 cursor-pointer text-muted-foreground hover:text-foreground transition-all duration-300"
                 >
                     <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                    <span>Volver atrás</span>
+                    <span>{t('auth.login.back')}</span>
                 </Button>
             </div>
 
@@ -82,8 +84,8 @@ export default function LoginPage() {
 
             <Card className="w-full max-w-md mx-auto shadow-xl border dark:border-white/5 border-border/50 dark:bg-[#0f1722] bg-card">
                 <CardHeader className="space-y-1 text-center">
-                    <CardTitle className="text-2xl font-bold">Iniciar Sesión</CardTitle>
-                    <CardDescription>Elige tu método preferido para acceder</CardDescription>
+                    <CardTitle className="text-2xl font-bold">{t('auth.login.title')}</CardTitle>
+                    <CardDescription>{t('auth.login.subtitle')}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="space-y-3">
@@ -93,7 +95,7 @@ export default function LoginPage() {
                             className="w-full h-11 border cursor-pointer dark:hover:bg-white/5 hover:bg-slate-100 transition-colors bg-transparent"
                         >
                             <Google />
-                            Continuar con Google
+                            {t('auth.login.google')}
                         </Button>
                         <Button
                             onClick={handleFacebookLogin}
@@ -101,7 +103,7 @@ export default function LoginPage() {
                             className="w-full h-11 border cursor-pointer dark:hover:bg-white/5 hover:bg-slate-100 transition-colors bg-transparent"
                         >
                             <Facebook />
-                            Continuar con Facebook
+                            {t('auth.login.facebook')}
                         </Button>
                     </div>
 
@@ -110,30 +112,30 @@ export default function LoginPage() {
                             <Separator />
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
-                            <span className="dark:bg-[#0f1722] bg-card px-2 text-muted-foreground">O continúa con</span>
+                            <span className="dark:bg-[#0f1722] bg-card px-2 text-muted-foreground">{t('auth.login.or_continue_with')}</span>
                         </div>
                     </div>
 
                     <form onSubmit={handleEmailLogin} className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="email">Correo electrónico</Label>
-                            <Input id="email" type="email" placeholder="tu@ejemplo.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                            <Label htmlFor="email">{t('auth.login.email_label')}</Label>
+                            <Input id="email" type="email" placeholder={t('auth.login.email_placeholder')} required value={email} onChange={(e) => setEmail(e.target.value)} />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="password">Contraseña</Label>
-                            <Input id="password" type="password" placeholder="********" required value={password} onChange={(e) => setPassword(e.target.value)} />
+                            <Label htmlFor="password">{t('auth.login.password_label')}</Label>
+                            <Input id="password" type="password" placeholder={t('auth.login.password_placeholder')} required value={password} onChange={(e) => setPassword(e.target.value)} />
                         </div>
                         {error && <p className="text-sm font-medium text-destructive bg-destructive/10 p-2 rounded-md">{error}</p>}
 
                         <Button type="submit" className="w-full" disabled={loading}>
-                            {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+                            {loading ? t('auth.login.loading') : t('auth.login.submit')}
                         </Button>
                     </form>
 
                     <div className="text-center text-sm text-muted-foreground mt-4">
-                        ¿No tienes cuenta?{" "}
+                        {t('auth.login.no_account')}{" "}
                         <Link href="/signup" className="underline font-medium hover:text-primary transition-colors">
-                            Regístrate aquí
+                            {t('auth.login.signup_link')}
                         </Link>
                     </div>
                 </CardContent>

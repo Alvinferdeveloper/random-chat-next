@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Registrarse",
-    description: "Crea tu cuenta en ChatHub y únete a nuestra comunidad de salas de chat temáticas.",
+    title: "Sign Up",
+    description: "Create your ChatHub account and join our community of themed chat rooms.",
     robots: {
         index: false,
         follow: true,

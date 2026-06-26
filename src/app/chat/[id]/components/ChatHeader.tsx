@@ -4,6 +4,7 @@ import { ArrowLeft, Users } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import Image from "next/image";
 import { ThemeToggle } from "@/src/app/components/layout/ThemeToggle";
+import { useTranslation } from "react-i18next";
 
 interface ChatHeaderProps {
     roomId: string;
@@ -23,6 +24,7 @@ const ROOM_COLORS: Record<string, string> = {
 };
 
 export function ChatHeader({ roomId, roomName, isUserListVisible, onToggleUserList, userCount = 0 }: ChatHeaderProps) {
+    const { t } = useTranslation();
     const dotColor = ROOM_COLORS[roomId] || "bg-primary";
 
     return (
@@ -33,7 +35,7 @@ export function ChatHeader({ roomId, roomName, isUserListVisible, onToggleUserLi
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl text-muted-foreground hover:text-foreground transition-all duration-200 ease-out hover:bg-accent/50 active:scale-[0.92]"
-                        aria-label="Volver"
+                        aria-label={t('chat.header.back')}
                     >
                         <ArrowLeft className="w-4 h-4" />
                     </Button>
@@ -43,7 +45,7 @@ export function ChatHeader({ roomId, roomName, isUserListVisible, onToggleUserLi
                     <span className={`w-2 h-2 rounded-full shrink-0 ${dotColor}`} />
 
                     <h1 className="text-sm sm:text-base font-semibold tracking-tight truncate">
-                        {roomName || "Chat"}
+                        {roomName || t('chat.header.room_fallback')}
                     </h1>
 
                     <span className="relative flex w-1.5 h-1.5 sm:w-2 sm:h-2 shrink-0">
@@ -58,7 +60,7 @@ export function ChatHeader({ roomId, roomName, isUserListVisible, onToggleUserLi
                     variant="ghost"
                     size="icon"
                     onClick={onToggleUserList}
-                    aria-label="Mostrar participantes"
+                    aria-label={t('chat.header.show_participants')}
                     className={`h-8 w-8 sm:h-9 sm:w-9 rounded-xl transition-all duration-200 ease-out active:scale-[0.92] ${
                         isUserListVisible
                             ? 'bg-accent text-accent-foreground'

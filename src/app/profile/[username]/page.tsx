@@ -2,6 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { UserProfile } from '@/src/app/profile/components/UserProfile';
+import { useTranslation } from 'react-i18next';
 import { Suspense } from 'react';
 import { Button } from '@/src/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
@@ -9,6 +10,7 @@ import { useRouter } from 'next/navigation';
 
 export default function OtherProfilePage() {
     const params = useParams();
+    const { t } = useTranslation();
     const encodedUsername = params.username as string;
     const username = decodeURIComponent(encodedUsername);
     const router = useRouter();
@@ -21,13 +23,13 @@ export default function OtherProfilePage() {
                     onClick={() => router.back()}
                     className="mb-6 text-white hover:bg-white/10 cursor-pointer"
                 >
-                    <ArrowLeft className="mr-2 h-4 w-4" /> Volver
+                    <ArrowLeft className="mr-2 h-4 w-4" /> {t('profile.public.back')}
                 </Button>
 
                 <Suspense fallback={
                     <div className="flex flex-col items-center justify-center space-y-4 h-64">
                         <div className="h-12 w-12 border-4 border-primary/30 border-t-primary animate-spin rounded-full" />
-                        <p className="text-muted-foreground animate-pulse">Cargando perfil...</p>
+                        <p className="text-muted-foreground animate-pulse">{t('profile.public.loading')}</p>
                     </div>
                 }>
                     <UserProfile targetUsername={username} />

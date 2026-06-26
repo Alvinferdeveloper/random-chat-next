@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import useRoom from '@/src/app/rooms/hooks/useRoom';
 import { useAuth } from '@/src/app/hooks/useAuth';
 import { Loader2, ArrowLeft } from 'lucide-react';
@@ -27,6 +28,7 @@ const cardVariants: Variants = {
 };
 
 export default function FavoritesPage() {
+    const { t } = useTranslation();
     const router = useRouter();
     const [connecting, setConnecting] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
@@ -48,7 +50,7 @@ export default function FavoritesPage() {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <p className="ml-2">Cargando sesión...</p>
+                <p className="ml-2">{t('rooms.favorites.loading_session')}</p>
             </div>
         );
     }
@@ -68,7 +70,7 @@ export default function FavoritesPage() {
                     <div className="relative">
                         <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-pink-600 rounded-lg blur opacity-25"></div>
                         <h1 className="relative px-4 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-red-100 to-red-400">
-                            Mis Favoritos
+                            {t('rooms.favorites.title')}
                         </h1>
                     </div>
                 </div>
@@ -76,16 +78,16 @@ export default function FavoritesPage() {
                 <SearchBar
                     value={searchQuery}
                     onChange={setSearchQuery}
-                    placeholder="Buscar en favoritos..."
+                    placeholder={t('rooms.favorites.search_placeholder')}
                 />
             </div>
 
             <main className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-6">
                 {rooms.length === 0 && !loading && !error && (
                     <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
-                        <p className="text-gray-400 text-lg mb-4">No tienes salas favoritas todavía.</p>
+                        <p className="text-gray-400 text-lg mb-4">{t('rooms.favorites.empty')}</p>
                         <Button onClick={() => router.push('/rooms')}>
-                            Explorar salas
+                            {t('rooms.favorites.browse')}
                         </Button>
                     </div>
                 )}
@@ -105,7 +107,7 @@ export default function FavoritesPage() {
             <div ref={sentinelRef} className="flex justify-center items-center h-20">
                 {loading && <Loader2 className="h-8 w-8 animate-spin text-primary" />}
                 {!loading && !hasMore && rooms.length > 0 && (
-                    <p className="text-muted-foreground">Has llegado al final de tus favoritos.</p>
+                    <p className="text-muted-foreground">{t('rooms.favorites.end')}</p>
                 )}
                 {error && <p className="text-destructive">{error}</p>}
             </div>

@@ -1,8 +1,12 @@
+'use client'
+
 import Link from 'next/link'
 import { Button } from '@/src/components/ui/button'
 import { Home, MapPinOff } from 'lucide-react'
+import { useTranslation } from '@/src/app/lib/i18n'
 
 export default function NotFound() {
+  const { t } = useTranslation()
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 text-center">
       <div className="mb-8 rounded-full bg-muted p-8">
@@ -12,15 +16,15 @@ export default function NotFound() {
         404
       </h1>
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">
-        Página no encontrada
+        {t('not_found.title')}
       </h2>
       <p className="mb-8 max-w-[500px] text-muted-foreground">
-        Lo sentimos, no pudimos encontrar la página que buscas. Es posible que haya sido eliminada o que la dirección sea incorrecta.
+        {t('not_found.description')}
       </p>
       <Link href="/">
         <Button size="lg" className="gap-2 cursor-pointer">
           <Home className="h-4 w-4" />
-          Volver al Inicio
+          {t('not_found.back_home')}
         </Button>
       </Link>
     </div>

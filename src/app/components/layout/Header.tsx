@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useTranslation } from '@/src/app/lib/i18n';
 import Image from 'next/image';
 import { ThemeToggle } from './ThemeToggle';
 import { UserNav } from '@/src/app/components/layout/ProfileDropDown';
@@ -20,16 +21,17 @@ import { cn } from '@/src/lib/utils';
 
 export default function Header() {
   const pathname = usePathname();
+  const { t } = useTranslation();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const isAppView = pathname?.startsWith('/chat') || pathname?.startsWith('/rooms') || pathname?.startsWith('/profile') || pathname?.startsWith('/dashboard');
 
   const navItems = isAppView ? [
-    { href: '/rooms', label: 'Explorar', icon: Compass },
+    { href: '/rooms', label: t('layout.header.nav_explore'), icon: Compass },
   ] : [
-    { href: '/rooms', label: 'Explorar', icon: Compass },
-    { href: '/faq', label: 'FAQ', icon: HelpCircle },
-    { href: '/guia-comunidad', label: 'Comunidad', icon: Users },
+    { href: '/rooms', label: t('layout.header.nav_explore'), icon: Compass },
+    { href: '/faq', label: t('layout.header.nav_faq'), icon: HelpCircle },
+    { href: '/guia-comunidad', label: t('layout.header.nav_community'), icon: Users },
   ];
 
   return (
@@ -48,7 +50,7 @@ export default function Header() {
               <SheetHeader className="p-6 text-left border-b">
                 <SheetTitle className="flex items-center gap-2">
                   <Image src="/images/logo_chat.png" width={32} height={32} alt="Logo" className="rounded-lg" />
-                  <span>ChatHub</span>
+                  <span>{t('layout.header.brand_sheet')}</span>
                 </SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col gap-1 p-4">
@@ -68,7 +70,7 @@ export default function Header() {
                   </Link>
                 ))}
                 <div className="mt-4 pt-4 border-t flex items-center justify-between px-4">
-                  <span className="text-sm font-medium text-muted-foreground">Tema</span>
+                  <span className="text-sm font-medium text-muted-foreground">{t('layout.header.theme')}</span>
                   <ThemeToggle />
                 </div>
               </nav>

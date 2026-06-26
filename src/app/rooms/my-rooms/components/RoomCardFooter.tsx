@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { formatDate } from "@/src/app/utils/date";
 import { getRoomStatusConfig } from "@/src/app/utils/ui";
 import { Calendar } from "lucide-react";
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export default function RoomCardFooter({ room }: Props) {
+    const { t } = useTranslation();
     const roomStatusConfig = getRoomStatusConfig(room.status);
     
     return (
@@ -22,7 +24,7 @@ export default function RoomCardFooter({ room }: Props) {
                 "px-2 py-0.5 rounded-full text-[10px] font-bold border uppercase",
                 roomStatusConfig.className
             )}>
-                {roomStatusConfig.label}
+                {t(roomStatusConfig.labelKey)}
             </span>
         </div>
     );

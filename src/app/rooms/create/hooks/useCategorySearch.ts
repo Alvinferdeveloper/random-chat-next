@@ -31,7 +31,7 @@ export function useCategorySearch() {
             );
 
             if (!response.ok) {
-                throw new Error('Error al cargar categorías');
+                throw new Error('CATEGORIES_SEARCH_ERROR');
             }
 
             const result = await response.json();

@@ -34,12 +34,12 @@ export function useProfileSetup() {
                 setHobbiesLoading(true);
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/hobbies`, { credentials: 'include' });
                 if (!response.ok) {
-                    throw new Error('No se pudieron cargar las aficiones.');
+                    throw new Error('PROFILE_HOBBIES_LOAD_ERROR');
                 }
                 const json = await response.json();
                 setHobbies(json.data);
             } catch (err: any) {
-                setError(err.message || 'Error al cargar aficiones.');
+                setError(err.message || 'PROFILE_HOBBIES_LOAD_ERROR');
             } finally {
                 setHobbiesLoading(false);
             }
@@ -70,10 +70,10 @@ export function useProfileSetup() {
                 onSuccess();
             } else {
                 const errorData = await response.json();
-                setError(errorData.message || 'Ocurrió un error al guardar tu perfil.');
+                setError(errorData.message || 'PROFILE_SAVE_ERROR');
             }
         } catch (err) {
-            setError('No se pudo conectar con el servidor. Inténtalo de nuevo.');
+            setError('PROFILE_SAVE_NETWORK_ERROR');
         }
     };
 

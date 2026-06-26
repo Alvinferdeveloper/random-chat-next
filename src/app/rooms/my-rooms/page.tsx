@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useMyRooms } from '@/src/app/rooms/my-rooms/hooks/useMyRooms';
 import { RoomCard } from '@/src/app/rooms/components/RoomCard';
 import { Trash2, Loader2, ArrowLeft } from 'lucide-react';
@@ -23,6 +24,7 @@ const cardVariants = {
 };
 
 export default function MyRoomsPage() {
+    const { t } = useTranslation();
     const { rooms, loading, error, deleteRoom } = useMyRooms();
     const router = useRouter();
     const [connecting, setConnecting] = useState<string | null>(null);
@@ -37,7 +39,7 @@ export default function MyRoomsPage() {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center space-y-4">
                 <Loader2 className="h-12 w-12 animate-spin text-primary" />
-                <p className="text-muted-foreground animate-pulse">Cargando tus salas...</p>
+                <p className="text-muted-foreground animate-pulse">{t('rooms.my-rooms.loading')}</p>
             </div>
         );
     }
@@ -49,14 +51,14 @@ export default function MyRoomsPage() {
                     <div className="space-y-1">
                         <Link href="/rooms" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-2">
                             <ArrowLeft className="h-4 w-4" />
-                            Explorar todas las salas
+                            {t('rooms.my-rooms.back')}
                         </Link>
-                        <h1 className="text-3xl font-bold tracking-tight text-white">Mis Salas</h1>
-                        <p className="text-muted-foreground">Gestiona las salas que has creado.</p>
+                        <h1 className="text-3xl font-bold tracking-tight text-white">{t('rooms.my-rooms.title')}</h1>
+                        <p className="text-muted-foreground">{t('rooms.my-rooms.subtitle')}</p>
                     </div>
                     <Link href="/rooms/create">
                         <button className="bg-primary cursor-pointer hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-md font-medium transition-colors">
-                            Crear nueva sala
+                            {t('rooms.my-rooms.create_new')}
                         </button>
                     </Link>
                 </div>
@@ -73,14 +75,14 @@ export default function MyRoomsPage() {
                             <Trash2 className="h-8 w-8 text-muted-foreground" />
                         </div>
                         <div className="space-y-2">
-                            <h2 className="text-xl font-semibold text-white">No tienes salas aún</h2>
+                            <h2 className="text-xl font-semibold text-white">{t('rooms.my-rooms.empty_title')}</h2>
                             <p className="text-muted-foreground max-w-sm">
-                                ¡Parece que no has creado ninguna sala de chat todavía! Empieza creando una para tu comunidad.
+                                {t('rooms.my-rooms.empty_desc')}
                             </p>
                         </div>
                         <Link href="/rooms/create">
                             <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 rounded-md font-medium transition-colors">
-                                Crear mi primera sala
+                                {t('rooms.my-rooms.create_first')}
                             </button>
                         </Link>
                     </div>

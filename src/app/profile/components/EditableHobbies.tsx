@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FieldValues, Path } from 'react-hook-form';
 import { Button } from '@/src/components/ui/button';
 import { Badge } from '@/src/components/ui/badge';
@@ -38,6 +39,7 @@ export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Pa
     updateFn,
     readOnly = false,
 }: EditableHobbiesProps<T, Name>) {
+    const { t } = useTranslation();
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [selectedHobbyIds, setSelectedHobbyIds] = useState<string[]>([]);
@@ -90,7 +92,7 @@ export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Pa
                             );
                         })
                     ) : (
-                        <span className="text-muted-foreground italic text-sm">No has seleccionado ninguna afición.</span>
+                        <span className="text-muted-foreground italic text-sm">{t('profile.editable.no_hobbies')}</span>
                     )}
                 </div>
             ) : (
@@ -132,11 +134,11 @@ export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Pa
                         <div className="mt-4 flex gap-2">
                             <Button type="button" size="sm" onClick={onSave} disabled={isSaving || hobbiesLoading}>
                                 {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-                                Guardar Aficiones
+                                {t('profile.editable.save_hobbies')}
                             </Button>
                             <Button type="button" size="sm" variant="outline" onClick={handleCancel}>
                                 <X className="mr-2 h-4 w-4" />
-                                Cancelar
+                                {t('profile.editable.cancel')}
                             </Button>
                         </div>
                     </CardContent>

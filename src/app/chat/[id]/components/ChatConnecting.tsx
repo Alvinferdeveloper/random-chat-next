@@ -2,15 +2,7 @@
 import { Button } from "@shadcn/button";
 import { ConnectingAnimation } from "@/components/animations/ConnectionAnimation";
 import { useRouter } from "next/navigation";
-
-const topicNames: Record<string, string> = {
-    deportes: "Deportes",
-    cocina: "Cocina",
-    danza: "Danza",
-    musica: "Música",
-    cine: "Cine",
-    viajes: "Viajes",
-};
+import { useTranslation } from "react-i18next";
 
 const topicIcons: Record<string, string> = {
     deportes: "⚽",
@@ -22,6 +14,7 @@ interface ChatConnectingProps {
 }
 
 export function ChatConnecting({ roomId }: ChatConnectingProps) {
+    const { t } = useTranslation();
     const router = useRouter();
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-background">
@@ -30,14 +23,14 @@ export function ChatConnecting({ roomId }: ChatConnectingProps) {
                     <span className="text-3xl">{topicIcons[roomId] || "💬"}</span>
                 </div>
                 <h1 className="text-2xl font-bold">
-                    Conectando a {topicNames[roomId] || "Chat"}
+                    {t('chat.connecting.connecting_to', { topic: t(`chat.connecting.topic.${roomId}`) || t('chat.connecting.topic.default') })}
                 </h1>
-                <ConnectingAnimation text="Estableciendo conexión" />
+                <ConnectingAnimation text={t('chat.connecting.establishing')} />
                 <p className="text-sm text-muted-foreground">
-                    Estamos conectándote con otros usuarios interesados en este tema...
+                    {t('chat.connecting.connecting_users')}
                 </p>
                 <Button variant="outline" onClick={() => router.push("/")} className="mt-4">
-                    Cancelar
+                    {t('chat.connecting.cancel')}
                 </Button>
             </div>
         </div>

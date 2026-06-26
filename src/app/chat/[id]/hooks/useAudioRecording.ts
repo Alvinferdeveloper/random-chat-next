@@ -35,8 +35,8 @@ export function useAudioRecording() {
                 setRecordingTime(prev => prev + 1);
             }, 1000);
         } catch (err) {
-            console.error("No se pudo acceder al micrófono:", err);
-            alert("Necesitas dar permisos de micrófono para enviar notas de voz.");
+            console.error("MICROPHONE_ACCESS_DENIED:", err);
+            alert("MICROPHONE_PERMISSION_DENIED");
         }
     };
 
@@ -105,7 +105,7 @@ export function useAudioRecording() {
                     body: audioBlob
                 });
 
-                if (!res.ok) throw new Error('Upload failed');
+                if (!res.ok) throw new Error('AUDIO_UPLOAD_FAILED');
 
                 // 4. Emit final audio message
                 socket.emit('audio', {

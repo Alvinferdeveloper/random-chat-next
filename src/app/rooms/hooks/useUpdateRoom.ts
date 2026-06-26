@@ -21,7 +21,7 @@ export function useUpdateRoom() {
             const json = await res.json();
 
             if (!res.ok) {
-                throw new Error(json.message || "Error al actualizar la sala.");
+                throw new Error(json.message || "ROOM_UPDATE_ERROR");
             }
 
             return json;

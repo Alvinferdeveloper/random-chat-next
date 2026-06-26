@@ -1,5 +1,6 @@
 'use client'
 import { X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface ImageViewerModalProps {
     isOpen: boolean;
@@ -8,6 +9,7 @@ interface ImageViewerModalProps {
 }
 
 export function ImageViewerModal({ isOpen, imageUrl, onClose }: ImageViewerModalProps) {
+    const { t } = useTranslation();
     return (
         <div
             className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
@@ -29,7 +31,7 @@ export function ImageViewerModal({ isOpen, imageUrl, onClose }: ImageViewerModal
                 {imageUrl && (
                     <img
                         src={imageUrl}
-                        alt="Visor de imagen"
+                        alt={t('chat.image_viewer.alt')}
                         className="w-full h-full object-contain rounded-lg shadow-2xl"
                     />
                 )}

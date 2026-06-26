@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Search, MessageSquare, X, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useRoomSearch } from '@/src/app/hooks/useRoomSearch';
+import { useTranslation } from '@/src/app/lib/i18n';
 
 interface SearchResult {
     id: string;
@@ -15,6 +16,7 @@ interface SearchResult {
 }
 
 export function GlobalSearch() {
+    const { t } = useTranslation();
     const [query, setQuery] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -59,7 +61,7 @@ export function GlobalSearch() {
                         setIsOpen(true);
                     }}
                     onFocus={() => setIsOpen(true)}
-                    placeholder="Buscar salas..."
+                    placeholder={t('layout.search.placeholder')}
                     className="w-full h-10 pl-10 pr-4 bg-secondary/50 hover:bg-secondary/80 focus:bg-background border-none rounded-2xl text-sm transition-all outline-none focus:ring-2 focus:ring-primary/20"
                 />
                 {query && (
@@ -83,7 +85,7 @@ export function GlobalSearch() {
                         ) : results.length > 0 ? (
                             <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
                                 <div className="space-y-1">
-                                    <p className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Salas de Chat</p>
+                                    <p className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{t('layout.search.results_header')}</p>
                                     {results.map((result) => (
                                         <button
                                             key={result.id}
@@ -97,7 +99,7 @@ export function GlobalSearch() {
                                                 <div className="flex items-center justify-between">
                                                     <p className="text-sm font-medium truncate">{result.name}</p>
                                                     <span className="text-[10px] bg-green-500/10 text-green-600 px-1.5 py-0.5 rounded-full font-bold">
-                                                        {result.onlineCount} online
+                                                        {t('layout.search.online_count', { count: result.onlineCount })}
                                                     </span>
                                                 </div>
                                                 <p className="text-xs text-muted-foreground truncate">{result.description}</p>
@@ -108,7 +110,7 @@ export function GlobalSearch() {
                             </div>
                         ) : (
                             <div className="py-10 text-center">
-                                <p className="text-sm text-muted-foreground italic">No hay coincidencias para "{query}"</p>
+                                <p className="text-sm text-muted-foreground italic">{t('layout.search.no_results', { query })}</p>
                             </div>
                         )}
                     </div>

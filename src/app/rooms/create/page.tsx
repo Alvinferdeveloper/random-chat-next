@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CreateRoomForm, RoomData } from './components/CreateRoomForm';
 import { CustomizeRoom } from './components/CustomizeRoom';
 import { ArrowLeft, Sparkles, LayoutTemplate } from 'lucide-react';
@@ -8,6 +9,7 @@ import Link from 'next/link';
 import { cn } from '@/src/lib/utils';
 
 export default function CreateRoomPage() {
+    const { t } = useTranslation();
     const [createdRoom, setCreatedRoom] = useState<RoomData | null>(null);
 
     const handleRoomCreated = (room: RoomData) => {
@@ -16,8 +18,8 @@ export default function CreateRoomPage() {
 
     // UI Helper: Steps of the process
     const steps = [
-        { id: 1, name: 'Detalles', icon: LayoutTemplate, active: !createdRoom, completed: !!createdRoom },
-        { id: 2, name: 'Personalización', icon: Sparkles, active: !!createdRoom, completed: false },
+        { id: 1, name: t('rooms.create.steps.details'), icon: LayoutTemplate, active: !createdRoom, completed: !!createdRoom },
+        { id: 2, name: t('rooms.create.steps.customization'), icon: Sparkles, active: !!createdRoom, completed: false },
     ];
 
     return (
@@ -35,7 +37,7 @@ export default function CreateRoomPage() {
                         <div className="p-2 rounded-full bg-secondary group-hover:bg-secondary/80 transition-colors">
                             <ArrowLeft className="h-4 w-4" />
                         </div>
-                        Volver a salas
+                        {t('rooms.create.back_to_rooms')}
                     </Link>
 
                     {/* Stepper / Steps indicator */}
@@ -61,16 +63,16 @@ export default function CreateRoomPage() {
                     <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
                         {createdRoom ? (
                             <span className="bg-gradient-to-r from-primary to-primary/30 bg-clip-text text-transparent">
-                                Dale vida a tu Sala
+                                {t('rooms.create.title.bring_to_life')}
                             </span>
                         ) : (
-                            <span>Crea tu Comunidad</span>
+                            <span>{t('rooms.create.title.create_community')}</span>
                         )}
                     </h1>
                     <p className="text-muted-foreground max-w-lg mx-auto text-lg">
                         {createdRoom
-                            ? 'Sube imágenes atractivas para destacar entre la multitud.'
-                            : 'Configura el espacio perfecto para reunir a personas con tus mismos intereses.'}
+                            ? t('rooms.create.subtitle.upload_images')
+                            : t('rooms.create.subtitle.configure_space')}
                     </p>
                 </div>
 

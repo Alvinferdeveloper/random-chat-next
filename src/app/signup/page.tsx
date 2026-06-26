@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { Input } from "@/src/components/ui/input";
@@ -13,6 +14,7 @@ import { ArrowLeft } from "lucide-react";
 
 export default function SignupPage() {
     const router = useRouter();
+    const { t } = useTranslation();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -35,7 +37,7 @@ export default function SignupPage() {
         setLoading(false);
 
         if (error) {
-            setError(error.message || 'Ocurrió un error durante el registro.');
+            setError(error.message || t('auth.signup.error.fallback'));
         } else {
             setSuccess(true);
         }
@@ -51,17 +53,17 @@ export default function SignupPage() {
                 </div>
                 <Card className="w-full max-w-md text-center shadow-xl border dark:border-white/5 border-border/50 dark:bg-[#0f1722] bg-card">
                     <CardHeader>
-                        <CardTitle className="text-2xl font-bold">¡Registro Exitoso!</CardTitle>
+                        <CardTitle className="text-2xl font-bold">{t('auth.signup.success.title')}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2 text-muted-foreground">
-                        <p>Hemos enviado un enlace de verificación a tu correo electrónico.</p>
-                        <p>Por favor, revisa tu bandeja de entrada para continuar.</p>
+                        <p>{t('auth.signup.success.message1')}</p>
+                        <p>{t('auth.signup.success.message2')}</p>
                         <Button
                             variant="outline"
                             className="mt-4 w-full cursor-pointer"
                             onClick={() => router.push('/login')}
                         >
-                            Ir al inicio de sesión
+                            {t('auth.signup.success.go_to_login')}
                         </Button>
                     </CardContent>
                 </Card>
@@ -80,7 +82,7 @@ export default function SignupPage() {
                     className="group flex items-center gap-2 cursor-pointer text-muted-foreground hover:text-foreground transition-all duration-300"
                 >
                     <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                    <span>Volver atrás</span>
+                    <span>{t('auth.signup.back')}</span>
                 </Button>
             </div>
 
@@ -92,33 +94,33 @@ export default function SignupPage() {
 
             <Card className="w-full max-w-md mx-auto shadow-xl border dark:border-white/5 border-border/50 dark:bg-[#0f1722] bg-card">
                 <CardHeader className="space-y-1 text-center">
-                    <CardTitle className="text-2xl font-bold">Crear una Cuenta</CardTitle>
-                    <CardDescription>Ingresa tus datos para registrarte</CardDescription>
+                    <CardTitle className="text-2xl font-bold">{t('auth.signup.title')}</CardTitle>
+                    <CardDescription>{t('auth.signup.subtitle')}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <form onSubmit={handleSignup} className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="name">Nombre</Label>
-                            <Input id="name" placeholder="Tu nombre" value={name} onChange={(e) => setName(e.target.value)} required />
+                            <Label htmlFor="name">{t('auth.signup.name_label')}</Label>
+                            <Input id="name" placeholder={t('auth.signup.name_placeholder')} value={name} onChange={(e) => setName(e.target.value)} required />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="email">Correo electrónico</Label>
-                            <Input id="email" type="email" placeholder="tu@ejemplo.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                            <Label htmlFor="email">{t('auth.signup.email_label')}</Label>
+                            <Input id="email" type="email" placeholder={t('auth.signup.email_placeholder')} value={email} onChange={(e) => setEmail(e.target.value)} required />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="password">Contraseña</Label>
-                            <Input id="password" type="password" placeholder="********" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                            <Label htmlFor="password">{t('auth.signup.password_label')}</Label>
+                            <Input id="password" type="password" placeholder={t('auth.signup.password_placeholder')} value={password} onChange={(e) => setPassword(e.target.value)} required />
                         </div>
                         {error && <p className="text-sm font-medium text-destructive bg-destructive/10 p-2 rounded-md">{error}</p>}
                         <Button type="submit" className="w-full" disabled={loading}>
-                            {loading ? 'Creando cuenta...' : 'Crear Cuenta'}
+                            {loading ? t('auth.signup.loading') : t('auth.signup.submit')}
                         </Button>
                     </form>
 
                     <div className="text-center text-sm text-muted-foreground mt-4">
-                        ¿Ya tienes una cuenta?{" "}
+                        {t('auth.signup.has_account')}{" "}
                         <Link href="/login" className="underline font-medium hover:text-primary transition-colors">
-                            Inicia sesión
+                            {t('auth.signup.login_link')}
                         </Link>
                     </div>
                 </CardContent>

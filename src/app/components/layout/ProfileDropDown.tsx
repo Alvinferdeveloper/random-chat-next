@@ -18,6 +18,7 @@ import {
 } from '@/src/components/ui/dropdown-menu';
 import { LogOut, User as UserIcon, Users, BadgePlus, LayoutDashboard, Heart } from 'lucide-react';
 import { useAuth } from '@/src/app/hooks/useAuth';
+import { useTranslation } from '@/src/app/lib/i18n';
 import { useSocket } from '@/src/app/components/providers/SocketEventProvider';
 import { useRouter } from 'next/navigation';
 import { useUsername } from "@/src/app/hooks/useUsername";
@@ -27,6 +28,7 @@ export function UserNav() {
     const socket = useSocket();
     const navigation = useRouter()
     const { removeStoredUsername } = useUsername();
+    const { t } = useTranslation();
 
     const handleLogout = async () => {
         removeStoredUsername();
@@ -43,10 +45,10 @@ export function UserNav() {
 
     if (!session?.user) {
         return (
-            <a href="/login" title="Iniciar sesión">
+            <a href="/login" title={t('layout.profile_dropdown.login_title')}>
                 <Button size="sm" className="flex items-center justify-center gap-2 cursor-pointer h-9 w-9 p-0 md:w-auto md:px-4 shrink-0 transition-all">
                     <UserIcon className="w-4 h-4" />
-                    <span className="hidden md:inline">Iniciar sesión</span>
+                    <span className="hidden md:inline">{t('layout.profile_dropdown.login_title')}</span>
                 </Button>
             </a>
         );
@@ -82,27 +84,27 @@ export function UserNav() {
                 <DropdownMenuGroup>
                     <DropdownMenuItem className='cursor-pointer' onClick={() => navigation.push("/profile")}>
                         <UserIcon className="mr-2 h-4 w-4" />
-                        <span>Perfil</span>
+                        <span>{t('layout.profile_dropdown.profile')}</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem className='cursor-pointer' onClick={() => navigation.push("/rooms/my-rooms")}>
                         <LayoutDashboard className="mr-2 h-4 w-4" />
-                        <span>Mis salas</span>
+                        <span>{t('layout.profile_dropdown.my_rooms')}</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem className='cursor-pointer' onClick={() => navigation.push("/rooms/favorites")}>
                         <Heart className="mr-2 h-4 w-4" />
-                        <span>Favoritos</span>
+                        <span>{t('layout.profile_dropdown.favorites')}</span>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuGroup>
                     <DropdownMenuItem className='cursor-pointer' onClick={() => navigation.push("/rooms/create")}>
                         <BadgePlus className="mr-2 h-4 w-4" />
-                        <span>Crear sala</span>
+                        <span>{t('layout.profile_dropdown.create_room')}</span>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className='cursor-pointer' onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>Cerrar sesión</span>
+                    <span>{t('layout.profile_dropdown.logout')}</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

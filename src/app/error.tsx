@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { AlertCircle, RotateCcw } from 'lucide-react'
+import { useTranslation } from '@/src/app/lib/i18n'
 
 export default function Error({
   error,
@@ -11,8 +12,9 @@ export default function Error({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  const { t } = useTranslation()
+
   useEffect(() => {
-    // Log the error to an error reporting service
     console.error(error)
   }, [error])
 
@@ -22,18 +24,18 @@ export default function Error({
         <AlertCircle className="h-16 w-16 text-red-500" />
       </div>
       <h1 className="mb-2 text-4xl font-extrabold tracking-tight lg:text-5xl">
-        Ups!
+        {t('error_page.title')}
       </h1>
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">
-        Algo salió mal
+        {t('error_page.subtitle')}
       </h2>
       <p className="mb-8 max-w-[500px] text-muted-foreground">
-        Hemos encontrado un error inesperado. Nuestro equipo ya ha sido notificado, pero mientras tanto puedes intentar recargar.
+        {t('error_page.description')}
       </p>
       <div className="flex gap-4">
         <Button onClick={() => reset()} variant="default" className="gap-2 cursor-pointer">
           <RotateCcw className="h-4 w-4" />
-          Intentar de nuevo
+          {t('error_page.retry')}
         </Button>
       </div>
     </div>

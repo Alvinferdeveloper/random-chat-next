@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCreateRoom } from '../hooks/useCreateRoom';
 import { Button } from '@/src/components/ui/button';
 import { Loader2, Upload, Image as ImageIcon, CheckCircle2, Eye, ArrowRight, CheckCircle } from 'lucide-react';
@@ -20,6 +21,7 @@ interface CustomizeRoomProps {
 }
 
 export function CustomizeRoom({ room }: CustomizeRoomProps) {
+    const { t } = useTranslation();
     const { uploadRoomImage, uploading, uploadError } = useCreateRoom();
     const router = useRouter();
 
@@ -75,16 +77,16 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
             <div className="space-y-6">
                 <Card className="border-border/50 shadow-md bg-card/50 backdrop-blur-xl">
                     <CardHeader>
-                        <CardTitle>Carga de Recursos</CardTitle>
-                        <CardDescription>Formatos: JPG, PNG, WEBP.</CardDescription>
+                        <CardTitle>{t('rooms.create.customize.resource_upload')}</CardTitle>
+                        <CardDescription>{t('rooms.create.customize.formats')}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
 
                         {/* Banner Upload Area */}
                         <div className="space-y-3">
                             <div className="flex justify-between items-center">
-                                <h3 className="text-sm font-medium">Portada (Banner)</h3>
-                                {bannerPreview && <span className="text-xs text-green-500 font-medium flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Seleccionado</span>}
+                                <h3 className="text-sm font-medium">{t('rooms.create.customize.banner_label')}</h3>
+                                {bannerPreview && <span className="text-xs text-green-500 font-medium flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> {t('rooms.create.customize.selected')}</span>}
                             </div>
 
                             <input type="file" ref={bannerInputRef} onChange={(e) => handleFileChange(e, 'banner')} className="hidden" accept="image/*" />
@@ -100,21 +102,21 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
                                 {uploading === 'banner' ? (
                                     <div className="flex flex-col items-center animate-pulse">
                                         <Loader2 className="h-6 w-6 animate-spin text-primary mb-2" />
-                                        <p className="text-xs text-muted-foreground">Subiendo...</p>
+                                        <p className="text-xs text-muted-foreground">{t('rooms.create.customize.uploading')}</p>
                                     </div>
                                 ) : bannerPreview ? (
                                     <>
                                         <img src={bannerPreview} alt="Banner Preview" className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-30 transition-opacity" />
                                         <div className="z-10 bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full border border-border flex items-center gap-2">
                                             <Upload className="h-3 w-3" />
-                                            <span className="text-xs font-medium">Cambiar imagen</span>
+                                            <span className="text-xs font-medium">{t('rooms.create.customize.change_image')}</span>
                                         </div>
                                     </>
                                 ) : (
                                     <>
                                         <Upload className="h-6 w-6 text-muted-foreground mb-2 group-hover:text-primary transition-colors" />
-                                        <p className="text-sm font-medium">Subir Banner</p>
-                                        <p className="text-xs text-muted-foreground mt-1">1280x720 px</p>
+                                        <p className="text-sm font-medium">{t('rooms.create.customize.upload_banner')}</p>
+                                        <p className="text-xs text-muted-foreground mt-1">{t('rooms.create.customize.banner_size')}</p>
                                     </>
                                 )}
                             </div>
@@ -123,8 +125,8 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
                         {/* Icon Upload Area */}
                         <div className="space-y-3">
                             <div className="flex justify-between items-center">
-                                <h3 className="text-sm font-medium">Icono / Avatar</h3>
-                                {iconPreview && <span className="text-xs text-green-500 font-medium flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Seleccionado</span>}
+                                <h3 className="text-sm font-medium">{t('rooms.create.customize.icon_label')}</h3>
+                                {iconPreview && <span className="text-xs text-green-500 font-medium flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> {t('rooms.create.customize.selected')}</span>}
                             </div>
 
                             <input type="file" ref={iconInputRef} onChange={(e) => handleFileChange(e, 'icon')} className="hidden" accept="image/*" />
@@ -152,8 +154,8 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
                                     )}
                                 </div>
                                 <div className="text-sm text-muted-foreground">
-                                    <p>Se mostrará en listas y chats.</p>
-                                    <p className="text-xs mt-1">Recomendado: 512x512 px</p>
+                                    <p>{t('rooms.create.customize.icon_desc')}</p>
+                                    <p className="text-xs mt-1">{t('rooms.create.customize.icon_size_hint')}</p>
                                 </div>
                             </div>
                         </div>
@@ -174,11 +176,11 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
                         size="lg"
                     >
                         {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
-                        Finalizar creación
+                        {t('rooms.create.customize.finalize')}
                         <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                     <p className="text-xs text-center text-muted-foreground">
-                        Puedes cambiar esto más tarde en la configuración.
+                        {t('rooms.create.customize.change_later')}
                     </p>
                 </div>
             </div>
@@ -187,7 +189,7 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
             <div className="hidden lg:block sticky top-8">
                 <div className="flex items-center gap-2 mb-4 text-muted-foreground">
                     <Eye className="h-4 w-4" />
-                    <span className="text-sm font-medium uppercase tracking-wider">Vista Previa</span>
+                    <span className="text-sm font-medium uppercase tracking-wider">{t('rooms.create.customize.preview')}</span>
                 </div>
 
                 {/* Mock Card */}
@@ -198,7 +200,7 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
                             <img src={bannerPreview} alt="Banner" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-secondary to-secondary/50">
-                                <span className="text-muted-foreground/50 text-sm">Sin Banner</span>
+                                <span className="text-muted-foreground/50 text-sm">{t('rooms.create.customize.no_banner')}</span>
                             </div>
                         )}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -222,15 +224,15 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
                         <div className="mt-10 space-y-2">
                             <h3 className="text-xl font-bold leading-tight">{room.name}</h3>
                             <p className="text-sm text-muted-foreground line-clamp-2">
-                                {room.short_description || "Esta es una vista previa de cómo se verá la descripción corta de tu sala ante los demás usuarios."}
+                                {room.short_description || t('rooms.create.customize.preview_desc_fallback')}
                             </p>
 
                             <div className="pt-4 flex items-center gap-4 text-xs text-muted-foreground font-medium">
                                 <div className="flex items-center gap-1">
                                     <div className="h-2 w-2 rounded-full bg-green-500" />
-                                    1 En línea
+                                    {t('rooms.create.customize.online_count')}
                                 </div>
-                                <div>0 Miembros</div>
+                                <div>{t('rooms.create.customize.member_count')}</div>
                             </div>
                         </div>
                     </div>
@@ -238,7 +240,7 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
 
                 <div className="mt-6 text-center">
                     <p className="text-sm text-muted-foreground">
-                        Así es como verán tu sala los futuros miembros.
+                        {t('rooms.create.customize.preview_note')}
                     </p>
                 </div>
             </div>

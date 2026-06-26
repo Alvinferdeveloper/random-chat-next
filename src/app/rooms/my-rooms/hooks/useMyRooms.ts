@@ -18,7 +18,7 @@ export function useMyRooms() {
 
             if (!response.ok) {
                 const result = await response.json();
-                throw new Error(result.message || "Error al cargar tus salas.");
+                throw new Error(result.message || "MY_ROOMS_LOAD_ERROR");
             }
 
             const json = await response.json();
@@ -39,7 +39,7 @@ export function useMyRooms() {
 
             if (!response.ok) {
                 const result = await response.json();
-                throw new Error(result.message || "Error al eliminar la sala.");
+                throw new Error(result.message || "ROOM_DELETE_ERROR");
             }
 
             // Update local state after deletion

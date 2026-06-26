@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Room } from '@/src/app/rooms/hooks/useRoom';
 import { useUpdateRoom } from '@/src/app/rooms/hooks/useUpdateRoom';
 import { useCreateRoom } from '@/src/app/rooms/create/hooks/useCreateRoom';
@@ -25,6 +26,7 @@ interface RoomEditDialogProps {
 }
 
 export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps) {
+    const { t } = useTranslation();
     const { updateRoom, loading: updatingInfo } = useUpdateRoom();
     const { uploadRoomImage, uploading } = useCreateRoom();
 
@@ -94,9 +96,9 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
                 onClick={(e) => e.stopPropagation()}
             >
                 <DialogHeader>
-                    <DialogTitle>Editar Sala</DialogTitle>
+                    <DialogTitle>{t('rooms.edit.title')}</DialogTitle>
                     <DialogDescription className="text-gray-400">
-                        Modifica los detalles y apariencia de tu sala.
+                        {t('rooms.edit.description')}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -104,7 +106,7 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
                     {/* Images Section */}
                     <div className="grid grid-cols-2 gap-4">
                         <ImageUploadField
-                            label="Icono"
+                            label={t('rooms.edit.icon_label')}
                             type="icon"
                             currentImage={iconPreview || room.server_icon}
                             isUploading={uploading === 'icon'}
@@ -112,7 +114,7 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
                             onFileChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFileChange(e, 'icon')}
                         />
                         <ImageUploadField
-                            label="Banner"
+                            label={t('rooms.edit.banner_label')}
                             type="banner"
                             currentImage={bannerPreview || room.server_banner}
                             isUploading={uploading === 'banner'}
@@ -123,7 +125,7 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="name">Nombre</Label>
+                        <Label htmlFor="name">{t('rooms.edit.name_label')}</Label>
                         <Input
                             id="name"
                             value={editForm.name}
@@ -132,7 +134,7 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
                         />
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="short_description">Descripción Corta</Label>
+                        <Label htmlFor="short_description">{t('rooms.edit.short_desc_label')}</Label>
                         <Input
                             id="short_description"
                             value={editForm.short_description}
@@ -141,7 +143,7 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
                         />
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="full_description">Descripción Larga</Label>
+                        <Label htmlFor="full_description">{t('rooms.edit.full_desc_label')}</Label>
                         <Textarea
                             id="full_description"
                             value={editForm.full_description}
@@ -158,7 +160,7 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
                         className="bg-blue-600 hover:bg-blue-700 text-white w-full"
                     >
                         {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Guardar Información
+                        {t('rooms.edit.save')}
                     </Button>
                 </DialogFooter>
             </DialogContent>

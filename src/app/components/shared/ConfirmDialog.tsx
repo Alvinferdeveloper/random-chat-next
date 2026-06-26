@@ -10,6 +10,7 @@ import {
 } from '@/src/components/ui/dialog';
 import { Button } from '@/src/components/ui/button';
 import { Loader2, AlertTriangle } from 'lucide-react';
+import { useTranslation } from '@/src/app/lib/i18n';
 
 interface ConfirmDialogProps {
     isOpen: boolean;
@@ -29,11 +30,12 @@ export function ConfirmDialog({
     onConfirm,
     title,
     description,
-    confirmText = 'Confirmar',
-    cancelText = 'Cancelar',
+    confirmText,
+    cancelText,
     variant = 'primary',
     isLoading = false
 }: ConfirmDialogProps) {
+    const { t } = useTranslation()
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !isLoading && !open && onClose()}>
             <DialogContent className="sm:max-w-[425px]">
@@ -52,7 +54,7 @@ export function ConfirmDialog({
                         onClick={onClose} 
                         disabled={isLoading}
                     >
-                        {cancelText}
+                        {cancelText ?? t('shared.cancel')}
                     </Button>
                     <Button 
                         variant={variant === 'destructive' ? 'destructive' : 'default'} 
@@ -60,7 +62,7 @@ export function ConfirmDialog({
                         disabled={isLoading}
                     >
                         {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        {confirmText}
+                        {confirmText ?? t('shared.confirm')}
                     </Button>
                 </DialogFooter>
             </DialogContent>

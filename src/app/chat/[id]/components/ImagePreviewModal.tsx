@@ -5,6 +5,7 @@ import { Input } from "@/src/components/ui/input";
 import { X, Send, Smile } from "lucide-react";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import { cn } from "@/src/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface ImagePreviewModalProps {
     previewImage: string;
@@ -25,6 +26,7 @@ export function ImagePreviewModal({
     closeModal,
     isUploading,
 }: ImagePreviewModalProps) {
+    const { t } = useTranslation();
     const [showPicker, setShowPicker] = useState(false);
 
     const onEmojiClick = (emojiData: EmojiClickData) => {
@@ -59,7 +61,7 @@ export function ImagePreviewModal({
                         <div className="relative flex items-center">
                             <Input
                                 type="text"
-                                placeholder="Añade una descripción..."
+                                placeholder={t('chat.image_preview.placeholder')}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 className="pr-12"

@@ -55,11 +55,11 @@ export default function useRoom(searchQuery: string = "", type: RoomFetchType = 
             const res = await fetch(`${baseUrl}?${queryParams.toString()}`, { credentials: 'include' });
 
             if (res.status === 429) {
-                throw new Error("Has hecho demasiadas peticiones. Por favor, espera un momento antes de volver a intentarlo.");
+                throw new Error("RATE_LIMIT");
             }
 
             if (!res.ok) {
-                throw new Error("Ocurrió un error al cargar las salas. El servidor puede estar experimentando problemas.");
+                throw new Error("ROOMS_LOAD_ERROR");
             }
             const json = await res.json();
 
@@ -72,9 +72,9 @@ export default function useRoom(searchQuery: string = "", type: RoomFetchType = 
             // or when something prevents the request from completing. 
             // In these cases, the error is traditionally a TypeError.
             if (err instanceof TypeError) {
-                setError("No se pudo establecer conexión con el servidor. Verifica tu conexión o inténtalo más tarde.");
+                setError("NETWORK_ERROR");
             } else {
-                setError(err.message || "Algo salió mal al cargar las salas.");
+                setError(err.message || "ROOMS_GENERIC_ERROR");
             }
         } finally {
             setLoading(false);

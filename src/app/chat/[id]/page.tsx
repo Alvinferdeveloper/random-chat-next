@@ -23,12 +23,14 @@ import { cn } from "@/src/lib/utils";
 import { isTextMessage } from "@/src/types/chat";
 import { ConfirmDialog } from "@/src/app/components/shared/ConfirmDialog";
 import { useTheme } from "next-themes";
+import { useTranslation } from "react-i18next";
 import CampfireBackground from "@/src/app/chat/[id]/components/CampfireBackground";
 import CampfireLottie from "@/src/app/chat/[id]/components/CampfireLottie";
 import ParkBackground from "@/src/app/chat/[id]/components/ParkBackground";
 import TreeIllustration from "@/src/app/chat/[id]/components/TreeIllustration";
 
 export default function ChatPage() {
+    const { t } = useTranslation();
     const params = useParams();
     const id = params.id;
     const { username } = useUsername();
@@ -105,7 +107,7 @@ export default function ChatPage() {
         if (replyingToMessage) {
             const messageSnippet = isTextMessage(replyingToMessage)
                 ? replyingToMessage.message.substring(0, 50)
-                : '[Imagen]';
+                : t('chat.message.image_fallback');
 
             replyContext = {
                 id: replyingToMessage.id,
@@ -224,10 +226,10 @@ export default function ChatPage() {
                     }
                     setDeleteConfirmId(null);
                 }}
-                title="Eliminar mensaje"
-                description="¿Estás seguro de que deseas eliminar este mensaje? Esta acción no se puede deshacer."
-                confirmText="Eliminar"
-                cancelText="Cancelar"
+                title={t('chat.confirm_delete.title')}
+                description={t('chat.confirm_delete.description')}
+                confirmText={t('chat.confirm_delete.confirm')}
+                cancelText={t('chat.confirm_delete.cancel')}
                 variant="destructive"
             />
         </div>

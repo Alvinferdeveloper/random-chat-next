@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, Check, Search } from 'lucide-react';
 import { Category } from '../hooks/useCategories';
 import { useCategorySearch } from '../hooks/useCategorySearch';
@@ -14,6 +15,7 @@ interface CategorySelectorProps {
 }
 
 export function CategorySelector({ categories, selectedIds, onChange, loading }: CategorySelectorProps) {
+    const { t } = useTranslation();
     const [showSearch, setShowSearch] = useState(false);
     const { categories: searchResults, loading: searchLoading, search, setSearch } = useCategorySearch();
 
@@ -43,7 +45,7 @@ export function CategorySelector({ categories, selectedIds, onChange, loading }:
 
     return (
         <div className="space-y-2">
-            <label className="text-sm font-medium">Categorías</label>
+            <label className="text-sm font-medium">{t('rooms.create.categories.title')}</label>
 
             {/* Selected categories as tags */}
             <div className="flex flex-wrap gap-1.5">
@@ -71,7 +73,7 @@ export function CategorySelector({ categories, selectedIds, onChange, loading }:
                                 type="text"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                placeholder="Buscar categoría..."
+                                placeholder={t('rooms.create.categories.search_placeholder')}
                                 className="w-full rounded-md border border-input bg-background px-3 py-2 pl-8 text-sm"
                                 autoFocus
                             />
@@ -82,11 +84,11 @@ export function CategorySelector({ categories, selectedIds, onChange, loading }:
                         {showSearch && searchLoading || loading ? (
                             <div className="flex items-center gap-2 text-muted-foreground">
                                 <Loader2 className="h-4 w-4 animate-spin" />
-                                <span className="text-sm">Cargando...</span>
+                                <span className="text-sm">{t('rooms.create.categories.loading')}</span>
                             </div>
                         ) : availableCategories.length === 0 ? (
                             <span className="text-muted-foreground text-sm">
-                                {showSearch && search ? 'No se encontraron' : 'No hay más categorías'}
+                                {showSearch && search ? t('rooms.create.categories.not_found') : t('rooms.create.categories.no_more')}
                             </span>
                         ) : (
                             availableCategories.map(category => (
@@ -110,7 +112,7 @@ export function CategorySelector({ categories, selectedIds, onChange, loading }:
                             className="text-xs text-muted-foreground underline hover:text-foreground"
                             onClick={openSearch}
                         >
-                            + Buscar más
+                            {t('rooms.create.categories.search_more')}
                         </button>
                     )}
 
@@ -120,7 +122,7 @@ export function CategorySelector({ categories, selectedIds, onChange, loading }:
                             className="text-xs text-muted-foreground underline hover:text-foreground"
                             onClick={closeSearch}
                         >
-                            - Cerrar búsqueda
+                            {t('rooms.create.categories.close_search')}
                         </button>
                     )}
                 </div>
@@ -128,7 +130,7 @@ export function CategorySelector({ categories, selectedIds, onChange, loading }:
 
             {selectedIds.length >= 3 && (
                 <p className="text-xs text-muted-foreground">
-                    Máximo 3 categorías seleccionadas
+                    {t('rooms.create.categories.max_selected')}
                 </p>
             )}
         </div>

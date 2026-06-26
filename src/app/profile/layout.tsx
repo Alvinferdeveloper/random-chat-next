@@ -2,8 +2,8 @@ import GlobalLayout from "@/src/app/components/layout/GlobalLayout"
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Mi Perfil",
-    description: "Gestiona tu perfil de usuario en ChatHub. Actualiza tu información y preferencias.",
+    title: "My Profile",
+    description: "Manage your ChatHub user profile. Update your information and preferences.",
     robots: {
         index: false,
         follow: true,

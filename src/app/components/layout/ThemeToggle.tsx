@@ -4,8 +4,10 @@ import { useEffect, useState } from "react"
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import { motion, AnimatePresence } from "framer-motion"
+import { useTranslation } from '@/src/app/lib/i18n'
 
 export function ThemeToggle() {
+    const { t } = useTranslation()
     const { theme, setTheme, resolvedTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
 
@@ -26,7 +28,7 @@ export function ThemeToggle() {
         <button
             onClick={toggleTheme}
             className="relative w-14 h-8 rounded-full bg-slate-200 dark:bg-slate-800 p-1 transition-colors duration-300 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary cursor-pointer group"
-            aria-label="Alternar tema"
+            aria-label={t('layout.theme.aria_label')}
         >
             {/* Background Decorator (Opcional: pequeñas estrellas o nubes sutiles) */}
             <div className="absolute inset-0 overflow-hidden rounded-full opacity-30">

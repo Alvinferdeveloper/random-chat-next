@@ -4,10 +4,12 @@ import { useEffect, useState } from 'react';
 import { useSession } from './SessionProvider';
 import { usePathname } from 'next/navigation';
 import { Hammer, Loader2, Sparkles } from 'lucide-react';
+import { useTranslation } from '@/src/app/lib/i18n';
 
 export function MaintenanceGuard({ children }: { children: React.ReactNode }) {
     const { session, isPending } = useSession();
     const pathname = usePathname();
+    const { t } = useTranslation()
     const [maintenanceActive, setMaintenanceActive] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -63,10 +65,10 @@ export function MaintenanceGuard({ children }: { children: React.ReactNode }) {
 
                     <div className="space-y-4">
                         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-orange-500 via-orange-400 to-indigo-400 bg-clip-text text-transparent">
-                            ChatHub en Mantenimiento
+                            {t('maintenance.title')}
                         </h1>
                         <p className="text-lg text-slate-400 max-w-md mx-auto leading-relaxed">
-                            Estamos mejorando la plataforma para brindarte una experiencia increíble. Volveremos muy pronto.
+                            {t('maintenance.description')}
                         </p>
                     </div>
 
@@ -75,11 +77,11 @@ export function MaintenanceGuard({ children }: { children: React.ReactNode }) {
                         <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden relative">
                             <div className="h-full bg-gradient-to-r from-orange-500 to-indigo-500 w-1/2 rounded-full absolute animate-infinite-loading"></div>
                         </div>
-                        <p className="text-xs text-slate-500 animate-pulse">Reconectando automáticamente...</p>
+                        <p className="text-xs text-slate-500 animate-pulse">{t('maintenance.reconnecting')}</p>
                     </div>
 
                     <div className="pt-6 border-t border-slate-900 text-xs text-slate-600">
-                        Si eres administrador, puedes acceder al panel de administración para desactivar el mantenimiento.
+                        {t('maintenance.admin_hint')}
                     </div>
                 </div>
 

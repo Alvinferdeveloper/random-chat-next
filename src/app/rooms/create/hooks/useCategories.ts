@@ -27,7 +27,7 @@ export function useCategories() {
             );
 
             if (!response.ok) {
-                throw new Error('Error al cargar categorías');
+                throw new Error('CATEGORIES_LOAD_ERROR');
             }
 
             const result = await response.json();

@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useUserProfile } from '../hooks/useUserProfile';
 import { EditableField } from './EditableField';
 import { EditableSelectField } from './EditableSelectField';
@@ -10,7 +11,6 @@ import { Button } from '@/src/components/ui/button';
 import { Mail, Upload, Loader2, ShieldAlert } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card';
 import { Label } from '@/src/components/ui/label';
-import { ageRangeOptions, conversationTypeOptions } from '@/src/app/constants';
 import { motion } from 'framer-motion';
 
 const containerVariants = {
@@ -28,17 +28,32 @@ const itemVariants = {
 };
 
 export function UserProfile({ targetUsername }: { targetUsername?: string }) {
+    const { t } = useTranslation();
     const { user, loading, error, form, updateProfileField, allHobbies, hobbiesLoading, uploadImage, isUploading } = useUserProfile(targetUsername);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const isReadOnly = !!targetUsername;
+
+    const ageRangeOptions = [
+        { value: 'RANGE_19_24', label: t('profile.age_range.19_24') },
+        { value: 'RANGE_25_34', label: t('profile.age_range.25_34') },
+        { value: 'RANGE_35_44', label: t('profile.age_range.35_44') },
+        { value: 'RANGE_45_PLUS', label: t('profile.age_range.45_plus') },
+    ];
+
+    const conversationTypeOptions = [
+        { value: 'CASUAL', label: t('profile.conversation_type.casual') },
+        { value: 'DEEP', label: t('profile.conversation_type.deep') },
+        { value: 'LEARNING', label: t('profile.conversation_type.learning') },
+        { value: 'SHARING', label: t('profile.conversation_type.sharing') },
+    ];
 
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center space-y-4 h-64">
                 <div className="h-12 w-12 border-4 border-primary/30 border-t-primary animate-spin rounded-full" />
                 <p className="text-muted-foreground animate-pulse">
-                    {isReadOnly ? `Cargando el perfil de ${targetUsername}...` : 'Cargando tu perfil...'}
+                    {isReadOnly ? t('profile.loading_other', { targetUsername }) : t('profile.loading_own')}
                 </p>
             </div>
         );
@@ -49,7 +64,7 @@ export function UserProfile({ targetUsername }: { targetUsername?: string }) {
     }
 
     if (!user) {
-        return <p className="text-center text-muted-foreground mt-10">No se pudo encontrar el perfil del usuario.</p>;
+        return <p className="text-center text-muted-foreground mt-10">{t('profile.not_found')}</p>;
     }
 
     const handleImageUpload = () => {
@@ -119,7 +134,7 @@ export function UserProfile({ targetUsername }: { targetUsername?: string }) {
                             <div className="flex-1 text-center md:text-left space-y-2">
                                 <EditableField
                                     name="username"
-                                    label="Nombre de Usuario"
+                                    label={t('profile.username_label')}
                                     value={user.username}
                                     updateFn={updateProfileField}
                                     inputClassName="text-4xl font-black tracking-tight"
@@ -127,7 +142,7 @@ export function UserProfile({ targetUsername }: { targetUsername?: string }) {
                                     readOnly={isReadOnly}
                                 />
                                 <p className="text-muted-foreground flex items-center justify-center md:justify-start gap-2">
-                                    <Mail className="h-4 w-4" /> {isReadOnly ? 'Correo Privado' : user.email}
+                                    <Mail className="h-4 w-4" /> {isReadOnly ? t('profile.private_email') : user.email}
                                 </p>
                             </div>
                         </div>
@@ -148,28 +163,28 @@ export function UserProfile({ targetUsername }: { targetUsername?: string }) {
                                 }}
                             />
                             <CardHeader className="relative z-10">
-                                <CardTitle>Detalles Personales</CardTitle>
+                                <CardTitle>{t('profile.details_title')}</CardTitle>
                                 <CardDescription>
-                                    {isReadOnly ? `Conoce un poco más sobre ${user.username}.` : 'Esta información ayuda a otros a conocerte mejor.'}
+                                    {isReadOnly ? t('profile.details_description_other', { username: user.username }) : t('profile.details_description_own')}
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-2 relative z-10">
                                 <EditableField
                                     name="bio"
-                                    label="Biografía"
+                                    label={t('profile.bio_label')}
                                     value={user.bio}
                                     updateFn={updateProfileField}
                                     isTextarea
-                                    placeholder="Cuéntanos un poco sobre ti..."
+                                    placeholder={t('profile.bio_placeholder')}
                                     maxLength={200}
                                     readOnly={isReadOnly}
                                 />
                                 <EditableField
                                     name="location"
-                                    label="Ubicación"
+                                    label={t('profile.location_label')}
                                     value={user.location}
                                     updateFn={updateProfileField}
-                                    placeholder="Ciudad, País"
+                                    placeholder={t('profile.location_placeholder')}
                                     readOnly={isReadOnly}
                                 />
                             </CardContent>
@@ -186,9 +201,9 @@ export function UserProfile({ targetUsername }: { targetUsername?: string }) {
                                 }}
                             />
                             <CardHeader className="relative z-10">
-                                <CardTitle>Aficiones</CardTitle>
+                                <CardTitle>{t('profile.hobbies_title')}</CardTitle>
                                 <CardDescription>
-                                    {isReadOnly ? `Las aficiones que representan a ${user.username}.` : 'Selecciona las aficiones que te representan.'}
+                                    {isReadOnly ? t('profile.hobbies_description_other', { username: user.username }) : t('profile.hobbies_description_own')}
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="relative z-10">
@@ -219,17 +234,17 @@ export function UserProfile({ targetUsername }: { targetUsername?: string }) {
                                 }}
                             />
                             <CardHeader className="relative z-10">
-                                <CardTitle>Información de Contacto</CardTitle>
+                                <CardTitle>{t('profile.contact_title')}</CardTitle>
                             </CardHeader>
                             <CardContent className="relative z-10">
                                 <div className="flex items-center justify-between py-4">
                                     <div>
-                                        <Label className="text-sm font-medium text-muted-foreground">Correo Electrónico</Label>
+                                        <Label className="text-sm font-medium text-muted-foreground">{t('profile.email_label')}</Label>
                                         <div className="mt-1 flex items-center gap-2">
                                             {isReadOnly ? (
                                                 <>
                                                     <ShieldAlert className="h-4 w-4 text-amber-500" />
-                                                    <p className="text-base text-muted-foreground italic">Protegido</p>
+                                                    <p className="text-base text-muted-foreground italic">{t('profile.email_protected')}</p>
                                                 </>
                                             ) : (
                                                 <>
@@ -254,26 +269,26 @@ export function UserProfile({ targetUsername }: { targetUsername?: string }) {
                                 }}
                             />
                             <CardHeader className="relative z-10">
-                                <CardTitle>Preferencias de Chat</CardTitle>
+                                <CardTitle>{t('profile.chat_preferences_title')}</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-2 relative z-10">
                                 <EditableSelectField
                                     name="ageRange"
-                                    label="Rango de Edad"
+                                    label={t('profile.age_range_label')}
                                     value={user.ageRange}
                                     updateFn={updateProfileField}
                                     options={ageRangeOptions}
-                                    placeholder="Selecciona tu edad"
+                                    placeholder={t('profile.age_range_placeholder')}
                                     readOnly={isReadOnly}
                                 />
 
                                 <EditableSelectField
                                     name="conversationType"
-                                    label="Tipo de Conversación"
+                                    label={t('profile.conversation_type_label')}
                                     value={user.conversationType}
                                     updateFn={updateProfileField}
                                     options={conversationTypeOptions}
-                                    placeholder="¿Qué tipo de chat prefieres?"
+                                    placeholder={t('profile.conversation_type_placeholder')}
                                     readOnly={isReadOnly}
                                 />
                             </CardContent>

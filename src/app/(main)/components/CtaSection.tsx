@@ -1,10 +1,15 @@
+'use client'
+
 import { Button } from "@/src/components/ui/button"
 import Link from "next/link"
 import Check from '@/src/app/components/icons/Check'
 import Image from "next/image"
 import { forwardRef } from "react"
+import { useTranslation } from '@/src/app/lib/i18n'
+import { Trans } from 'react-i18next'
 
 const AboutAndCtaSection = forwardRef<HTMLDivElement>((props, ref) => {
+    const { t } = useTranslation()
     return (
         <section id="acerca-de" ref={ref} className="py-20 md:py-32">
             <div className="container px-4 mx-auto md:px-6">
@@ -14,16 +19,15 @@ const AboutAndCtaSection = forwardRef<HTMLDivElement>((props, ref) => {
                     <div className="flex flex-col space-y-8">
                         <div className="space-y-6">
                             <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl dark:text-white">
-                                Construyendo la mejor <br /> <span className="text-emerald-700">comunidad digital</span>
+                                <Trans i18nKey="landing.cta.heading" components={{ highlight: <span className="text-emerald-700" /> }} />
                             </h2>
                             <p className="max-w-[600px] text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                                Nuestra misión es crear espacios digitales donde las personas puedan conectar a través de intereses
-                                comunes, fomentando conversaciones enriquecedoras y creando una verdadera comunidad.
+                                {t('landing.cta.description')}
                             </p>
                         </div>
                         <div>
                             <Button asChild size="lg" className="rounded-full px-8 text-base bg-emerald-800 hover:bg-emerald-900 text-white">
-                                <Link href="#temas">Explorar las salas ahora</Link>
+                                <Link href="#temas">{t('landing.cta.explore_button')}</Link>
                             </Button>
                         </div>
                     </div>
@@ -36,8 +40,8 @@ const AboutAndCtaSection = forwardRef<HTMLDivElement>((props, ref) => {
                                     <Image src="/images/comunidad.png" alt="" width={50} height={50} />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Comunidad activa</h3>
-                                    <p className="text-gray-600 dark:text-gray-400">Miles de usuarios conectados diariamente en nuestras diferentes salas temáticas.</p>
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('landing.cta.benefit_1_title')}</h3>
+                                    <p className="text-gray-600 dark:text-gray-400">{t('landing.cta.benefit_1_desc')}</p>
                                 </div>
                             </li>
                             <li className="flex items-start gap-5 group">
@@ -45,8 +49,8 @@ const AboutAndCtaSection = forwardRef<HTMLDivElement>((props, ref) => {
                                     <Image src="/images/custom_experience.png" alt="" width={50} height={50} />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Experiencia personalizada</h3>
-                                    <p className="text-gray-600 dark:text-gray-400">Elige los temas que te interesan y personaliza tu experiencia de chat a tu gusto.</p>
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('landing.cta.benefit_2_title')}</h3>
+                                    <p className="text-gray-600 dark:text-gray-400">{t('landing.cta.benefit_2_desc')}</p>
                                 </div>
                             </li>
                             <li className="flex items-start gap-5 group">
@@ -54,8 +58,8 @@ const AboutAndCtaSection = forwardRef<HTMLDivElement>((props, ref) => {
                                     <Image src="/images/responsive.png" alt="" width={50} height={50} />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Accesible en todo lugar</h3>
-                                    <p className="text-gray-600 dark:text-gray-400">Diseño responsive impecable que se adapta a móviles, tablets y ordenadores de escritorio.</p>
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('landing.cta.benefit_3_title')}</h3>
+                                    <p className="text-gray-600 dark:text-gray-400">{t('landing.cta.benefit_3_desc')}</p>
                                 </div>
                             </li>
                         </ul>
@@ -67,15 +71,15 @@ const AboutAndCtaSection = forwardRef<HTMLDivElement>((props, ref) => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-10 divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-gray-800">
                         <div className="flex flex-col items-center pt-8 md:pt-0">
                             <h4 className="text-5xl md:text-6xl font-black text-emerald-800 dark:text-emerald-400 mb-2">2023</h4>
-                            <p className="text-gray-500 font-medium">ChatHub Fundado</p>
+                            <p className="text-gray-500 font-medium">{t('landing.stats.founded')}</p>
                         </div>
                         <div className="flex flex-col items-center pt-8 md:pt-0">
                             <h4 className="text-5xl md:text-6xl font-black text-emerald-800 dark:text-emerald-400 mb-2">50K+</h4>
-                            <p className="text-gray-500 font-medium">Usuarios Activos</p>
+                            <p className="text-gray-500 font-medium">{t('landing.stats.active_users')}</p>
                         </div>
                         <div className="flex flex-col items-center pt-8 md:pt-0">
                             <h4 className="text-5xl md:text-6xl font-black text-emerald-800 dark:text-emerald-400 mb-2">1k+</h4>
-                            <p className="text-gray-500 font-medium">Salas Creadas</p>
+                            <p className="text-gray-500 font-medium">{t('landing.stats.rooms_created')}</p>
                         </div>
                     </div>
                 </div>
@@ -83,15 +87,15 @@ const AboutAndCtaSection = forwardRef<HTMLDivElement>((props, ref) => {
                 {/* Parte 3: El Gran Banner CTA Oscuro (Inspirado en la parte inferior de Imagen 3) */}
                 <div className="bg-[#1B3C35] rounded-[2rem] p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8">
                     <h2 className="text-3xl md:text-5xl font-bold text-white max-w-xl leading-tight">
-                        Descubre todo el potencial de <span className="underline decoration-[#D6F045] underline-offset-8">ChatHub</span>
+                        <Trans i18nKey="landing.cta.final_heading" components={{ highlight: <span className="underline decoration-[#D6F045] underline-offset-8" /> }} />
                     </h2>
 
                     <div className="flex flex-col sm:flex-row gap-4 shrink-0">
                         <Button asChild variant="outline" className="rounded-full px-8 py-6 text-base font-semibold bg-white text-gray-900 border-none hover:bg-gray-100">
-                            <Link href="#demo">Ver Demo</Link>
+                            <Link href="#demo">{t('landing.cta.demo_button')}</Link>
                         </Button>
                         <Button asChild className="rounded-full px-8 py-6 text-base font-semibold bg-[#D6F045] text-gray-900 hover:bg-[#c2db3b] shadow-none">
-                            <Link href="#registro">Comenzar Gratis</Link>
+                            <Link href="#registro">{t('landing.cta.start_free_button')}</Link>
                         </Button>
                     </div>
                 </div>

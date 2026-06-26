@@ -5,6 +5,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState, forwardRef } from "react"
+import { useTranslation } from '@/src/app/lib/i18n'
+import { Trans } from 'react-i18next'
 
 const mockUsers = [
     { id: "user1", name: "Ana", image: "https://api.dicebear.com/8.x/adventurer/svg?seed=Ana" },
@@ -49,6 +51,7 @@ const messages = [
 ];
 
 const HeroSection = forwardRef<HTMLDivElement>((props, ref) => {
+    const { t } = useTranslation()
     const [visibleMessages, setVisibleMessages] = useState<typeof messages>([]);
 
     useEffect(() => {
@@ -92,26 +95,26 @@ const HeroSection = forwardRef<HTMLDivElement>((props, ref) => {
                     <div className="flex flex-col justify-center space-y-4">
                         <div className="space-y-4">
                             <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm font-medium text-primary">
-                                🎉 Nueva Comunidad
+                                {t('landing.hero.badge')}
                             </div>
 
                             <h1 className="text-balance mb-5 text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
-                                Conecta con personas que comparten <span className="text-primary underline decoration-primary/30 decoration-wavy underline-offset-8">tus intereses</span>
+                                <Trans i18nKey="landing.hero.title" components={{ highlight: <span className="text-primary underline decoration-primary/30 decoration-wavy underline-offset-8" /> }} />
                             </h1>
 
                             <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                                Únete a nuestras salas de chat temáticas y participa en conversaciones sobre tus temas favoritos.
+                                {t('landing.hero.subtitle')}
                             </p>
                         </div>
                         <div className="flex flex-col gap-2 min-[400px]:flex-row">
                             <Button size="lg" className="gap-2" asChild>
                                 <Link href="/rooms">
-                                    Comenzar ahora
+                                    {t('landing.hero.cta_start')}
                                     <ArrowRight className="w-4 h-4" />
                                 </Link>
                             </Button>
                             <Button size="lg" variant="outline">
-                                Saber más
+                                {t('landing.hero.cta_learn')}
                             </Button>
                         </div>
                     </div>

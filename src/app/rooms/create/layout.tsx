@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Crear Sala",
-    description: "Crea tu propia sala de chat temática. Configura el espacio perfecto para reunir a personas con tus mismos intereses.",
+    title: "Create Room",
+    description: "Create your own themed chat room. Set up the perfect space to gather people who share your interests.",
     robots: {
         index: true,
         follow: true,

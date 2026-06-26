@@ -1,21 +1,24 @@
+"use client"
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 interface TypingIndicatorProps {
     typingUsers: Set<string>;
 }
 
 export function TypingIndicator({ typingUsers }: TypingIndicatorProps) {
+    const { t } = useTranslation();
     if (typingUsers.size === 0) return null;
 
     const users = Array.from(typingUsers);
     let text = "";
 
     if (users.length === 1) {
-        text = `${users[0]} está escribiendo...`;
+        text = t('chat.typing.single', { username: users[0] });
     } else if (users.length === 2) {
-        text = `${users[0]} y ${users[1]} están escribiendo...`;
+        text = t('chat.typing.double', { user1: users[0], user2: users[1] });
     } else {
-        text = "Varias personas están escribiendo...";
+        text = t('chat.typing.multiple');
     }
 
     return (

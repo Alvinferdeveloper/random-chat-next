@@ -15,6 +15,7 @@ import { GifPicker } from "./GifPicker";
 import { useSocket } from "@/src/app/components/providers/SocketEventProvider";
 import { useClickOutside } from "@/src/app/hooks/useClickOutside";
 import { cn } from "@/src/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface User {
     id: string;
@@ -75,6 +76,7 @@ export function MessageInput({
     const [isTyping, setIsTyping] = useState(false);
     const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+    const { t } = useTranslation();
     const socket = useSocket();
     const { addOptimisticMessage } = useSocketHandler();
     const { username } = useUsername();
@@ -111,7 +113,7 @@ export function MessageInput({
         if (replyingToMessage) {
             const snippet = isTextMessage(replyingToMessage) 
                 ? replyingToMessage.message.substring(0, 50) 
-                : '[Multimedia]';
+                : t('chat.message.multimedia_fallback');
             
             replyContext = {
                 id: replyingToMessage.id,
@@ -210,7 +212,7 @@ export function MessageInput({
         if (replyingToMessage) {
             const messageSnippet = isTextMessage(replyingToMessage)
                 ? replyingToMessage.message.substring(0, 50)
-                : '[Imagen]';
+                : t('chat.message.image_fallback');
 
             replyContext = {
                 id: replyingToMessage.id,
@@ -228,7 +230,7 @@ export function MessageInput({
                 <div className="flex items-center justify-between p-2 mb-2 text-sm bg-blue-500/10 rounded-t-lg border-b border-blue-500/30">
                     <div className="flex items-center gap-2">
                         <Pencil className="h-4 w-4 text-blue-500" />
-                        <span>Editando mensaje</span>
+                        <span>{t('chat.input.editing_message')}</span>
                     </div>
                     <Button variant="ghost" size="icon" onClick={cancelEdit} className="h-6 w-6">
                         <X className="h-4 w-4" />
@@ -239,9 +241,9 @@ export function MessageInput({
                 <div className="flex items-center justify-between p-2 mb-2 text-sm bg-muted rounded-t-lg border-b border-border">
                     <div className="flex items-center gap-2">
                         <ReplyIcon className="h-4 w-4 text-primary" />
-                        <span>Respondiendo a <span className="font-semibold">{replyingToMessage.username}</span>:</span>
+                        <span>{t('chat.input.replying_to')} <span className="font-semibold">{replyingToMessage.username}</span>:</span>
                         <span className="truncate italic max-w-[200px]">
-                            {isTextMessage(replyingToMessage) ? replyingToMessage.message : (isImageMessage(replyingToMessage) ? replyingToMessage.description : (isAudioMessage(replyingToMessage) ? 'Nota de voz' : ''))}
+                            {isTextMessage(replyingToMessage) ? replyingToMessage.message : (isImageMessage(replyingToMessage) ? replyingToMessage.description : (isAudioMessage(replyingToMessage) ? t('chat.message.audio_fallback') : ''))}
                         </span>
                     </div>
                     <Button variant="ghost" size="icon" onClick={handleCancelReply} className="h-6 w-6">
@@ -292,13 +294,13 @@ export function MessageInput({
                         <div className="flex-1 flex items-center justify-between px-4 h-10 bg-red-500/10 rounded-xl animate-pulse">
                             <div className="flex items-center gap-2 text-red-500">
                                 <div className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-                                <span className="text-sm font-bold uppercase tracking-tighter">GRABANDO {formatTime(recordingTime)}</span>
+                                <span className="text-sm font-bold uppercase tracking-tighter">{t('chat.input.recording_label')} {formatTime(recordingTime)}</span>
                             </div>
                             <button
                                 onClick={cancelRecording}
                                 className="text-xs font-bold text-gray-500 hover:text-gray-700 uppercase tracking-wider"
                             >
-                                Cancelar
+                                {t('chat.input.cancel_recording')}
                             </button>
                         </div>
                     ) : (
@@ -332,7 +334,7 @@ export function MessageInput({
                                             }
                                         }
                                     }}
-                                    placeholder={editingMessage ? "Edita tu mensaje..." : "Escribe un mensaje..."}
+                                    placeholder={editingMessage ? t('chat.input.edit_placeholder') : t('chat.input.placeholder')}
                                     className="pr-20 bg-background/90"
                                 />
                                 <div className="absolute inset-y-0 right-0 flex items-center gap-0.5 px-1">

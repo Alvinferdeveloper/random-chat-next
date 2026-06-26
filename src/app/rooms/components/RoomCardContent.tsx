@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { CardContent } from '@/src/components/ui/card';
 import { ConnectingAnimation } from '@/src/app/components/animations/ConnectionAnimation';
 import { Circle, Check } from 'lucide-react';
@@ -14,6 +15,7 @@ interface RoomCardContentProps {
 }
 
 export function RoomCardContent({ name, description, verified, userCount, isConnecting, footer }: RoomCardContentProps) {
+    const { t } = useTranslation();
     return (
         <CardContent className="pt-3 pb-3 px-3 flex flex-col flex-1">
             {/* Room Name */}
@@ -32,7 +34,7 @@ export function RoomCardContent({ name, description, verified, userCount, isConn
             <div className="flex-1 mb-4">
                 {isConnecting ? (
                     <div className="w-full py-2 animate-pulse">
-                        <ConnectingAnimation text="Conectando..." />
+                        <ConnectingAnimation text={t('rooms.card.connecting')} />
                     </div>
                 ) : (
                     <p className="text-white text-xs leading-relaxed line-clamp-2 text-ellipsis overflow-hidden">
@@ -46,7 +48,7 @@ export function RoomCardContent({ name, description, verified, userCount, isConn
                 <div className="flex items-center gap-1.5">
                     <Circle className="w-2 h-2 fill-green-500 text-green-500 animate-pulse" />
                     <span className="text-[#b9bbbe] font-medium">
-                        {userCount || 0} usuarios activos
+                        {t('rooms.card.active_users', { count: userCount || 0 })}
                     </span>
                 </div>
             </div>

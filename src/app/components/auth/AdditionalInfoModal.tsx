@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FormProvider } from 'react-hook-form';
 import {
     Dialog,
@@ -20,6 +21,7 @@ interface AdditionalInfoModalProps {
 }
 
 export function AdditionalInfoModal({ isOpen, onProfileComplete, onClose }: AdditionalInfoModalProps) {
+    const { t } = useTranslation();
     const { form, hobbies, hobbiesLoading, error, handleSubmit } = useProfileSetup();
 
     const handleFormSubmit = (values: ProfileFormValues) => {
@@ -37,10 +39,10 @@ export function AdditionalInfoModal({ isOpen, onProfileComplete, onClose }: Addi
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader className="text-center space-y-2">
                     <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                        Conecta por Aficiones
+                        {t('auth.additional_info.title')}
                     </DialogTitle>
                     <DialogDescription className="text-muted-foreground">
-                        Cuéntanos sobre ti para encontrar personas con intereses similares
+                        {t('auth.additional_info.description')}
                     </DialogDescription>
                 </DialogHeader>
 

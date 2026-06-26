@@ -38,7 +38,7 @@ export function useCreateRoom() {
             const result = await response.json();
 
             if (!response.ok) {
-                throw new Error(result.message || 'Ocurrió un error al crear la sala.');
+                throw new Error(result.message || 'ROOM_CREATE_ERROR');
             }
 
             return result.data as RoomData;
@@ -66,7 +66,7 @@ export function useCreateRoom() {
 
             const presignedResult = await presignedResponse.json();
             if (!presignedResponse.ok) {
-                throw new Error(presignedResult.message || `No se pudo obtener la URL para el ${type}.`);
+                throw new Error(presignedResult.message || 'UPLOAD_URL_ERROR');
             }
             const { signedUploadUrl, publicUrl } = presignedResult;
 
@@ -78,7 +78,7 @@ export function useCreateRoom() {
             });
 
             if (!uploadResponse.ok) {
-                throw new Error(`Error al subir el ${type} a Supabase.`);
+                throw new Error('UPLOAD_SUPABASE_ERROR');
             }
 
             // 3. Confirm upload with our backend
@@ -92,7 +92,7 @@ export function useCreateRoom() {
 
             const confirmResult = await confirmResponse.json();
             if (!confirmResponse.ok) {
-                throw new Error(confirmResult.message || `No se pudo confirmar la subida del ${type}.`);
+                throw new Error(confirmResult.message || 'CONFIRM_UPLOAD_ERROR');
             }
 
             return { success: true, publicUrl };

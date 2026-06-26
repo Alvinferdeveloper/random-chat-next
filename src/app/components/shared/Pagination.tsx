@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronLast } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
+import { useTranslation } from '@/src/app/lib/i18n';
 
 const ease = [0.23, 1, 0.32, 1] as const;
 
@@ -64,6 +65,7 @@ export function Pagination({
     isLoading = false,
     className
 }: PaginationProps) {
+    const { t } = useTranslation()
     if (totalPages <= 1) return null;
 
     const maxVisiblePages = 5;
@@ -82,10 +84,10 @@ export function Pagination({
     return (
         <div className={cn("flex flex-col items-center gap-3 px-2 py-4", className)}>
             <div className="flex items-center gap-1">
-                <NavButton onClick={() => onPageChange(1)} disabled={currentPage === 1 || isLoading} label="Primera pagina">
+                <NavButton onClick={() => onPageChange(1)} disabled={currentPage === 1 || isLoading} label={t('shared.pagination.first')}>
                     <ChevronsLeft className="w-4 h-4" />
                 </NavButton>
-                <NavButton onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1 || isLoading} label="Pagina anterior">
+                <NavButton onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1 || isLoading} label={t('shared.pagination.previous')}>
                     <ChevronLeft className="w-4 h-4" />
                 </NavButton>
 
@@ -101,10 +103,10 @@ export function Pagination({
                     ))}
                 </div>
 
-                <NavButton onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages || isLoading} label="Pagina siguiente">
+                <NavButton onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages || isLoading} label={t('shared.pagination.next')}>
                     <ChevronRight className="w-4 h-4" />
                 </NavButton>
-                <NavButton onClick={() => onPageChange(totalPages)} disabled={currentPage === totalPages || isLoading} label="Ultima pagina">
+                <NavButton onClick={() => onPageChange(totalPages)} disabled={currentPage === totalPages || isLoading} label={t('shared.pagination.last')}>
                     <ChevronLast className="w-4 h-4" />
                 </NavButton>
             </div>
@@ -114,7 +116,7 @@ export function Pagination({
                 animate={{ opacity: 1 }}
                 className="text-xs text-muted-foreground/60 font-medium tracking-wide"
             >
-                Pagina {currentPage} de {totalPages}
+                {t('shared.pagination.info', { current: currentPage, total: totalPages })}
             </motion.div>
         </div>
     );

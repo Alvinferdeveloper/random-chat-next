@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useForm, Controller, FieldValues, Path } from 'react-hook-form';
 import { Button } from '@/src/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select';
@@ -31,6 +32,7 @@ export function EditableSelectField<T extends FieldValues, Name extends Path<T> 
     placeholder = '',
     readOnly = false,
 }: EditableSelectFieldProps<T, Name>) {
+    const { t } = useTranslation();
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
@@ -56,7 +58,7 @@ export function EditableSelectField<T extends FieldValues, Name extends Path<T> 
             <div>
                 <Label className="text-sm font-medium text-muted-foreground">{label}</Label>
                 {!isEditing ? (
-                    <p className="mt-1 text-base">{displayValue || <span className="text-muted-foreground italic">No establecido</span>}</p>
+                    <p className="mt-1 text-base">{displayValue || <span className="text-muted-foreground italic">{t('profile.editable.not_set')}</span>}</p>
                 ) : (
                     <form onSubmit={handleSubmit(onSave)} className="mt-2 w-full">
                         <Controller
@@ -82,11 +84,11 @@ export function EditableSelectField<T extends FieldValues, Name extends Path<T> 
                         <div className="mt-3 flex gap-2">
                             <Button type="submit" size="sm" disabled={isSaving}>
                                 {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-                                Guardar
+                                {t('profile.editable.save')}
                             </Button>
                             <Button type="button" size="sm" variant="outline" onClick={handleCancel}>
                                 <X className="mr-2 h-4 w-4" />
-                                Cancelar
+                                {t('profile.editable.cancel')}
                             </Button>
                         </div>
                     </form>

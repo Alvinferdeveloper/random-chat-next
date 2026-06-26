@@ -37,13 +37,13 @@ export function useUserProfile(targetUsername?: string) {
             });
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'No se pudo cargar el perfil.');
+                throw new Error(errorData.message || 'PROFILE_LOAD_ERROR');
             }
             const data = await response.json();
             setUser(data.user);
             form.reset(data.user);
         } catch (err: any) {
-            setError(err.message || 'Error al cargar el perfil.');
+            setError(err.message || 'PROFILE_LOAD_ERROR');
         } finally {
             setLoading(false);
         }
@@ -74,7 +74,7 @@ export function useUserProfile(targetUsername?: string) {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'No se pudo actualizar el campo.');
+                throw new Error(errorData.message || 'PROFILE_UPDATE_ERROR');
             }
 
             const updatedData = await response.json();
@@ -82,7 +82,7 @@ export function useUserProfile(targetUsername?: string) {
             form.reset(updatedData.user);
 
         } catch (err: any) {
-            setError(err.message || 'Error al actualizar.');
+            setError(err.message || 'PROFILE_UPDATE_ERROR');
             if (user) {
                 setUser({ ...user, [field]: originalValue });
             }
@@ -103,7 +103,7 @@ export function useUserProfile(targetUsername?: string) {
             });
 
             if (!presignedResponse.ok) {
-                throw new Error('No se pudo obtener la URL para subir la imagen.');
+                throw new Error('UPLOAD_URL_ERROR');
             }
 
             const { signedUploadUrl, publicUrl } = await presignedResponse.json();
@@ -116,14 +116,14 @@ export function useUserProfile(targetUsername?: string) {
             });
 
             if (!uploadResponse.ok) {
-                throw new Error('Error al subir la imagen a Supabase.');
+                throw new Error('UPLOAD_SUPABASE_ERROR');
             }
 
             // 3. Update profile with the new image URL
             await updateProfileField('image', publicUrl);
 
         } catch (err: any) {
-            setError(err.message || 'Ocurrió un error al subir la imagen.');
+            setError(err.message || 'UPLOAD_GENERIC_ERROR');
         } finally {
             setIsUploading(false);
         }

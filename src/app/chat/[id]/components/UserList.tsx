@@ -9,6 +9,7 @@ import { Flag } from 'lucide-react';
 import { useState } from 'react';
 import { ReportUserDialog } from './ReportUserDialog';
 import { Button } from '@/src/components/ui/button';
+import { useTranslation } from 'react-i18next';
 
 interface User {
     id: string;
@@ -50,6 +51,7 @@ const TypingDots = () => {
 };
 
 export function UserList({ users, roomId }: UserListProps) {
+    const { t } = useTranslation();
     const { typingUsers } = useSocketHandler();
     const [reportDialogOpen, setReportDialogOpen] = useState(false);
     const [userToReport, setUserToReport] = useState<{ id: string, username: string } | null>(null);
@@ -68,7 +70,7 @@ export function UserList({ users, roomId }: UserListProps) {
     return (
         <div className="bg-muted/40 border-l border-border h-full p-4 flex flex-col gap-4">
             <h2 className="text-lg font-semibold flex items-center gap-2">
-                Participantes
+                {t('chat.user_list.title')}
                 <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
                     {users.length}
                 </span>
@@ -123,7 +125,7 @@ export function UserList({ users, roomId }: UserListProps) {
                                                     exit={{ opacity: 0, y: -5 }}
                                                     className="flex items-center text-xs text-emerald-600 font-medium"
                                                 >
-                                                    <span>Escribiendo</span>
+                                                    <span>{t('chat.user_list.typing')}</span>
                                                     <TypingDots />
                                                 </motion.div>
                                             ) : (
@@ -133,7 +135,7 @@ export function UserList({ users, roomId }: UserListProps) {
                                                     animate={{ opacity: 1 }}
                                                     className="text-xs text-muted-foreground/70 truncate"
                                                 >
-                                                    {isAnonymous ? 'Invitado' : 'Ver perfil'}
+                                                    {isAnonymous ? t('chat.user_list.guest') : t('chat.user_list.view_profile')}
                                                 </motion.span>
                                             )}
                                         </AnimatePresence>

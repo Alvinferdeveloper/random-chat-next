@@ -6,6 +6,7 @@ import { useGifSearch } from "@/src/app/chat/[id]/hooks/useGifSearch";
 import { useInfiniteScroll } from "@/src/app/hooks/useInfiniteScroll";
 import { cn } from "@/src/lib/utils";
 import { useAuth } from "@/src/app/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 
 interface GifPickerProps {
     onSelect: (gifUrl: string, giphyId: string) => void;
@@ -19,6 +20,7 @@ type Tab = "search" | "favorites";
 const ENABLE_GIPHY = process.env.NEXT_PUBLIC_ENABLE_GIPHY === "true";
 
 export function GifPicker({ onSelect, favoriteGifs, toggleFavorite, loadingFavorites }: GifPickerProps) {
+    const { t } = useTranslation();
     const { session } = useAuth();
 
     // Default logic: If Giphy is disabled, must be favorites. 
@@ -66,7 +68,7 @@ export function GifPicker({ onSelect, favoriteGifs, toggleFavorite, loadingFavor
                         )}
                     >
                         <Heart className={cn("h-3 w-3", activeTab === "favorites" && "fill-current")} />
-                        Favoritos
+                        {t('chat.gif_picker.favorites')}
                     </button>
                 )}
 
@@ -78,7 +80,7 @@ export function GifPicker({ onSelect, favoriteGifs, toggleFavorite, loadingFavor
                             activeTab === "search" ? "bg-background shadow-sm text-primary" : "text-muted-foreground hover:text-foreground"
                         )}
                     >
-                        Explorar
+                        {t('chat.gif_picker.explore')}
                     </button>
                 )}
             </div>
@@ -89,7 +91,7 @@ export function GifPicker({ onSelect, favoriteGifs, toggleFavorite, loadingFavor
                     <div className="relative">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input
-                            placeholder="Buscar GIFs..."
+                            placeholder={t('chat.gif_picker.search_placeholder')}
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             className="pl-9 bg-muted/50 border-none focus-visible:ring-1 focus-visible:ring-primary h-9 text-sm"
@@ -109,7 +111,7 @@ export function GifPicker({ onSelect, favoriteGifs, toggleFavorite, loadingFavor
                         <div className="h-full flex flex-col items-center justify-center text-center space-y-2 p-4">
                             <Heart className="h-8 w-8 text-muted-foreground/30" />
                             <p className="text-xs text-muted-foreground font-medium">
-                                {session ? "Aún no tienes GIFs favoritos" : "Inicia sesión para guardar GIFs"}
+                                {session ? t('chat.gif_picker.no_favorites') : t('chat.gif_picker.login_to_save')}
                             </p>
                         </div>
                     ) : (
@@ -181,14 +183,14 @@ export function GifPicker({ onSelect, favoriteGifs, toggleFavorite, loadingFavor
 
                 {activeTab === "search" && ENABLE_GIPHY && !loading && gifs.length === 0 && (
                     <div className="text-center py-10 text-muted-foreground text-xs font-medium">
-                        No se encontraron GIFs
+                        {t('chat.gif_picker.no_results')}
                     </div>
                 )}
             </div>
 
             <div className="p-2 border-t border-border bg-muted/30 text-center">
                 <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
-                    {activeTab === "search" ? "Powered by Giphy" : `${favoriteGifs.length} GIFs Guardados`}
+                    {activeTab === "search" ? t('chat.gif_picker.powered_by') : t('chat.gif_picker.saved_count', { count: favoriteGifs.length })}
                 </span>
             </div>
         </div>

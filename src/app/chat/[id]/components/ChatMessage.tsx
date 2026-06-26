@@ -11,6 +11,7 @@ import { ReactionPicker } from "@/src/app/chat/[id]/components/ReactionPicker";
 import { cn } from "@/src/lib/utils";
 import { AudioPlayer } from "@/src/app/chat/[id]/components/AudioPlayer";
 import { useAuth } from "@/src/app/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 
 interface User {
     id: string;
@@ -38,6 +39,7 @@ function formatTime(dateStr: string) {
 }
 
 export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, setReplyingToMessage, sendReaction, usersInRoom, favoriteGifs, toggleFavorite, onEdit, onDelete }: ChatMessageProps) {
+    const { t } = useTranslation();
     const isMyMessage = msg.username === username;
     const [menuVisible, setMenuVisible] = useState(false);
     const [pickerVisible, setPickerVisible] = useState(false);
@@ -115,7 +117,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
     const handleToggleGifFavorite = (e: React.MouseEvent) => {
         e.stopPropagation();
         if (!session || !isGifMessage(msg)) return;
-        toggleFavorite(msg.giphyId, msg.gifUrl, "GIF del chat");
+        toggleFavorite(msg.giphyId, msg.gifUrl, t('chat.message.gif_label'));
     };
 
     const highlightMentions = (text: string) => {
@@ -157,7 +159,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                             <div className="p-2 rounded-lg bg-primary text-primary-foreground">
                                 <ShieldCheck className="w-4 h-4" />
                             </div>
-                            <span className="font-bold text-xs uppercase tracking-widest text-primary">Anuncio Oficial</span>
+                            <span className="font-bold text-xs uppercase tracking-widest text-primary">{t('chat.message.official_announcement')}</span>
                         </div>
                         {isTextMessage(msg) && (
                             <p className="text-sm font-medium leading-relaxed italic">
@@ -175,7 +177,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
         return (
             <div className="w-full flex justify-center my-2 animate-in fade-in duration-300">
                 <div className="px-3 py-1 rounded-full bg-muted/50 border text-[11px] text-muted-foreground font-medium">
-                    {isTextMessage(msg) ? msg.message : 'Mensaje de sistema'}
+                    {isTextMessage(msg) ? msg.message : t('chat.message.system_message')}
                 </div>
             </div>
         );
@@ -195,7 +197,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
             {msg.replyTo && (
                 <div className="flex items-center gap-2 p-2 text-xs text-muted-foreground bg-muted-foreground/20 rounded-t-lg">
                     <Reply className="h-3 w-3" />
-                    <span>Respondiendo a @{msg.replyTo.author}</span>
+                    <span>{t('chat.message.replying_to', { username: msg.replyTo.author })}</span>
                     <ChevronRight className="h-3 w-3" />
                     <span className="italic truncate max-w-[150px]">{msg.replyTo.messageSnippet}</span>
                 </div>
@@ -207,7 +209,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                 <div className="cursor-pointer overflow-hidden rounded-xl relative" onClick={handleClick}>
                     <img
                         src={imageUrl}
-                        alt="Imagen"
+                        alt={t('chat.message.image_alt')}
                         className={cn("w-full object-cover", msg.isUploading && "opacity-50")}
                         onLoad={scrollToBottom}
                     />
@@ -225,7 +227,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                 <div className="group/gif cursor-pointer overflow-hidden rounded-xl relative" onClick={handleClick}>
                     <img
                         src={gifUrl}
-                        alt="GIF"
+                        alt={t('chat.message.gif_alt')}
                         className="w-full object-cover"
                         onLoad={scrollToBottom}
                     />
@@ -235,7 +237,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                         <button
                             onClick={handleToggleGifFavorite}
                             className="absolute cursor-pointer top-2 right-2 p-1.5 rounded-full bg-black/40 backdrop-blur-md opacity-0 group-hover/gif:opacity-100 transition-opacity hover:bg-black/60"
-                            title={isGifFavorite(msg.giphyId) ? "Quitar de favoritos" : "Robar GIF (Añadir a favoritos)"}
+                            title={isGifFavorite(msg.giphyId) ? t('chat.message.remove_fav') : t('chat.message.steal_gif')}
                         >
                             <Heart className={cn(
                                 "h-4 w-4 transition-colors",
@@ -245,7 +247,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                     )}
 
                     <div className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/60 backdrop-blur-sm rounded text-[10px] font-bold text-white uppercase tracking-wider border border-white/20">
-                        GIF
+                        {t('chat.message.gif')}
                     </div>
                 </div>
             )}
@@ -316,7 +318,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                         </Link>
                     )}
                     {isMyMessage ? (
-                        <span className="text-sm font-semibold text-primary">Tú</span>
+                        <span className="text-sm font-semibold text-primary">{t('chat.message.you')}</span>
                     ) : (
                         <Link
                             href={`/profile/${encodeURIComponent(msg.username)}`}
@@ -326,7 +328,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                         </Link>
                     )}
                     <span className="text-xs text-muted-foreground">{formatTime(msg.timestamp)}</span>
-                    {msg.edited && <span className="text-[10px] text-muted-foreground/60 italic ml-1">(editado)</span>}
+                    {msg.edited && <span className="text-[10px] text-muted-foreground/60 italic ml-1">{t('chat.message.edited')}</span>}
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -379,19 +381,19 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                         ) : (
                             <div className="flex flex-col w-full">
                                 <Button variant="ghost" size="sm" onClick={() => { setPickerVisible(true); }} className="flex items-center gap-3 rounded-lg justify-start px-3">
-                                    <SmilePlus className="h-4 w-4" /> React
+                                    <SmilePlus className="h-4 w-4" /> {t('chat.message.react')}
                                 </Button>
                                 <Button variant="ghost" size="sm" onClick={handleReply} className="flex items-center gap-3 rounded-lg justify-start px-3">
-                                    <Reply className="h-4 w-4" /> Responder
+                                    <Reply className="h-4 w-4" /> {t('chat.message.reply')}
                                 </Button>
                                 {isMyMessage && isTextMessage(msg) && onEdit && (
                                     <Button variant="ghost" size="sm" onClick={() => onEdit(msg)} className="flex items-center gap-3 rounded-lg justify-start px-3">
-                                        <Pencil className="h-4 w-4" /> Editar
+                                        <Pencil className="h-4 w-4" /> {t('chat.message.edit')}
                                     </Button>
                                 )}
                                 {isMyMessage && onDelete && (
                                     <Button variant="ghost" size="sm" onClick={() => onDelete(msg.id)} className="flex items-center gap-3 rounded-lg justify-start px-3">
-                                        <Trash2 className="h-4 w-4" /> Eliminar
+                                        <Trash2 className="h-4 w-4" /> {t('chat.message.delete')}
                                     </Button>
                                 )}
                             </div>

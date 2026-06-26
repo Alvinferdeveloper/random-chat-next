@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 import { useReportUser, ReportReason } from '../hooks/useReportUser';
+import { useTranslation } from 'react-i18next';
 
 interface ReportOption {
     id: ReportReason;
@@ -30,6 +31,15 @@ interface ReportOption {
     icon: any;
     description: string;
 }
+
+const REASON_KEY_MAP: Record<string, string> = {
+    SPAM: 'spam',
+    HARASSMENT: 'harassment',
+    INAPPROPRIATE_CONTENT: 'inappropriate',
+    HATE_SPEECH: 'hate_speech',
+    ANNOYING_BEHAVIOR: 'annoying',
+    OTHER: 'other',
+};
 
 const REPORT_OPTIONS: ReportOption[] = [
     { id: 'SPAM', label: 'Spam o Publicidad', icon: MessageSquare, description: 'Bots, links sospechosos o mensajes repetitivos.' },
@@ -51,6 +61,7 @@ interface ReportUserDialogProps {
 }
 
 export function ReportUserDialog({ isOpen, onClose, reportedUsername, reportedUserId, roomId }: ReportUserDialogProps) {
+    const { t } = useTranslation();
     const {
         selectedReason,
         setSelectedReason,
@@ -86,19 +97,19 @@ export function ReportUserDialog({ isOpen, onClose, reportedUsername, reportedUs
                         <div className="w-14 h-14 rounded-full bg-emerald-500/10 flex items-center justify-center mb-5">
                             <ShieldCheck className="w-7 h-7 text-emerald-500" />
                         </div>
-                        <h3 className="text-lg font-semibold tracking-tight">Reporte Enviado</h3>
+                        <h3 className="text-lg font-semibold tracking-tight">{t('chat.report.success_title')}</h3>
                         <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed max-w-sm">
-                            Gracias por ayudarnos a mantener ChatHub seguro. Revisaremos tu reporte pronto.
+                            {t('chat.report.success_desc')}
                         </p>
                     </div>
                 ) : (
                     <>
                         <DialogHeader className="p-5 pb-0">
                             <DialogTitle className="text-base font-semibold tracking-tight">
-                                Reportar a {reportedUsername}
+                                {t('chat.report.title', { username: reportedUsername })}
                             </DialogTitle>
                             <DialogDescription className="text-sm text-muted-foreground/80">
-                                Selecciona el motivo que mejor describa el comportamiento del usuario.
+                                {t('chat.report.description')}
                             </DialogDescription>
                         </DialogHeader>
 
@@ -130,8 +141,8 @@ export function ReportUserDialog({ isOpen, onClose, reportedUsername, reportedUs
                                             <option.icon className="w-3.5 h-3.5" />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-semibold">{option.label}</p>
-                                            <p className="text-xs text-muted-foreground/70 mt-px leading-relaxed">{option.description}</p>
+                                            <p className="text-sm font-semibold">{t(`chat.report.reason.${REASON_KEY_MAP[option.id]}`)}</p>
+                                            <p className="text-xs text-muted-foreground/70 mt-px leading-relaxed">{t(`chat.report.reason.${REASON_KEY_MAP[option.id]}_desc`)}</p>
                                         </div>
                                     </button>
                                 ))}
@@ -139,9 +150,9 @@ export function ReportUserDialog({ isOpen, onClose, reportedUsername, reportedUs
 
                             {selectedReason === 'OTHER' && (
                                 <div className="pt-1 space-y-2 animate-in slide-in-from-top-2 duration-200">
-                                    <label className="text-xs font-semibold text-muted-foreground ml-1">Cuéntanos más:</label>
+                                    <label className="text-xs font-semibold text-muted-foreground ml-1">{t('chat.report.other_label')}</label>
                                     <Textarea
-                                        placeholder="Describe brevemente el problema..."
+                                        placeholder={t('chat.report.other_placeholder')}
                                         value={details}
                                         onChange={(e) => setDetails(e.target.value)}
                                         className="min-h-[90px] rounded-xl bg-muted/50 border-none focus-visible:ring-1 focus-visible:ring-primary text-sm"
@@ -159,7 +170,7 @@ export function ReportUserDialog({ isOpen, onClose, reportedUsername, reportedUs
                                 className="rounded-xl cursor-pointer text-sm active:scale-[0.97]"
                                 style={{ transitionTimingFunction: EASE_OUT }}
                             >
-                                Cancelar
+                                {t('chat.report.cancel')}
                             </Button>
                             <Button
                                 variant="destructive"
@@ -171,10 +182,10 @@ export function ReportUserDialog({ isOpen, onClose, reportedUsername, reportedUs
                                 {isSubmitting ? (
                                     <>
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Enviando...
+                                        {t('chat.report.sending')}
                                     </>
                                 ) : (
-                                    'Enviar Reporte'
+                                    t('chat.report.send')
                                 )}
                             </Button>
                         </DialogFooter>

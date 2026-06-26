@@ -39,7 +39,7 @@ export function useRoomSearch(query: string) {
                 if (!active) return;
 
                 if (!res.ok) {
-                    throw new Error('Error al buscar salas');
+                    throw new Error('ROOM_SEARCH_ERROR');
                 }
 
                 const json = await res.json();
@@ -47,7 +47,7 @@ export function useRoomSearch(query: string) {
             } catch (err: any) {
                 console.error("Error fetching rooms:", err);
                 if (active) {
-                    setError(err.message || 'Algo salió mal');
+                    setError(err.message || 'ROOM_SEARCH_FALLBACK');
                     setRooms([]);
                 }
             } finally {

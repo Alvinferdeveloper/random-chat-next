@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Room } from '@/src/app/rooms/hooks/useRoom';
 import { Settings, Trash2, Heart, Loader2 } from 'lucide-react';
 import { RoomEditDialog } from '@/src/app/rooms/components/RoomEditDialog';
@@ -15,6 +16,7 @@ interface RoomCardActionsProps {
 }
 
 export function RoomCardActions({ room, isOwner, isFavorite, onToggleFavorite, onDelete }: RoomCardActionsProps) {
+    const { t } = useTranslation();
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const { session } = useAuth();
@@ -22,7 +24,7 @@ export function RoomCardActions({ room, isOwner, isFavorite, onToggleFavorite, o
         e.stopPropagation();
         if (!onDelete) return;
 
-        if (confirm('¿Estás seguro de que quieres eliminar esta sala?')) {
+        if (confirm(t('rooms.card.confirm_delete'))) {
             setIsDeleting(true);
             try {
                 await onDelete(room.id);
@@ -44,7 +46,7 @@ export function RoomCardActions({ room, isOwner, isFavorite, onToggleFavorite, o
                     <button
                         onClick={handleOpenEdit}
                         className="p-2 cursor-pointer rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 transition-all group/settings"
-                        aria-label="Edit room"
+                        aria-label={t('rooms.card.edit_label')}
                     >
                         <Settings className="w-5 h-5 text-white group-hover/settings:rotate-90 transition-transform duration-300" />
                     </button>
@@ -53,7 +55,7 @@ export function RoomCardActions({ room, isOwner, isFavorite, onToggleFavorite, o
                         onClick={handleDelete}
                         disabled={isDeleting}
                         className="p-2 cursor-pointer rounded-full bg-red-500/40 backdrop-blur-sm hover:bg-red-500/60 transition-all text-white disabled:opacity-50"
-                        aria-label="Delete room"
+                        aria-label={t('rooms.card.delete_label')}
                     >
                         {isDeleting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Trash2 className="w-5 h-5" />}
                     </button>
@@ -72,7 +74,7 @@ export function RoomCardActions({ room, isOwner, isFavorite, onToggleFavorite, o
                     onToggleFavorite(e);
                 }}
                 className="p-2 cursor-pointer rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 transition-all z-20 group/heart"
-                aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                aria-label={isFavorite ? t('rooms.card.remove_fav') : t('rooms.card.add_fav')}
             >
                 <Heart
                     className={`w-5 h-5 transition-colors ${isFavorite ? "fill-red-500 text-red-500" : "text-white group-hover/heart:text-red-400"}`}
