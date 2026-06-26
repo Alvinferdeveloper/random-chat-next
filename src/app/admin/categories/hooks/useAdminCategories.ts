@@ -15,6 +15,17 @@ interface Pagination {
     hasNextPage: boolean;
 }
 
+const ERROR_TRANSLATIONS: Record<string, string> = {
+    'An unexpected error occurred, please try again later': 'Ocurrio un error inesperado, intenta de nuevo mas tarde',
+    'Resource not found': 'Recurso no encontrado',
+    'Category not found': 'Categoria no encontrada',
+};
+
+function translateError(message: string | undefined, fallback: string): string {
+    if (!message) return fallback;
+    return ERROR_TRANSLATIONS[message] || message;
+}
+
 export function useAdminCategories() {
     const [categories, setCategories] = useState<Category[]>([]);
     const [pagination, setPagination] = useState<Pagination | null>(null);
@@ -31,7 +42,7 @@ export function useAdminCategories() {
             });
             const data = await response.json();
 
-            if (!response.ok) throw new Error(data.message || 'Error fetching categories');
+            if (!response.ok) throw new Error(translateError(data.message, 'Error al cargar categorias'));
 
             setCategories(data.data);
             setPagination(data.pagination);
@@ -57,13 +68,12 @@ export function useAdminCategories() {
             });
 
             const data = await response.json();
-            if (!response.ok) throw new Error(data.message || 'Error creating category');
+            if (!response.ok) return { success: false, message: translateError(data.message, 'Error al crear categoria') };
 
             fetchCategories();
-            return true;
+            return { success: true };
         } catch (err) {
-            setError((err as Error).message);
-            return false;
+            return { success: false, message: 'Error al conectar con el servidor' };
         }
     };
 
@@ -77,13 +87,12 @@ export function useAdminCategories() {
             });
 
             const data = await response.json();
-            if (!response.ok) throw new Error(data.message || 'Error updating category');
+            if (!response.ok) return { success: false, message: translateError(data.message, 'Error al actualizar categoria') };
 
             fetchCategories();
-            return true;
+            return { success: true };
         } catch (err) {
-            setError((err as Error).message);
-            return false;
+            return { success: false, message: 'Error al conectar con el servidor' };
         }
     };
 
@@ -95,13 +104,12 @@ export function useAdminCategories() {
             });
 
             const data = await response.json();
-            if (!response.ok) throw new Error(data.message || 'Error deleting category');
+            if (!response.ok) return { success: false, message: translateError(data.message, 'Error al eliminar categoria') };
 
             fetchCategories();
-            return true;
+            return { success: true };
         } catch (err) {
-            setError((err as Error).message);
-            return false;
+            return { success: false, message: 'Error al conectar con el servidor' };
         }
     };
 

@@ -111,19 +111,21 @@ export default function AdminCategoriesPage() {
         if (!formData.name.trim()) return;
 
         setIsSubmitting(true);
-        let success = false;
+        let result;
 
         if (editingCategory) {
-            success = await updateCategory(editingCategory.id, formData.name, formData.icon);
-            if (success) toast.success('Categoria actualizada correctamente.');
+            result = await updateCategory(editingCategory.id, formData.name, formData.icon);
         } else {
-            success = await createCategory(formData.name, formData.icon);
-            if (success) toast.success('Categoria creada correctamente.');
+            result = await createCategory(formData.name, formData.icon);
         }
 
-        if (success) {
+        if (result.success) {
+            toast.success(editingCategory ? 'Categoria actualizada correctamente.' : 'Categoria creada correctamente.');
             setIsDialogOpen(false);
+        } else if (result.message) {
+            toast.error(result.message);
         }
+
         setIsSubmitting(false);
     };
 
@@ -133,14 +135,18 @@ export default function AdminCategoriesPage() {
     };
 
     const handleConfirmDelete = async () => {
-        if (categoryToDelete) {
-            setIsSubmitting(true);
-            const success = await deleteCategory(categoryToDelete);
-            if (success) toast.success('Categoria eliminada.');
-            setIsSubmitting(false);
-            setIsConfirmOpen(false);
-            setCategoryToDelete(null);
+        if (!categoryToDelete) return;
+
+        setIsSubmitting(true);
+        const result = await deleteCategory(categoryToDelete);
+        if (result.success) {
+            toast.success('Categoria eliminada.');
+        } else if (result.message) {
+            toast.error(result.message);
         }
+        setIsSubmitting(false);
+        setIsConfirmOpen(false);
+        setCategoryToDelete(null);
     };
 
     const getCategoryIcon = (name: string) => {
