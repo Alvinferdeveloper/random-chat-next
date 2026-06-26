@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar';
 import { Badge } from '@/src/components/ui/badge';
 import { Button } from '@/src/components/ui/button';
@@ -24,6 +25,8 @@ interface UserRowProps {
 }
 
 export default function UserRow({ user, index, isMe, processingId, onView, onChangeRole, onAction }: UserRowProps) {
+    const { t } = useTranslation();
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 8 }}
@@ -40,16 +43,16 @@ export default function UserRow({ user, index, isMe, processingId, onView, onCha
                     <div className="flex items-center gap-2 flex-wrap">
                         <h3 className="font-semibold text-sm truncate">{user.username}</h3>
                         {user.role === 'ADMIN' && (
-                            <Badge variant="secondary" className="text-[10px] uppercase font-bold bg-amber-500/10 text-amber-600 border-amber-500/20">Admin</Badge>
+                            <Badge variant="secondary" className="text-[10px] uppercase font-bold bg-amber-500/10 text-amber-600 border-amber-500/20">{t('admin.users.role.admin')}</Badge>
                         )}
                         {user.role === 'MODERATOR' && (
-                            <Badge variant="secondary" className="text-[10px] uppercase font-bold bg-blue-500/10 text-blue-600 border-blue-500/20">Mod</Badge>
+                            <Badge variant="secondary" className="text-[10px] uppercase font-bold bg-blue-500/10 text-blue-600 border-blue-500/20">{t('admin.users.role.mod')}</Badge>
                         )}
                         {user.isBanned && (
-                            <Badge variant="destructive" className="text-[10px] uppercase font-bold">Baneado</Badge>
+                            <Badge variant="destructive" className="text-[10px] uppercase font-bold">{t('admin.users.role.banned')}</Badge>
                         )}
                         {isMe && (
-                            <Badge variant="outline" className="text-[10px] uppercase font-bold italic">Tú</Badge>
+                            <Badge variant="outline" className="text-[10px] uppercase font-bold italic">{t('admin.users.role.you')}</Badge>
                         )}
                     </div>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-0.5 mt-0.5 text-xs text-muted-foreground">
@@ -59,7 +62,7 @@ export default function UserRow({ user, index, isMe, processingId, onView, onCha
                         </span>
                         <span className="flex items-center gap-1">
                             <Calendar className="w-3 h-3 shrink-0" />
-                            Unido: {new Date(user.createdAt).toLocaleDateString()}
+                            {t('admin.users.joined')} {new Date(user.createdAt).toLocaleDateString()}
                         </span>
                     </div>
                 </div>
@@ -73,7 +76,7 @@ export default function UserRow({ user, index, isMe, processingId, onView, onCha
                     onClick={() => onView(user.id)}
                 >
                     <Eye className="w-3.5 h-3.5" />
-                    Ver
+                    {t('admin.users.view')}
                 </Button>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -84,18 +87,18 @@ export default function UserRow({ user, index, isMe, processingId, onView, onCha
                             disabled={processingId === user.id || isMe}
                         >
                             <Shield className="w-3.5 h-3.5" />
-                            Rol
+                            {t('admin.users.role_btn')}
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-40">
                         <DropdownMenuItem onClick={() => onChangeRole(user.id, user.username, 'USER')} className="text-xs font-medium">
-                            Usuario (USER)
+                            {t('admin.users.role.user_label')}
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => onChangeRole(user.id, user.username, 'MODERATOR')} className="text-xs font-medium text-blue-600">
-                            Moderador (MOD)
+                            {t('admin.users.role.mod_label')}
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => onChangeRole(user.id, user.username, 'ADMIN')} className="text-xs font-medium text-amber-600">
-                            Administrador (ADMIN)
+                            {t('admin.users.role.admin_label')}
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -114,7 +117,7 @@ export default function UserRow({ user, index, isMe, processingId, onView, onCha
                     ) : (
                         <UserX className="h-3.5 w-3.5" />
                     )}
-                    {user.isBanned ? 'Desbanear' : 'Banear'}
+                    {user.isBanned ? t('admin.users.unban') : t('admin.users.ban')}
                 </Button>
             </div>
         </motion.div>

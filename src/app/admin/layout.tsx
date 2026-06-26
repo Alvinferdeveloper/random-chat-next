@@ -8,19 +8,21 @@ import { Loader2, ShieldCheck, LayoutDashboard, MessageSquare, Users, AlertCircl
 import { ThemeToggle } from '@/src/app/components/layout/ThemeToggle';
 import { cn } from '@/src/lib/utils';
 import { useAdminNotifications } from '@/src/app/admin/hooks/useAdminNotifications';
-
-const NAV_ITEMS = [
-    { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
-    { href: '/admin/rooms', label: 'Salas Pendientes', icon: MessageSquare },
-    { href: '/admin/users', label: 'Usuarios', icon: Users },
-    { href: '/admin/reports', label: 'Reportes', icon: AlertCircle },
-    { href: '/admin/categories', label: 'Categorías', icon: Tag },
-];
+import { useTranslation } from 'react-i18next';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+    const { t } = useTranslation();
     const { session, isPending } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
+
+    const NAV_ITEMS = [
+        { href: '/admin', label: t('admin.nav.dashboard'), icon: LayoutDashboard, exact: true },
+        { href: '/admin/rooms', label: t('admin.nav.pending_rooms'), icon: MessageSquare },
+        { href: '/admin/users', label: t('admin.nav.users'), icon: Users },
+        { href: '/admin/reports', label: t('admin.nav.reports'), icon: AlertCircle },
+        { href: '/admin/categories', label: t('admin.nav.categories'), icon: Tag },
+    ];
 
     useAdminNotifications();
 
@@ -59,7 +61,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         <div className="w-7 h-7 rounded-lg bg-zinc-900 dark:bg-zinc-100 flex items-center justify-center">
                             <ShieldCheck className="w-4 h-4 text-white dark:text-zinc-900" />
                         </div>
-                        <span className="text-sm font-semibold tracking-tight truncate">Admin Panel</span>
+                        <span className="text-sm font-semibold tracking-tight truncate">{t('admin.nav.admin_panel')}</span>
                     </div>
                     <ThemeToggle />
                 </div>
@@ -106,13 +108,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 {(session.user as any).name || 'Admin'}
                             </p>
                             <p className="text-[10px] text-admin-profile-role truncate">
-                                Administrador
+                                {t('admin.nav.administrator')}
                             </p>
                         </div>
                         <button
                             onClick={() => router.push('/rooms')}
                             className="p-1.5 rounded-md text-admin-nav-icon hover:text-admin-nav-hover hover:bg-admin-nav-hover-bg transition-colors"
-                            aria-label="Salir del panel"
+                            aria-label={t('admin.nav.leave_panel')}
                         >
                             <LogOut className="w-3.5 h-3.5" />
                         </button>

@@ -4,6 +4,7 @@ import { Activity, Hash, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
 interface ActiveRoom {
     id: string;
@@ -15,6 +16,8 @@ interface ActiveRoom {
 }
 
 export default function ActiveRoomsList({ rooms, loading }: { rooms: ActiveRoom[]; loading: boolean }) {
+    const { t } = useTranslation();
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -22,10 +25,10 @@ export default function ActiveRoomsList({ rooms, loading }: { rooms: ActiveRoom[
             transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
         >
             <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold tracking-tight">Salas M&aacute;s Activas</h2>
+                <h2 className="text-lg font-semibold tracking-tight">{t('admin.active_rooms.title')}</h2>
                 {loading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
                 {!loading && (
-                    <span className="text-xs text-muted-foreground tabular-nums">{rooms.length} salas</span>
+                    <span className="text-xs text-muted-foreground tabular-nums">{t('admin.active_rooms.count', { count: rooms.length })}</span>
                 )}
             </div>
 
@@ -47,7 +50,7 @@ export default function ActiveRoomsList({ rooms, loading }: { rooms: ActiveRoom[
             ) : rooms.length === 0 ? (
                 <div className="border rounded-xl p-10 text-center">
                     <Activity className="h-8 w-8 text-muted-foreground/40 mx-auto mb-3" />
-                    <p className="text-sm text-muted-foreground">No hay usuarios activos en ninguna sala.</p>
+                    <p className="text-sm text-muted-foreground">{t('admin.active_rooms.empty')}</p>
                 </div>
             ) : (
                 <div className="border rounded-xl divide-y divide-border overflow-hidden">

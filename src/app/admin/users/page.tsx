@@ -4,6 +4,7 @@ import { useAdminUsers } from './hooks/useAdminUsers';
 import { useAuth } from '@/src/app/hooks/useAuth';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardContent } from '@/src/components/ui/card';
 import { Input } from '@/src/components/ui/input';
 import { Badge } from '@/src/components/ui/badge';
@@ -42,6 +43,7 @@ function UserRowSkeleton() {
 }
 
 export default function AdminUsersPage() {
+    const { t } = useTranslation();
     const {
         users,
         pagination,
@@ -67,7 +69,7 @@ export default function AdminUsersPage() {
         if (user.isBanned) {
             setProcessingId(user.id);
             const success = await toggleBan(user.id, false);
-            if (success) toast.success(`Usuario @${user.username} desbaneado.`);
+            if (success) toast.success(t('admin.toast.user_unbanned', { username: user.username }));
             setProcessingId(null);
         } else {
             setUserToBan({ id: user.id, username: user.username });
@@ -79,7 +81,7 @@ export default function AdminUsersPage() {
         if (!userToBan) return;
         setProcessingId(userToBan.id);
         const success = await toggleBan(userToBan.id, true, reason);
-        if (success) toast.success(`Usuario @${userToBan.username} baneado.`);
+        if (success) toast.success(t('admin.toast.user_banned', { username: userToBan.username }));
         setProcessingId(null);
         setBanDialogOpen(false);
     };
@@ -87,7 +89,7 @@ export default function AdminUsersPage() {
     const handleChangeRole = async (userId: string, username: string, newRole: string) => {
         setProcessingId(userId);
         const success = await changeRole(userId, newRole);
-        if (success) toast.success(`Rol de @${username} actualizado a ${newRole}.`);
+        if (success) toast.success(t('admin.toast.role_updated', { username, role: newRole }));
         setProcessingId(null);
     };
 
@@ -102,12 +104,12 @@ export default function AdminUsersPage() {
                 className="flex items-center justify-between"
             >
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Gesti&oacute;n de Usuarios</h1>
-                    <p className="text-sm text-muted-foreground mt-1">Administra los usuarios registrados en la plataforma</p>
+                    <h1 className="text-2xl font-bold tracking-tight">{t('admin.users.title')}</h1>
+                    <p className="text-sm text-muted-foreground mt-1">{t('admin.users.subtitle')}</p>
                 </div>
                 {!loading && !error && pagination && (
                     <Badge variant="outline" className="text-sm px-3 py-1">
-                        {pagination.total} usuarios
+                        {t('admin.users.count', { count: pagination.total })}
                     </Badge>
                 )}
             </motion.div>
@@ -122,7 +124,7 @@ export default function AdminUsersPage() {
                         <div className="relative w-full max-w-sm">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
-                                placeholder="Buscar por nombre, email o username..."
+                                placeholder={t('admin.users.search_placeholder')}
                                 className="pl-10"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
@@ -139,20 +141,20 @@ export default function AdminUsersPage() {
                         ) : error ? (
                             <div className="flex flex-col items-center justify-center py-16 text-center">
                                 <AlertCircle className="h-10 w-10 text-destructive/60 mb-4" />
-                                <p className="text-lg font-medium mb-1">Error al cargar</p>
+                                <p className="text-lg font-medium mb-1">{t('admin.users.error_title')}</p>
                                 <p className="text-sm text-muted-foreground mb-4">{error}</p>
                                 <button
                                     onClick={refresh}
                                     className="text-sm font-medium text-primary hover:underline active:scale-[0.98] transition-transform"
                                 >
-                                    Intentar de nuevo
+                                    {t('admin.users.retry')}
                                 </button>
                             </div>
                         ) : users.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-16 text-center">
                                 <Users className="h-10 w-10 text-muted-foreground/30 mb-4" />
-                                <p className="text-lg font-medium mb-1">No se encontraron usuarios</p>
-                                <p className="text-sm text-muted-foreground">Prueba con otros t&eacute;rminos de b&uacute;squeda.</p>
+                                <p className="text-lg font-medium mb-1">{t('admin.users.empty_title')}</p>
+                                <p className="text-sm text-muted-foreground">{t('admin.users.empty_desc')}</p>
                             </div>
                         ) : (
                             <div className="space-y-1">

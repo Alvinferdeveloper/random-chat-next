@@ -3,6 +3,7 @@
 import { Card } from '@/src/components/ui/card';
 import { Users, UserPlus, MessageSquare, AlertCircle, LucideIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface LiveStats {
     onlineUsers: number;
@@ -14,7 +15,7 @@ interface LiveStats {
 }
 
 interface StatCard {
-    label: string;
+    key: string;
     value: number | undefined;
     icon: LucideIcon;
     color: string;
@@ -36,29 +37,38 @@ const fadeUp = {
 const cardGradient = 'bg-gradient-to-br from-zinc-100 to-zinc-100/60 dark:from-zinc-900/90 dark:to-zinc-900/60';
 
 export default function SecondaryStats({ stats, loading }: { stats: LiveStats | null; loading: boolean }) {
+    const { t } = useTranslation();
+
     const cards: StatCard[] = [
-        { label: 'Usuarios Totales', value: stats?.totalUsers, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+        { key: 'total_users', value: stats?.totalUsers, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
         {
-            label: 'Nuevos Hoy', value: stats?.newUsersToday, icon: UserPlus,
+            key: 'new_today', value: stats?.newUsersToday, icon: UserPlus,
             color: (stats?.newUsersToday ?? 0) > 0 ? 'text-emerald-500' : 'text-muted-foreground',
             bg: (stats?.newUsersToday ?? 0) > 0 ? 'bg-emerald-500/10' : 'bg-muted/50',
         },
         {
-            label: 'Salas Pendientes', value: stats?.pendingRooms, icon: MessageSquare,
+            key: 'pending_rooms', value: stats?.pendingRooms, icon: MessageSquare,
             color: (stats?.pendingRooms ?? 0) > 0 ? 'text-amber-500' : 'text-muted-foreground',
             bg: (stats?.pendingRooms ?? 0) > 0 ? 'bg-amber-500/10' : 'bg-muted/50',
         },
         {
-            label: 'Reportes Pendientes', value: stats?.pendingReports, icon: AlertCircle,
+            key: 'pending_reports', value: stats?.pendingReports, icon: AlertCircle,
             color: (stats?.pendingReports ?? 0) > 0 ? 'text-red-500' : 'text-muted-foreground',
             bg: (stats?.pendingReports ?? 0) > 0 ? 'bg-red-500/10' : 'bg-muted/50',
         },
     ];
 
+    const labelMap: Record<string, string> = {
+        total_users: t('admin.stats.total_users'),
+        new_today: t('admin.stats.new_today'),
+        pending_rooms: t('admin.stats.pending_rooms'),
+        pending_reports: t('admin.stats.pending_reports'),
+    };
+
     return (
         <motion.div initial="hidden" animate="show" variants={stagger} className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {cards.map((card) => (
-                <motion.div key={card.label} variants={fadeUp}>
+                <motion.div key={card.key} variants={fadeUp}>
                     <Card className={`p-5 active:scale-[0.98] transition-transform duration-150 ease-out ${cardGradient}`}>
                         {loading ? (
                             <div className="space-y-3">
@@ -73,7 +83,7 @@ export default function SecondaryStats({ stats, loading }: { stats: LiveStats | 
                                 </div>
                                 <div>
                                     <div className="text-xl font-bold tracking-tight">{nf(card.value)}</div>
-                                    <p className="text-xs text-muted-foreground mt-0.5">{card.label}</p>
+                                    <p className="text-xs text-muted-foreground mt-0.5">{labelMap[card.key]}</p>
                                 </div>
                             </div>
                         )}

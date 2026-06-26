@@ -2,6 +2,7 @@
 
 import { Button } from '@/src/components/ui/button';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface GlobalSetting {
     key: string;
@@ -19,13 +20,15 @@ export default function SystemSettings({
     loading: boolean;
     onToggle: (key: string, currentValue: string) => void;
 }) {
+    const { t } = useTranslation();
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
         >
-            <h2 className="text-lg font-semibold tracking-tight mb-4">Ajustes del Sistema</h2>
+            <h2 className="text-lg font-semibold tracking-tight mb-4">{t('admin.settings.title')}</h2>
 
             {loading ? (
                 <div className="border rounded-xl divide-y divide-border">
@@ -54,7 +57,7 @@ export default function SystemSettings({
                                 )}
                                 {setting.updatedAt && (
                                     <p className="text-[10px] text-muted-foreground/50 mt-1">
-                                        &Uacute;ltima actualizaci&oacute;n: {new Date(setting.updatedAt).toLocaleString()}
+                                        {t('admin.settings.last_update')} {new Date(setting.updatedAt).toLocaleString()}
                                     </p>
                                 )}
                             </div>
@@ -64,7 +67,7 @@ export default function SystemSettings({
                                 onClick={() => onToggle(setting.key, setting.value)}
                                 className="rounded-full px-4 shrink-0 active:scale-[0.95] transition-transform duration-100"
                             >
-                                {setting.value === 'true' ? 'Activo' : 'Desactivado'}
+                                {setting.value === 'true' ? t('admin.settings.active') : t('admin.settings.disabled')}
                             </Button>
                         </div>
                     ))}

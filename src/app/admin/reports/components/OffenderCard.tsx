@@ -1,20 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar';
 import { Badge } from '@/src/components/ui/badge';
 import { Button } from '@/src/components/ui/button';
 import { Eye, XCircle, UserX, ShieldAlert, Calendar, Loader2 } from 'lucide-react';
 import { Offender } from '../hooks/useAdminReports';
-
-const REASON_LABELS: Record<string, string> = {
-    SPAM: 'Spam',
-    HARASSMENT: 'Acoso',
-    INAPPROPRIATE_CONTENT: 'Contenido NSFW',
-    HATE_SPEECH: 'Odio',
-    ANNOYING_BEHAVIOR: 'Molesto',
-    OTHER: 'Otro'
-};
 
 interface OffenderCardProps {
     offender: Offender;
@@ -26,6 +18,17 @@ interface OffenderCardProps {
 }
 
 export default function OffenderCard({ offender, index, processingId, onResolve, onBanClick, onViewContext }: OffenderCardProps) {
+    const { t } = useTranslation();
+
+    const REASON_LABELS: Record<string, string> = {
+        SPAM: t('admin.reports.reason.spam'),
+        HARASSMENT: t('admin.reports.reason.harassment'),
+        INAPPROPRIATE_CONTENT: t('admin.reports.reason.inappropriate'),
+        HATE_SPEECH: t('admin.reports.reason.hate_speech'),
+        ANNOYING_BEHAVIOR: t('admin.reports.reason.annoying'),
+        OTHER: t('admin.reports.reason.other')
+    };
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 8 }}
@@ -43,7 +46,7 @@ export default function OffenderCard({ offender, index, processingId, onResolve,
                             <div className="flex items-center gap-2 flex-wrap">
                                 <h3 className="font-semibold text-sm truncate">{offender.user.username}</h3>
                                 <Badge variant="destructive" className="text-[10px] font-bold h-5">
-                                    {offender.reportCount} reportes
+                                    {t('admin.reports.report_count', { count: offender.reportCount })}
                                 </Badge>
                             </div>
                             <p className="text-xs text-muted-foreground truncate mt-0.5">{offender.user.email}</p>
@@ -59,7 +62,7 @@ export default function OffenderCard({ offender, index, processingId, onResolve,
                             disabled={processingId === offender.user.id}
                         >
                             {processingId === offender.user.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Eye className="w-3.5 h-3.5" />}
-                            Evidencia
+                            {t('admin.reports.evidence')}
                         </Button>
                         <Button
                             variant="outline"
@@ -69,7 +72,7 @@ export default function OffenderCard({ offender, index, processingId, onResolve,
                             disabled={processingId === offender.user.id}
                         >
                             <XCircle className="w-3.5 h-3.5" />
-                            Descartar
+                            {t('admin.reports.dismiss')}
                         </Button>
                         <Button
                             variant="destructive"
@@ -79,7 +82,7 @@ export default function OffenderCard({ offender, index, processingId, onResolve,
                             disabled={processingId === offender.user.id}
                         >
                             <UserX className="w-3.5 h-3.5" />
-                            Banear
+                            {t('admin.reports.ban')}
                         </Button>
                     </div>
                 </div>
@@ -87,7 +90,7 @@ export default function OffenderCard({ offender, index, processingId, onResolve,
                 <div className="p-4 space-y-3">
                     <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase mb-1">
                         <ShieldAlert className="w-3.5 h-3.5" />
-                        Motivos Recientes:
+                        {t('admin.reports.recent_reasons')}
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                         {offender.recentReasons.map((reason, i) => (
@@ -98,7 +101,7 @@ export default function OffenderCard({ offender, index, processingId, onResolve,
                     </div>
                     <div className="flex items-center gap-1 text-xs text-muted-foreground pt-1">
                         <Calendar className="w-3.5 h-3.5 shrink-0" />
-                        Ultimo reporte: {new Date(offender.lastReportedAt).toLocaleString()}
+                        {t('admin.reports.last_report')} {new Date(offender.lastReportedAt).toLocaleString()}
                     </div>
                 </div>
             </div>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useAdminRooms } from './hooks/useAdminRooms';
 import { Badge } from '@/src/components/ui/badge';
 import { ConfirmDialog } from '@/src/app/components/shared/ConfirmDialog';
@@ -37,6 +38,7 @@ function RoomSkeleton() {
 }
 
 export default function PendingRoomsPage() {
+    const { t } = useTranslation();
     const { rooms, loading, error, updateStatus, refetch } = useAdminRooms('IN_REVISION');
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [actionData, setActionData] = useState<{ id: string, status: 'ACCEPTED' | 'REJECTED' } | null>(null);
@@ -52,7 +54,7 @@ export default function PendingRoomsPage() {
         setIsSubmitting(true);
         const success = await updateStatus(actionData.id, actionData.status);
         if (success) {
-            toast.success(actionData.status === 'ACCEPTED' ? 'Sala aceptada.' : 'Sala rechazada.');
+            toast.success(actionData.status === 'ACCEPTED' ? t('admin.toast.room_accepted') : t('admin.toast.room_rejected'));
         }
         setIsSubmitting(false);
         setIsConfirmOpen(false);
@@ -68,12 +70,12 @@ export default function PendingRoomsPage() {
                 className="flex items-center justify-between"
             >
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Salas Pendientes</h1>
-                    <p className="text-sm text-muted-foreground mt-1">Revisa y modera las salas creadas por los usuarios</p>
+                    <h1 className="text-2xl font-bold tracking-tight">{t('admin.rooms.title')}</h1>
+                    <p className="text-sm text-muted-foreground mt-1">{t('admin.rooms.subtitle')}</p>
                 </div>
                 {!loading && !error && (
                     <Badge variant="outline" className="text-sm px-3 py-1">
-                        {rooms.length} pendientes
+                        {t('admin.rooms.count', { count: rooms.length })}
                     </Badge>
                 )}
             </motion.div>
@@ -97,13 +99,13 @@ export default function PendingRoomsPage() {
                     className="flex flex-col items-center justify-center rounded-xl border border-dashed p-12 text-center"
                 >
                     <AlertCircle className="h-10 w-10 text-destructive/60 mb-4" />
-                    <p className="text-lg font-medium mb-1">Error al cargar</p>
+                    <p className="text-lg font-medium mb-1">{t('admin.rooms.error_title')}</p>
                     <p className="text-sm text-muted-foreground mb-4">{error}</p>
                     <button
                         onClick={refetch}
                         className="text-sm font-medium text-primary hover:underline active:scale-[0.98] transition-transform"
                     >
-                        Intentar de nuevo
+                        {t('admin.rooms.retry')}
                     </button>
                 </motion.div>
             ) : rooms.length === 0 ? (
@@ -114,8 +116,8 @@ export default function PendingRoomsPage() {
                     className="flex flex-col items-center justify-center rounded-xl border border-dashed p-12 text-center"
                 >
                     <MessageSquare className="h-10 w-10 text-muted-foreground/30 mb-4" />
-                    <p className="text-lg font-medium mb-1">No hay salas pendientes</p>
-                    <p className="text-sm text-muted-foreground">Todas las salas han sido revisadas.</p>
+                    <p className="text-lg font-medium mb-1">{t('admin.rooms.empty_title')}</p>
+                    <p className="text-sm text-muted-foreground">{t('admin.rooms.empty_desc')}</p>
                 </motion.div>
             ) : (
                 <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -135,9 +137,9 @@ export default function PendingRoomsPage() {
                 isOpen={isConfirmOpen}
                 onClose={() => setIsConfirmOpen(false)}
                 onConfirm={handleConfirmAction}
-                title={actionData?.status === 'ACCEPTED' ? 'Aceptar Sala' : 'Rechazar Sala'}
-                description={`¿Estás seguro de que deseas ${actionData?.status === 'ACCEPTED' ? 'aceptar' : 'rechazar'} esta sala?`}
-                confirmText={actionData?.status === 'ACCEPTED' ? 'Aceptar' : 'Rechazar'}
+                title={actionData?.status === 'ACCEPTED' ? t('admin.rooms.confirm_accept_title') : t('admin.rooms.confirm_reject_title')}
+                description={actionData?.status === 'ACCEPTED' ? t('admin.rooms.confirm_accept_desc') : t('admin.rooms.confirm_reject_desc')}
+                confirmText={actionData?.status === 'ACCEPTED' ? t('admin.rooms.confirm_accept_text') : t('admin.rooms.confirm_reject_text')}
                 variant={actionData?.status === 'ACCEPTED' ? 'primary' : 'destructive'}
                 isLoading={isSubmitting}
             />

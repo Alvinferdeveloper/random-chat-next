@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useAdminCategories } from './hooks/useAdminCategories';
 import { Button } from '@/src/components/ui/button';
 import { Input } from '@/src/components/ui/input';
@@ -76,6 +77,7 @@ function CategorySkeleton() {
 }
 
 export default function AdminCategoriesPage() {
+    const { t } = useTranslation();
     const {
         categories,
         pagination,
@@ -120,7 +122,7 @@ export default function AdminCategoriesPage() {
         }
 
         if (result.success) {
-            toast.success(editingCategory ? 'Categoria actualizada correctamente.' : 'Categoria creada correctamente.');
+            toast.success(editingCategory ? t('admin.toast.category_updated') : t('admin.toast.category_created'));
             setIsDialogOpen(false);
         } else if (result.message) {
             toast.error(result.message);
@@ -140,7 +142,7 @@ export default function AdminCategoriesPage() {
         setIsSubmitting(true);
         const result = await deleteCategory(categoryToDelete);
         if (result.success) {
-            toast.success('Categoria eliminada.');
+            toast.success(t('admin.toast.category_deleted'));
         } else if (result.message) {
             toast.error(result.message);
         }
@@ -164,12 +166,12 @@ export default function AdminCategoriesPage() {
                 className="flex items-center justify-between"
             >
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Gestion de Categorias</h1>
-                    <p className="text-sm text-muted-foreground mt-1">Administra las categorias disponibles para las salas</p>
+                    <h1 className="text-2xl font-bold tracking-tight">{t('admin.categories.title')}</h1>
+                    <p className="text-sm text-muted-foreground mt-1">{t('admin.categories.subtitle')}</p>
                 </div>
                 <Button onClick={() => handleOpenDialog()} className="gap-2 active:scale-[0.98] cursor-pointer">
                     <Plus className="w-4 h-4" />
-                    Nueva Categoria
+                    {t('admin.categories.new_button')}
                 </Button>
             </motion.div>
 
@@ -181,7 +183,7 @@ export default function AdminCategoriesPage() {
             >
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                    placeholder="Buscar categorias..."
+                    placeholder={t('admin.categories.search_placeholder')}
                     className="pl-10"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -207,8 +209,8 @@ export default function AdminCategoriesPage() {
                     className="flex flex-col items-center justify-center rounded-xl border border-dashed p-12 text-center"
                 >
                     <Tag className="h-10 w-10 text-muted-foreground/30 mb-4" />
-                    <p className="text-lg font-medium mb-1">No se encontraron categorias</p>
-                    <p className="text-sm text-muted-foreground">Crea la primera categoria para empezar.</p>
+                    <p className="text-lg font-medium mb-1">{t('admin.categories.empty_title')}</p>
+                    <p className="text-sm text-muted-foreground">{t('admin.categories.empty_desc')}</p>
                 </motion.div>
             ) : (
                 <>
@@ -239,14 +241,14 @@ export default function AdminCategoriesPage() {
                                             <button
                                                 onClick={() => handleOpenDialog(category)}
                                                 className="p-1 rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors active:scale-[0.95]"
-                                                title="Editar"
+                                                title={t('admin.categories.edit_tooltip')}
                                             >
                                                 <Edit2 className="w-3.5 h-3.5" />
                                             </button>
                                             <button
                                                 onClick={() => handleDeleteClick(category.id)}
                                                 className="p-1 rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors active:scale-[0.95] text-red-600 dark:text-red-400"
-                                                title="Eliminar"
+                                                title={t('admin.categories.delete_tooltip')}
                                             >
                                                 <Trash2 className="w-3.5 h-3.5" />
                                             </button>
@@ -274,22 +276,22 @@ export default function AdminCategoriesPage() {
                 <DialogContent className="bg-zinc-100 dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800">
                     <DialogHeader>
                         <DialogTitle>
-                            {editingCategory ? 'Editar Categoria' : 'Nueva Categoria'}
+                            {editingCategory ? t('admin.categories.edit_dialog_title') : t('admin.categories.new_dialog_title')}
                         </DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-semibold">Nombre de la Categoria</label>
+                            <label className="text-sm font-semibold">{t('admin.categories.name_label')}</label>
                             <Input
-                                placeholder="Ej: Gaming, Musica, Arte..."
+                                placeholder={t('admin.categories.name_placeholder')}
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-semibold">Icono (URL o Clase)</label>
+                            <label className="text-sm font-semibold">{t('admin.categories.icon_label')}</label>
                             <Input
-                                placeholder="Opcional"
+                                placeholder={t('admin.categories.icon_placeholder')}
                                 value={formData.icon}
                                 onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
                             />
@@ -297,10 +299,10 @@ export default function AdminCategoriesPage() {
                     </div>
                     <DialogFooter>
                         <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="active:scale-[0.98] cursor-pointer">
-                            Cancelar
+                            {t('admin.categories.cancel')}
                         </Button>
                         <Button onClick={handleSubmit} disabled={isSubmitting || !formData.name.trim()} className="active:scale-[0.98] cursor-pointer">
-                            {editingCategory ? 'Actualizar' : 'Crear Categoria'}
+                            {editingCategory ? t('admin.categories.update') : t('admin.categories.create')}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
@@ -310,9 +312,9 @@ export default function AdminCategoriesPage() {
                 isOpen={isConfirmOpen}
                 onClose={() => setIsConfirmOpen(false)}
                 onConfirm={handleConfirmDelete}
-                title="Eliminar Categoria"
-                description="Estas seguro de que deseas eliminar esta categoria? Esta accion no se puede deshacer y podria afectar a las salas que la utilicen."
-                confirmText="Eliminar"
+                title={t('admin.categories.delete_title')}
+                description={t('admin.categories.delete_description')}
+                confirmText={t('admin.categories.delete_confirm')}
                 variant="destructive"
                 isLoading={isSubmitting}
             />

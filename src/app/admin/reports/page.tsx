@@ -3,6 +3,7 @@
 import { useAdminReports } from './hooks/useAdminReports';
 import { useAdminUsers } from '../users/hooks/useAdminUsers';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Badge } from '@/src/components/ui/badge';
 import { CheckCircle2, ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
@@ -42,6 +43,7 @@ function ReportSkeleton() {
 }
 
 export default function AdminReportsPage() {
+    const { t } = useTranslation();
     const {
         offenders,
         pagination,
@@ -66,7 +68,7 @@ export default function AdminReportsPage() {
         setProcessingId(userId);
         const success = await resolveReports(userId, status);
         if (success) {
-            toast.success(status === 'RESOLVED' ? 'Reportes resueltos.' : 'Reportes descartados.');
+            toast.success(status === 'RESOLVED' ? t('admin.toast.reports_resolved') : t('admin.toast.reports_dismissed'));
         }
         setProcessingId(null);
     };
@@ -81,7 +83,7 @@ export default function AdminReportsPage() {
         setProcessingId(userToBan.id);
         const success = await toggleBan(userToBan.id, true, reason);
         if (success) {
-            toast.success(`Usuario @${userToBan.username} baneado.`);
+            toast.success(t('admin.toast.user_banned', { username: userToBan.username }));
             await resolveReports(userToBan.id, 'RESOLVED');
         }
         setProcessingId(null);
@@ -97,7 +99,7 @@ export default function AdminReportsPage() {
             setSelectedUsername(user.username);
             setIsContextOpen(true);
         } else {
-            toast.info('No se encontro historial de chat para los reportes de este usuario.');
+            toast.info(t('admin.toast.no_chat_history'));
         }
         setProcessingId(null);
     };
@@ -111,13 +113,13 @@ export default function AdminReportsPage() {
                 className="flex items-center justify-between"
             >
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Reportes de Comunidad</h1>
-                    <p className="text-sm text-muted-foreground mt-1">Gestiona los reportes de los usuarios en la plataforma</p>
+                    <h1 className="text-2xl font-bold tracking-tight">{t('admin.reports.title')}</h1>
+                    <p className="text-sm text-muted-foreground mt-1">{t('admin.reports.subtitle')}</p>
                 </div>
                 {!loading && offenders.length > 0 && (
                     <Badge variant="destructive" className="text-sm px-3 py-1 gap-1.5">
                         <ShieldAlert className="w-3.5 h-3.5" />
-                        {offenders.length} pendientes
+                        {t('admin.reports.count', { count: offenders.length })}
                     </Badge>
                 )}
             </motion.div>
@@ -141,8 +143,8 @@ export default function AdminReportsPage() {
                     className="flex flex-col items-center justify-center rounded-xl border border-dashed p-12 text-center"
                 >
                     <CheckCircle2 className="w-12 h-12 text-green-500/60 mb-4" />
-                    <p className="text-lg font-medium mb-1">Todo despejado</p>
-                    <p className="text-sm text-muted-foreground">No hay reportes pendientes de resolucion.</p>
+                    <p className="text-lg font-medium mb-1">{t('admin.reports.empty_title')}</p>
+                    <p className="text-sm text-muted-foreground">{t('admin.reports.empty_desc')}</p>
                 </motion.div>
             ) : (
                 <div className="space-y-3">

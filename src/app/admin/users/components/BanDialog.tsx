@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogContent,
@@ -12,6 +13,7 @@ import {
 import { Button } from '@/src/components/ui/button';
 import { Textarea } from '@/src/components/ui/textarea';
 import { Loader2, AlertTriangle } from 'lucide-react';
+import { Trans } from 'react-i18next';
 
 interface BanDialogProps {
     isOpen: boolean;
@@ -21,6 +23,7 @@ interface BanDialogProps {
 }
 
 export function BanDialog({ isOpen, onClose, onConfirm, username }: BanDialogProps) {
+    const { t } = useTranslation();
     const [reason, setReason] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -41,18 +44,18 @@ export function BanDialog({ isOpen, onClose, onConfirm, username }: BanDialogPro
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2 text-destructive">
                         <AlertTriangle className="h-5 w-5" />
-                        Banear Usuario
+                        {t('admin.ban_dialog.title')}
                     </DialogTitle>
                     <DialogDescription>
-                        Estas seguro de que deseas suspender a <strong>{username}</strong>? El usuario perdera acceso inmediato a la plataforma.
+                        <Trans t={t} i18nKey="admin.ban_dialog.description" values={{ username }} components={{ strong: <strong /> }} />
                     </DialogDescription>
                 </DialogHeader>
                 <div className="py-4">
                     <label className="text-sm font-medium mb-2 block">
-                        Motivo del baneo (opcional)
+                        {t('admin.ban_dialog.reason_label')}
                     </label>
                     <Textarea
-                        placeholder="Ej: Comportamiento inadecuado, spam, etc."
+                        placeholder={t('admin.ban_dialog.reason_placeholder')}
                         value={reason}
                         onChange={(e) => setReason(e.target.value)}
                         disabled={isSubmitting}
@@ -62,7 +65,7 @@ export function BanDialog({ isOpen, onClose, onConfirm, username }: BanDialogPro
                 </div>
                 <DialogFooter>
                     <Button variant="ghost" onClick={onClose} disabled={isSubmitting} className="active:scale-[0.98] cursor-pointer">
-                        Cancelar
+                        {t('admin.ban_dialog.cancel')}
                     </Button>
                     <Button 
                         variant="destructive" 
@@ -73,10 +76,10 @@ export function BanDialog({ isOpen, onClose, onConfirm, username }: BanDialogPro
                         {isSubmitting ? (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Baneando...
+                                {t('admin.ban_dialog.banning')}
                             </>
                         ) : (
-                            'Confirmar Baneo'
+                            t('admin.ban_dialog.confirm')
                         )}
                     </Button>
                 </DialogFooter>

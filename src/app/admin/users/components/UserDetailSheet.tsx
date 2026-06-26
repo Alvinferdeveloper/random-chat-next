@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
     Sheet,
     SheetContent,
@@ -20,12 +21,6 @@ interface UserDetailSheetProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
 }
-
-const statusLabel: Record<string, string> = {
-    PENDING: 'Pendiente',
-    RESOLVED: 'Resuelto',
-    DISMISSED: 'Desestimado',
-};
 
 const fadeUp = {
     hidden: { opacity: 0, y: 8 },
@@ -66,6 +61,7 @@ function DetailSkeleton() {
 }
 
 export function UserDetailSheet({ userId, open, onOpenChange }: UserDetailSheetProps) {
+    const { t } = useTranslation();
     const { details, loading, fetchDetails, reset } = useAdminUserDetails();
 
     useEffect(() => {
@@ -79,12 +75,24 @@ export function UserDetailSheet({ userId, open, onOpenChange }: UserDetailSheetP
         onOpenChange(open);
     };
 
+    const statusLabel: Record<string, string> = {
+        PENDING: t('admin.user_detail.report_pending'),
+        RESOLVED: t('admin.user_detail.report_resolved'),
+        DISMISSED: t('admin.user_detail.report_dismissed'),
+    };
+
+    const roomStatusLabel: Record<string, string> = {
+        ACCEPTED: t('admin.user_detail.room_activa'),
+        IN_REVISION: t('admin.user_detail.room_revision'),
+        REJECTED: t('admin.user_detail.room_rejected'),
+    };
+
     return (
         <Sheet open={open} onOpenChange={handleOpenChange}>
             <SheetContent className="w-full sm:max-w-lg flex flex-col overflow-hidden bg-gradient-to-br from-zinc-100 to-zinc-100/60 dark:from-zinc-900/90 dark:to-zinc-900/60">
                 <SheetHeader className="shrink-0">
-                    <SheetTitle>Detalle del Usuario</SheetTitle>
-                    <p className="text-sm text-muted-foreground">Informaci&oacute;n completa del perfil y actividad</p>
+                    <SheetTitle>{t('admin.user_detail.title')}</SheetTitle>
+                    <p className="text-sm text-muted-foreground">{t('admin.user_detail.subtitle')}</p>
                 </SheetHeader>
 
                 {loading && !details ? (
@@ -99,7 +107,7 @@ export function UserDetailSheet({ userId, open, onOpenChange }: UserDetailSheetP
                             variants={stagger}
                             className="space-y-6 pb-6"
                         >
-                            {/* Perfil */}
+                            {/* Profile */}
                             <motion.div variants={fadeUp} className="flex items-start gap-4">
                                 <Avatar className="h-16 w-16 border shrink-0">
                                     <AvatarImage src={details.user.image || ''} />
@@ -109,13 +117,13 @@ export function UserDetailSheet({ userId, open, onOpenChange }: UserDetailSheetP
                                     <div className="flex items-center gap-2 flex-wrap">
                                         <h3 className="text-xl font-bold truncate">{details.user.username}</h3>
                                         {details.user.role === 'ADMIN' && (
-                                            <Badge className="text-[10px] uppercase font-bold bg-amber-500/10 text-amber-600 border-amber-500/20 shrink-0">Admin</Badge>
+                                            <Badge className="text-[10px] uppercase font-bold bg-amber-500/10 text-amber-600 border-amber-500/20 shrink-0">{t('admin.users.role.admin')}</Badge>
                                         )}
                                         {details.user.role === 'MODERATOR' && (
-                                            <Badge className="text-[10px] uppercase font-bold bg-blue-500/10 text-blue-600 border-blue-500/20 shrink-0">Mod</Badge>
+                                            <Badge className="text-[10px] uppercase font-bold bg-blue-500/10 text-blue-600 border-blue-500/20 shrink-0">{t('admin.users.role.mod')}</Badge>
                                         )}
                                         {details.user.isBanned && (
-                                            <Badge variant="destructive" className="text-[10px] uppercase font-bold shrink-0">Baneado</Badge>
+                                            <Badge variant="destructive" className="text-[10px] uppercase font-bold shrink-0">{t('admin.users.role.banned')}</Badge>
                                         )}
                                     </div>
                                     <p className="text-sm text-muted-foreground">{details.user.email}</p>
@@ -128,33 +136,33 @@ export function UserDetailSheet({ userId, open, onOpenChange }: UserDetailSheetP
                             {details.user.isBanned && details.user.banReason && (
                                 <motion.div variants={fadeUp} className="flex items-start gap-2 p-3 bg-destructive/10 text-destructive rounded-lg text-sm">
                                     <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
-                                    <span><strong>Raz&oacute;n del ban:</strong> {details.user.banReason}</span>
+                                    <span><strong>{t('admin.user_detail.ban_reason')}</strong> {details.user.banReason}</span>
                                 </motion.div>
                             )}
 
-                            {/* Bio y detalles */}
+                            {/* Bio and details */}
                             <motion.div variants={fadeUp} className="grid grid-cols-2 gap-3">
                                 {details.user.bio && (
                                     <div className="col-span-2">
-                                        <p className="text-xs text-muted-foreground mb-1">Bio</p>
+                                        <p className="text-xs text-muted-foreground mb-1">{t('admin.user_detail.bio')}</p>
                                         <p className="text-sm">{details.user.bio}</p>
                                     </div>
                                 )}
                                 {details.user.location && (
                                     <div>
-                                        <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1"><MapPin className="h-3 w-3" /> Ubicaci&oacute;n</p>
+                                        <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1"><MapPin className="h-3 w-3" /> {t('admin.user_detail.location')}</p>
                                         <p className="text-sm">{details.user.location}</p>
                                     </div>
                                 )}
                                 {details.user.ageRange && (
                                     <div>
-                                        <p className="text-xs text-muted-foreground mb-1">Rango de edad</p>
+                                        <p className="text-xs text-muted-foreground mb-1">{t('admin.user_detail.age_range')}</p>
                                         <p className="text-sm">{details.user.ageRange.replace('RANGE_', '').replace('_', '-')}</p>
                                     </div>
                                 )}
                                 {details.user.conversationType && (
                                     <div>
-                                        <p className="text-xs text-muted-foreground mb-1">Tipo de conversaci&oacute;n</p>
+                                        <p className="text-xs text-muted-foreground mb-1">{t('admin.user_detail.conversation_type')}</p>
                                         <p className="text-sm capitalize">{details.user.conversationType.toLowerCase().replace(/_/g, ' ')}</p>
                                     </div>
                                 )}
@@ -162,7 +170,7 @@ export function UserDetailSheet({ userId, open, onOpenChange }: UserDetailSheetP
 
                             {details.user.hobbies.length > 0 && (
                                 <motion.div variants={fadeUp}>
-                                    <p className="text-xs text-muted-foreground mb-2">Hobbies</p>
+                                    <p className="text-xs text-muted-foreground mb-2">{t('admin.user_detail.hobbies')}</p>
                                     <div className="flex flex-wrap gap-1.5">
                                         {details.user.hobbies.map(h => (
                                             <Badge key={h.id} variant="secondary" className="text-xs">
@@ -177,14 +185,14 @@ export function UserDetailSheet({ userId, open, onOpenChange }: UserDetailSheetP
                                 <Separator />
                             </motion.div>
 
-                            {/* Salas creadas */}
+                            {/* Rooms created */}
                             <motion.div variants={fadeUp}>
                                 <h4 className="font-semibold text-sm flex items-center gap-2 mb-3">
                                     <Hash className="h-4 w-4 text-muted-foreground" />
-                                    Salas Creadas ({details.ownedRooms.length})
+                                    {t('admin.user_detail.rooms_created', { count: details.ownedRooms.length })}
                                 </h4>
                                 {details.ownedRooms.length === 0 ? (
-                                    <p className="text-xs text-muted-foreground">No ha creado ninguna sala.</p>
+                                    <p className="text-xs text-muted-foreground">{t('admin.user_detail.no_rooms')}</p>
                                 ) : (
                                     <div className="space-y-2">
                                         {details.ownedRooms.map(room => (
@@ -194,7 +202,7 @@ export function UserDetailSheet({ userId, open, onOpenChange }: UserDetailSheetP
                                                     <p className="text-xs text-muted-foreground truncate">{room.short_description}</p>
                                                 </div>
                                                 <Badge variant={room.status === 'ACCEPTED' ? 'secondary' : room.status === 'IN_REVISION' ? 'outline' : 'destructive'} className="text-[10px] shrink-0 ml-2">
-                                                    {room.status === 'ACCEPTED' ? 'Activa' : room.status === 'IN_REVISION' ? 'Revisi&oacute;n' : 'Rechazada'}
+                                                    {roomStatusLabel[room.status] || room.status}
                                                 </Badge>
                                             </div>
                                         ))}
@@ -206,14 +214,14 @@ export function UserDetailSheet({ userId, open, onOpenChange }: UserDetailSheetP
                                 <Separator />
                             </motion.div>
 
-                            {/* Actividad reciente */}
+                            {/* Recent activity */}
                             <motion.div variants={fadeUp}>
                                 <h4 className="font-semibold text-sm flex items-center gap-2 mb-3">
                                     <Activity className="h-4 w-4 text-muted-foreground" />
-                                    Actividad Reciente
+                                    {t('admin.user_detail.recent_activity')}
                                 </h4>
                                 {details.recentActivity.length === 0 ? (
-                                    <p className="text-xs text-muted-foreground">Sin actividad registrada.</p>
+                                    <p className="text-xs text-muted-foreground">{t('admin.user_detail.no_activity')}</p>
                                 ) : (
                                     <div className="space-y-2">
                                         {details.recentActivity.map((act, i) => (
@@ -221,7 +229,7 @@ export function UserDetailSheet({ userId, open, onOpenChange }: UserDetailSheetP
                                                 <div className="min-w-0">
                                                     <p className="text-sm font-medium truncate">{act.room?.name || act.roomId}</p>
                                                     <p className="text-xs text-muted-foreground">
-                                                        {act.interactionCount} interacciones &middot; &Uacute;ltima: {new Date(act.lastInteraction).toLocaleDateString()}
+                                                        {t('admin.user_detail.activity_interactions', { count: act.interactionCount })} {new Date(act.lastInteraction).toLocaleDateString()}
                                                     </p>
                                                 </div>
                                             </div>
@@ -234,30 +242,30 @@ export function UserDetailSheet({ userId, open, onOpenChange }: UserDetailSheetP
                                 <Separator />
                             </motion.div>
 
-                            {/* Reportes recibidos */}
+                            {/* Reports received */}
                             <motion.div variants={fadeUp}>
                                 <h4 className="font-semibold text-sm flex items-center gap-2 mb-3">
                                     <AlertTriangle className="h-4 w-4 text-destructive" />
-                                    Reportes Recibidos ({details.reportsReceived.length})
+                                    {t('admin.user_detail.reports_received', { count: details.reportsReceived.length })}
                                 </h4>
                                 {details.reportsReceived.length === 0 ? (
-                                    <p className="text-xs text-muted-foreground">Sin reportes recibidos.</p>
+                                    <p className="text-xs text-muted-foreground">{t('admin.user_detail.no_reports_received')}</p>
                                 ) : (
                                     <div className="space-y-2">
                                         {details.reportsReceived.slice(0, 10).map(r => (
                                             <div key={r.id} className="p-2.5 border rounded-lg active:scale-[0.99] transition-transform duration-150">
                                                 <div className="flex items-center justify-between">
-                                                    <p className="text-xs font-medium">Por: @{r.reporter?.username || 'Desconocido'}</p>
+                                                    <p className="text-xs font-medium">{t('admin.user_detail.by')} @{r.reporter?.username || t('admin.user_detail.unknown')}</p>
                                                     <Badge variant={r.status === 'PENDING' ? 'destructive' : 'secondary'} className="text-[10px]">
                                                         {statusLabel[r.status] || r.status}
                                                     </Badge>
                                                 </div>
-                                                <p className="text-xs text-muted-foreground mt-1">{r.reason}{r.room ? ` &middot; Sala: ${r.room.name}` : ''}</p>
+                                                <p className="text-xs text-muted-foreground mt-1">{r.reason}{r.room ? ` · ${t('admin.reports.context.room')} ${r.room.name}` : ''}</p>
                                                 <p className="text-xs text-muted-foreground">{new Date(r.createdAt).toLocaleDateString()}</p>
                                             </div>
                                         ))}
                                         {details.reportsReceived.length > 10 && (
-                                            <p className="text-xs text-muted-foreground text-center">... y {details.reportsReceived.length - 10} m&aacute;s</p>
+                                            <p className="text-xs text-muted-foreground text-center">{t('admin.user_detail.and_more', { count: details.reportsReceived.length - 10 })}</p>
                                         )}
                                     </div>
                                 )}
@@ -267,25 +275,25 @@ export function UserDetailSheet({ userId, open, onOpenChange }: UserDetailSheetP
                                 <Separator />
                             </motion.div>
 
-                            {/* Reportes emitidos */}
+                            {/* Reports made */}
                             <motion.div variants={fadeUp}>
                                 <h4 className="font-semibold text-sm flex items-center gap-2 mb-3">
                                     <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                                    Reportes Emitidos ({details.reportsMade.length})
+                                    {t('admin.user_detail.reports_made', { count: details.reportsMade.length })}
                                 </h4>
                                 {details.reportsMade.length === 0 ? (
-                                    <p className="text-xs text-muted-foreground">No ha reportado a nadie.</p>
+                                    <p className="text-xs text-muted-foreground">{t('admin.user_detail.no_reports_made')}</p>
                                 ) : (
                                     <div className="space-y-2">
                                         {details.reportsMade.slice(0, 10).map(r => (
                                             <div key={r.id} className="p-2.5 border rounded-lg active:scale-[0.99] transition-transform duration-150">
-                                                <p className="text-xs font-medium">Contra: @{r.reportedUser?.username || 'Desconocido'}</p>
-                                                <p className="text-xs text-muted-foreground mt-1">{r.reason}{r.room ? ` &middot; Sala: ${r.room.name}` : ''}</p>
+                                                <p className="text-xs font-medium">{t('admin.user_detail.against')} @{r.reportedUser?.username || t('admin.user_detail.unknown')}</p>
+                                                <p className="text-xs text-muted-foreground mt-1">{r.reason}{r.room ? ` · ${t('admin.reports.context.room')} ${r.room.name}` : ''}</p>
                                                 <p className="text-xs text-muted-foreground">{new Date(r.createdAt).toLocaleDateString()}</p>
                                             </div>
                                         ))}
                                         {details.reportsMade.length > 10 && (
-                                            <p className="text-xs text-muted-foreground text-center">... y {details.reportsMade.length - 10} m&aacute;s</p>
+                                            <p className="text-xs text-muted-foreground text-center">{t('admin.user_detail.and_more', { count: details.reportsMade.length - 10 })}</p>
                                         )}
                                     </div>
                                 )}

@@ -5,6 +5,7 @@ import { useAdminTopActiveRooms } from './hooks/useAdminTopActiveRooms';
 import { useAdminBroadcast } from './hooks/useAdminBroadcast';
 import { useAdminSettings } from './hooks/useAdminSettings';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import FeaturedStats from './components/dashboard/FeaturedStats';
 import SecondaryStats from './components/dashboard/SecondaryStats';
@@ -14,6 +15,7 @@ import SystemSettings from './components/dashboard/SystemSettings';
 import BroadcastDialog from './components/dashboard/BroadcastDialog';
 
 export default function AdminDashboard() {
+    const { t } = useTranslation();
     const { stats, loading } = useAdminLiveStats();
     const { rooms: activeRooms, loading: loadingActiveRooms } = useAdminTopActiveRooms();
     const { sendBroadcast, isSubmitting, error: broadcastError } = useAdminBroadcast();
@@ -24,9 +26,9 @@ export default function AdminDashboard() {
         const newValue = currentValue === 'true' ? 'false' : 'true';
         const success = await updateSetting(key, newValue);
         if (success) {
-            toast.success('Configuraci&oacute;n actualizada correctamente.');
+            toast.success(t('admin.toast.settings_updated'));
         } else {
-            toast.error('Error al actualizar la configuraci&oacute;n.');
+            toast.error(t('admin.toast.settings_error'));
         }
     };
 
@@ -34,15 +36,15 @@ export default function AdminDashboard() {
         const success = await sendBroadcast(message);
         if (success) {
             setIsBroadcastOpen(false);
-            toast.success('Anuncio enviado correctamente a todas las salas.');
+            toast.success(t('admin.toast.broadcast_sent'));
         }
     };
 
     return (
         <div className="space-y-8">
             <div>
-                <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
-                <p className="text-sm text-muted-foreground mt-1">Vista general de ChatHub en tiempo real</p>
+                <h1 className="text-2xl font-bold tracking-tight">{t('admin.dashboard.title')}</h1>
+                <p className="text-sm text-muted-foreground mt-1">{t('admin.dashboard.subtitle')}</p>
             </div>
 
             <FeaturedStats stats={stats} loading={loading} />

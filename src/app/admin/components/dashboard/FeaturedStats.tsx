@@ -3,6 +3,7 @@
 import { Card } from '@/src/components/ui/card';
 import { Activity, Hash, Wifi } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface LiveStats {
     onlineUsers: number;
@@ -16,6 +17,8 @@ interface LiveStats {
 const nf = (n?: number) => (n ?? 0).toLocaleString('es-ES');
 
 export default function FeaturedStats({ stats, loading }: { stats: LiveStats | null; loading: boolean }) {
+    const { t } = useTranslation();
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -38,13 +41,13 @@ export default function FeaturedStats({ stats, loading }: { stats: LiveStats | n
                                         <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" />
                                         <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
                                     </span>
-                                    <span className="text-xs font-medium text-muted-foreground tracking-wide uppercase">En Vivo</span>
+                                    <span className="text-xs font-medium text-muted-foreground tracking-wide uppercase">{t('admin.dashboard.live')}</span>
                                 </div>
                                 <div className="flex items-baseline gap-2">
                                     <span className="text-3xl lg:text-4xl font-bold tracking-tight">{nf(stats?.onlineUsers)}</span>
                                     <Wifi className="h-5 w-5 text-green-500" />
                                 </div>
-                                <p className="text-sm text-muted-foreground">usuarios conectados ahora mismo</p>
+                                <p className="text-sm text-muted-foreground">{t('admin.dashboard.users_online')}</p>
                             </div>
                         )}
                     </div>
@@ -59,13 +62,13 @@ export default function FeaturedStats({ stats, loading }: { stats: LiveStats | n
                             <div className="space-y-2">
                                 <div className="flex items-center gap-2">
                                     <Hash className="h-3.5 w-3.5 text-muted-foreground" />
-                                    <span className="text-xs font-medium text-muted-foreground tracking-wide uppercase">Actividad</span>
+                                    <span className="text-xs font-medium text-muted-foreground tracking-wide uppercase">{t('admin.dashboard.activity')}</span>
                                 </div>
                                 <div className="flex items-baseline gap-2">
                                     <span className="text-3xl lg:text-4xl font-bold tracking-tight">{nf(stats?.activeRooms)}</span>
                                     <Activity className="h-5 w-5 text-primary" />
                                 </div>
-                                <p className="text-sm text-muted-foreground">salas activas en la plataforma</p>
+                                <p className="text-sm text-muted-foreground">{t('admin.dashboard.active_rooms_label')}</p>
                             </div>
                         )}
                     </div>

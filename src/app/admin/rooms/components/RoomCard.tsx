@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import Image from 'next/image';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/src/components/ui/card';
 import { Button } from '@/src/components/ui/button';
@@ -16,6 +17,8 @@ interface RoomCardProps {
 }
 
 export default function RoomCard({ room, index, onAction, isSubmitting }: RoomCardProps) {
+    const { t } = useTranslation();
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -59,23 +62,23 @@ export default function RoomCard({ room, index, onAction, isSubmitting }: RoomCa
                         <CardTitle className="text-lg truncate">{room.name}</CardTitle>
                         {room.verified && (
                             <Badge variant="secondary" className="shrink-0 text-[10px] px-1.5 py-0 h-5">
-                                Verificada
+                                {t('admin.rooms.verified')}
                             </Badge>
                         )}
                     </div>
                     <CardDescription>
-                        Creado por: <span className="font-medium text-foreground/70">@{room.owner?.username || 'Desconocido'}</span>
+                        {t('admin.rooms.created_by')} <span className="font-medium text-foreground/70">@{room.owner?.username || t('admin.rooms.no_description')}</span>
                     </CardDescription>
                 </CardHeader>
 
                 <CardContent className="flex-1 space-y-3 text-sm">
                     <div>
-                        <p className="text-xs text-muted-foreground/70 font-medium mb-1">Descripción Corta</p>
-                        <p className="text-muted-foreground">{room.short_description || 'Sin descripción'}</p>
+                        <p className="text-xs text-muted-foreground/70 font-medium mb-1">{t('admin.rooms.short_desc')}</p>
+                        <p className="text-muted-foreground">{room.short_description || t('admin.rooms.no_description')}</p>
                     </div>
                     <div>
-                        <p className="text-xs text-muted-foreground/70 font-medium mb-1">Descripción Completa</p>
-                        <p className="text-muted-foreground/80 line-clamp-3 leading-relaxed">{room.full_description || 'Sin descripción'}</p>
+                        <p className="text-xs text-muted-foreground/70 font-medium mb-1">{t('admin.rooms.full_desc')}</p>
+                        <p className="text-muted-foreground/80 line-clamp-3 leading-relaxed">{room.full_description || t('admin.rooms.no_description')}</p>
                     </div>
                 </CardContent>
 
@@ -87,7 +90,7 @@ export default function RoomCard({ room, index, onAction, isSubmitting }: RoomCa
                         disabled={isSubmitting}
                     >
                         <X className="h-4 w-4" />
-                        Rechazar
+                        {t('admin.rooms.reject')}
                     </Button>
                     <Button
                         className="flex-1 gap-2 active:scale-[0.98] cursor-pointer"
@@ -95,7 +98,7 @@ export default function RoomCard({ room, index, onAction, isSubmitting }: RoomCa
                         disabled={isSubmitting}
                     >
                         <Check className="h-4 w-4" />
-                        Aceptar
+                        {t('admin.rooms.accept')}
                     </Button>
                 </CardFooter>
             </Card>

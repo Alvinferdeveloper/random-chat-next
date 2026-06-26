@@ -12,6 +12,7 @@ import {
 } from '@/src/components/ui/dialog';
 import { Textarea } from '@/src/components/ui/textarea';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function BroadcastDialog({
     open,
@@ -26,6 +27,7 @@ export default function BroadcastDialog({
     isSubmitting: boolean;
     error: string | null;
 }) {
+    const { t } = useTranslation();
     const [message, setMessage] = useState('');
 
     const handleSend = () => {
@@ -40,10 +42,10 @@ export default function BroadcastDialog({
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                         <Megaphone className="h-4 w-4 text-primary" />
-                        Enviar Anuncio del Sistema
+                        {t('admin.broadcast.title')}
                     </DialogTitle>
                     <DialogDescription>
-                        Este mensaje aparecer&aacute; instant&aacute;neamente en todas las salas de chat activas.
+                        {t('admin.broadcast.description')}
                     </DialogDescription>
                 </DialogHeader>
                 <div className="py-2 space-y-3">
@@ -53,7 +55,7 @@ export default function BroadcastDialog({
                         </div>
                     )}
                     <Textarea
-                        placeholder="Escribe el mensaje del sistema aqu&iacute;..."
+                        placeholder={t('admin.broadcast.placeholder')}
                         className="min-h-[120px] resize-none rounded-xl"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
@@ -62,11 +64,11 @@ export default function BroadcastDialog({
                 </div>
                 <DialogFooter>
                     <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={isSubmitting} className="rounded-xl active:scale-[0.95] transition-transform duration-100">
-                        Cancelar
+                        {t('admin.broadcast.cancel')}
                     </Button>
                     <Button onClick={handleSend} disabled={isSubmitting || !message.trim()} className="gap-2 rounded-xl active:scale-[0.95] transition-transform duration-100">
                         {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                        Enviar Anuncio
+                        {t('admin.broadcast.send')}
                     </Button>
                 </DialogFooter>
             </DialogContent>
