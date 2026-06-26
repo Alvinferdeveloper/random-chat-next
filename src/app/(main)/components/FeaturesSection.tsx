@@ -5,7 +5,7 @@ import ParallaxImage from "@/src/app/(main)/components/ParallaxImage";
 
 const featureList = [
     {
-        illustration: "/illustrations/themes.png", // Si usaste los SVG de código, recuerda cambiar .jpg por .svg
+        illustration: "/illustrations/themes.jpg", // Si usaste los SVG de código, recuerda cambiar .jpg por .svg
         title: "Salas Temáticas Infinitas",
         description: "Sumérgete en conversaciones sobre temas que te apasionan. Desde tecnología punta hasta arte clásico, nuestro algoritmo te sugiere la sala perfecta para ti.",
         tag: "Explorar"
@@ -17,7 +17,7 @@ const featureList = [
         tag: "Comunidad"
     },
     {
-        illustration: "/illustrations/security.png",
+        illustration: "/illustrations/security.jpg",
         title: "Entorno 100% Seguro",
         description: "Disfruta de una moderación proactiva y un espacio respetuoso diseñado para que puedas expresarte libremente con total privacidad.",
         tag: "Privacidad"
