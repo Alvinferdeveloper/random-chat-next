@@ -5,6 +5,7 @@ import "./globals.css";
 import { SocketEventProvider } from "@/src/app/components/providers/SocketEventProvider";
 import { SessionProvider } from "@/src/app/components/providers/SessionProvider";
 import { MaintenanceGuard } from "@/src/app/components/providers/MaintenanceGuard";
+import { I18nProvider } from "@/src/app/components/providers/I18nProvider";
 import { Toaster } from "@/src/components/ui/sonner";
 
 const montserrat = Montserrat({
@@ -86,6 +87,7 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={montserrat.className}>
+        <I18nProvider>
         <SessionProvider>
           <SocketEventProvider>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
@@ -98,6 +100,7 @@ export default function RootLayout({
             </ThemeProvider>
           </SocketEventProvider>
         </SessionProvider>
+        </I18nProvider>
       </body>
     </html>
   );

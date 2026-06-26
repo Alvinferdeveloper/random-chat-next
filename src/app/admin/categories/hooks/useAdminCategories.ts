@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/src/app/lib/i18n';
 
 interface Category {
     id: string;
@@ -15,18 +16,8 @@ interface Pagination {
     hasNextPage: boolean;
 }
 
-const ERROR_TRANSLATIONS: Record<string, string> = {
-    'An unexpected error occurred, please try again later': 'Ocurrio un error inesperado, intenta de nuevo mas tarde',
-    'Resource not found': 'Recurso no encontrado',
-    'Category not found': 'Categoria no encontrada',
-};
-
-function translateError(message: string | undefined, fallback: string): string {
-    if (!message) return fallback;
-    return ERROR_TRANSLATIONS[message] || message;
-}
-
 export function useAdminCategories() {
+    const { t } = useTranslation();
     const [categories, setCategories] = useState<Category[]>([]);
     const [pagination, setPagination] = useState<Pagination | null>(null);
     const [loading, setLoading] = useState(true);
@@ -42,7 +33,7 @@ export function useAdminCategories() {
             });
             const data = await response.json();
 
-            if (!response.ok) throw new Error(translateError(data.message, 'Error al cargar categorias'));
+            if (!response.ok) throw new Error(t(data.message || 'Error al cargar categorias'));
 
             setCategories(data.data);
             setPagination(data.pagination);
@@ -52,7 +43,7 @@ export function useAdminCategories() {
         } finally {
             setLoading(false);
         }
-    }, [page, search]);
+    }, [page, search, t]);
 
     useEffect(() => {
         fetchCategories();
@@ -68,7 +59,7 @@ export function useAdminCategories() {
             });
 
             const data = await response.json();
-            if (!response.ok) return { success: false, message: translateError(data.message, 'Error al crear categoria') };
+            if (!response.ok) return { success: false, message: t(data.message || 'Error al crear categoria') };
 
             fetchCategories();
             return { success: true };
@@ -87,7 +78,7 @@ export function useAdminCategories() {
             });
 
             const data = await response.json();
-            if (!response.ok) return { success: false, message: translateError(data.message, 'Error al actualizar categoria') };
+            if (!response.ok) return { success: false, message: t(data.message || 'Error al actualizar categoria') };
 
             fetchCategories();
             return { success: true };
@@ -104,7 +95,7 @@ export function useAdminCategories() {
             });
 
             const data = await response.json();
-            if (!response.ok) return { success: false, message: translateError(data.message, 'Error al eliminar categoria') };
+            if (!response.ok) return { success: false, message: t(data.message || 'Error al eliminar categoria') };
 
             fetchCategories();
             return { success: true };

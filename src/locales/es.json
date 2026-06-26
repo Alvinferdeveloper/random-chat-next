@@ -1,0 +1,51 @@
+{
+    "UNAUTHORIZED": "No autenticado",
+    "INVALID_SESSION": "Sesión inválida",
+    "FORBIDDEN": "Acceso denegado",
+    "SESSION_EXPIRED": "Sesión expirada",
+
+    "USER_NOT_FOUND": "Usuario no encontrado",
+    "USERNAME_TAKEN": "El nombre de usuario ya está en uso",
+    "EMAIL_TAKEN": "El correo ya está en uso",
+    "INVALID_HOBBIES": "Uno o más hobbies seleccionados no son válidos",
+
+    "ROOM_NOT_FOUND": "Sala no encontrada",
+    "ROOM_NAME_TAKEN": "El nombre de la sala ya está en uso",
+    "ROOM_NAME_TOO_SHORT": "El nombre debe tener al menos 3 caracteres",
+    "ROOM_NAME_TOO_LONG": "El nombre debe tener menos de 45 caracteres",
+    "NOT_ROOM_OWNER": "No eres el dueño de esta sala",
+    "ROOM_ALREADY_REJECTED": "La sala ya ha sido rechazada",
+    "ROOM_ALREADY_ACCEPTED": "La sala ya ha sido aceptada",
+    "ROOM_ALREADY_EXISTS": "Ya existe una sala con un nombre muy similar",
+    "DAILY_LIMIT_REACHED": "Límite diario alcanzado",
+    "INVALID_CATEGORIES": "Una o más categorías seleccionadas no son válidas",
+
+    "INVALID_INPUT": "Datos inválidos proporcionados",
+    "FIELD_NOT_ALLOWED": "Campo no permitido para actualización",
+    "INVALID_URL": "URL inválida",
+    "INVALID_EMAIL": "Formato de correo inválido",
+    "INVALID_UUID": "Formato de ID inválido",
+    "MISSING_FIELDS": "Campos requeridos faltantes",
+
+    "INVALID_PAGE": "La página debe ser un número positivo",
+    "INVALID_LIMIT": "El límite debe estar entre 1 y 100",
+
+    "STORAGE_UNAVAILABLE": "Servicio de almacenamiento no disponible temporalmente",
+    "UPLOAD_FAILED": "Error al subir el archivo",
+    "IMAGE_UPLOAD_FAILED": "Error al subir la imagen",
+    "AUDIO_UPLOAD_FAILED": "Error al subir el audio",
+
+    "DB_ERROR": "Ocurrió un error inesperado, intenta de nuevo más tarde",
+    "DB_UNAVAILABLE": "Base de datos no disponible temporalmente",
+
+    "INTERNAL_ERROR": "Ocurrió un error inesperado, intenta de nuevo más tarde",
+    "NOT_FOUND": "Recurso no encontrado",
+    "ALREADY_EXISTS": "El recurso ya existe",
+
+    "CATEGORY_NAME_TAKEN": "Ya existe una categoría con ese nombre",
+
+    "MAINTENANCE_MODE": "El sitio está en mantenimiento. Intenta de nuevo más tarde",
+    "REGISTRATION_DISABLED": "El registro de usuarios está deshabilitado por el administrador",
+    "CHAT_DISABLED": "El chat está deshabilitado temporalmente",
+    "ROOM_CREATION_DISABLED": "La creación de salas está deshabilitada temporalmente"
+}
