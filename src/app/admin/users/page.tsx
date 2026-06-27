@@ -1,6 +1,6 @@
 'use client';
 
-import { useAdminUsers } from './hooks/useAdminUsers';
+import { useAdminUsers, RoleFilter, BanFilter } from './hooks/useAdminUsers';
 import { useAuth } from '@/src/app/hooks/useAuth';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -51,6 +51,10 @@ export default function AdminUsersPage() {
         error,
         search,
         setSearch,
+        roleFilter,
+        setRoleFilter,
+        banFilter,
+        setBanFilter,
         page,
         setPage,
         toggleBan,
@@ -120,7 +124,7 @@ export default function AdminUsersPage() {
                 transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1], delay: 0.05 }}
             >
                 <Card className={`overflow-hidden border-border/50 rounded-lg ${cardGradient}`}>
-                    <CardHeader className="pb-3">
+                    <CardHeader className="pb-3 space-y-3">
                         <div className="relative w-full max-w-sm">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
@@ -129,6 +133,38 @@ export default function AdminUsersPage() {
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
+                        </div>
+                        <div className="flex flex-wrap items-center gap-3">
+                            <div className="flex gap-1 rounded-lg bg-muted/50 p-0.5 border border-border/50">
+                                {(['ALL', 'ADMIN', 'MODERATOR', 'USER'] as RoleFilter[]).map((r) => (
+                                    <button
+                                        key={r}
+                                        onClick={() => setRoleFilter(r)}
+                                        className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all duration-200 cursor-pointer ${
+                                            roleFilter === r
+                                                ? 'bg-background text-foreground shadow-sm'
+                                                : 'text-muted-foreground hover:text-foreground'
+                                        }`}
+                                    >
+                                        {t(`admin.users.filter_role_${r.toLowerCase()}`)}
+                                    </button>
+                                ))}
+                            </div>
+                            <div className="flex gap-1 rounded-lg bg-muted/50 p-0.5 border border-border/50">
+                                {(['ALL', 'BANNED', 'UNBANNED'] as BanFilter[]).map((b) => (
+                                    <button
+                                        key={b}
+                                        onClick={() => setBanFilter(b)}
+                                        className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all duration-200 cursor-pointer ${
+                                            banFilter === b
+                                                ? 'bg-background text-foreground shadow-sm'
+                                                : 'text-muted-foreground hover:text-foreground'
+                                        }`}
+                                    >
+                                        {t(`admin.users.filter_ban_${b.toLowerCase()}`)}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </CardHeader>
                     <CardContent className="pb-4">

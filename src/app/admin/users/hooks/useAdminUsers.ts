@@ -21,6 +21,9 @@ interface Pagination {
     totalPages: number;
 }
 
+export type RoleFilter = 'ALL' | 'ADMIN' | 'MODERATOR' | 'USER';
+export type BanFilter = 'ALL' | 'BANNED' | 'UNBANNED';
+
 export function useAdminUsers() {
     const [users, setUsers] = useState<User[]>([]);
     const [pagination, setPagination] = useState<Pagination | null>(null);
@@ -28,12 +31,20 @@ export function useAdminUsers() {
     const [error, setError] = useState<string | null>(null);
     const [search, setSearch] = useState('');
     const debouncedSearch = useDebounce(search, 300);
+    const [roleFilter, setRoleFilter] = useState<RoleFilter>('ALL');
+    const [banFilter, setBanFilter] = useState<BanFilter>('ALL');
     const [page, setPage] = useState(1);
 
     const fetchUsers = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/users?page=${page}&search=${debouncedSearch}`, {
+            const params = new URLSearchParams({ page: String(page) });
+            if (debouncedSearch) params.set('search', debouncedSearch);
+            if (roleFilter !== 'ALL') params.set('role', roleFilter);
+            if (banFilter === 'BANNED') params.set('banned', 'true');
+            else if (banFilter === 'UNBANNED') params.set('banned', 'false');
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/users?${params}`, {
                 credentials: 'include'
             });
             const data = await response.json();
@@ -48,7 +59,7 @@ export function useAdminUsers() {
         } finally {
             setLoading(false);
         }
-    }, [page, debouncedSearch]);
+    }, [page, debouncedSearch, roleFilter, banFilter]);
 
     useEffect(() => {
         fetchUsers();
@@ -68,7 +79,6 @@ export function useAdminUsers() {
                 throw new Error(data.message || 'Error updating ban status');
             }
 
-            // Update local state
             setUsers(prev => prev.map(u => u.id === userId ? { ...u, isBanned } : u));
             return true;
         } catch (err) {
@@ -91,7 +101,6 @@ export function useAdminUsers() {
                 throw new Error(data.message || 'Error updating role');
             }
 
-            // Update local state
             setUsers(prev => prev.map(u => u.id === userId ? { ...u, role } : u));
             return true;
         } catch (err) {
@@ -107,6 +116,10 @@ export function useAdminUsers() {
         error,
         search,
         setSearch,
+        roleFilter,
+        setRoleFilter,
+        banFilter,
+        setBanFilter,
         page,
         setPage,
         toggleBan,
