@@ -214,6 +214,8 @@
     "admin.reports.title": "Community Reports",
     "admin.reports.subtitle": "Manage user reports on the platform",
     "admin.reports.count": "{{count}} pending",
+    "admin.reports.search_placeholder": "Search by username or email...",
+    "admin.reports.error_title": "Error loading reports",
     "admin.reports.empty_title": "All clear",
     "admin.reports.empty_desc": "No pending reports to resolve.",
     "admin.reports.reason.spam": "Spam",

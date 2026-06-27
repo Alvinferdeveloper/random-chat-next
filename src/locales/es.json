@@ -214,6 +214,8 @@
     "admin.reports.title": "Reportes de Comunidad",
     "admin.reports.subtitle": "Gestiona los reportes de los usuarios en la plataforma",
     "admin.reports.count": "{{count}} pendientes",
+    "admin.reports.search_placeholder": "Buscar por usuario o email...",
+    "admin.reports.error_title": "Error al cargar reportes",
     "admin.reports.empty_title": "Todo despejado",
     "admin.reports.empty_desc": "No hay reportes pendientes de resolución.",
     "admin.reports.reason.spam": "Spam",

@@ -38,12 +38,15 @@ export function useAdminReports() {
     const [pagination, setPagination] = useState<Pagination | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [search, setSearch] = useState('');
     const [page, setPage] = useState(1);
 
     const fetchReports = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/reports/admin/top-offenders?page=${page}`, {
+            const params = new URLSearchParams({ page: String(page) });
+            if (search) params.set('search', search);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/reports/admin/top-offenders?${params}`, {
                 credentials: 'include'
             });
             const data = await response.json();
@@ -58,7 +61,7 @@ export function useAdminReports() {
         } finally {
             setLoading(false);
         }
-    }, [page]);
+    }, [page, search]);
 
     useEffect(() => {
         fetchReports();
@@ -108,6 +111,8 @@ export function useAdminReports() {
         error,
         page,
         setPage,
+        search,
+        setSearch,
         resolveReports,
         fetchUserReports,
         refresh: fetchReports
