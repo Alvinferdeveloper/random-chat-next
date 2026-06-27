@@ -49,6 +49,7 @@ export default function AdminReportsPage() {
         offenders,
         pagination,
         loading,
+        error,
         search,
         setSearch,
         page,
@@ -127,6 +128,16 @@ export default function AdminReportsPage() {
                 )}
             </motion.div>
 
+            <div className="relative w-full max-w-sm">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                    placeholder={t('admin.reports.search_placeholder')}
+                    className="pl-10"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
+            </div>
+
             {loading ? (
                 <motion.div
                     initial={{ opacity: 0 }}
@@ -149,56 +160,42 @@ export default function AdminReportsPage() {
                     <p className="text-lg font-medium mb-1">{t('admin.reports.error_title')}</p>
                     <p className="text-sm text-muted-foreground">{error}</p>
                 </motion.div>
+            ) : offenders.length === 0 ? (
+                <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                    className="flex flex-col items-center justify-center rounded-xl border border-dashed p-12 text-center"
+                >
+                    <CheckCircle2 className="w-12 h-12 text-green-500/60 mb-4" />
+                    <p className="text-lg font-medium mb-1">{t('admin.reports.empty_title')}</p>
+                    <p className="text-sm text-muted-foreground">{t('admin.reports.empty_desc')}</p>
+                </motion.div>
             ) : (
-                <>
-                    <div className="relative w-full max-w-sm">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            placeholder={t('admin.reports.search_placeholder')}
-                            className="pl-10"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                <div className="space-y-3">
+                    {offenders.map((offender, index) => (
+                        <OffenderCard
+                            key={offender.user.id}
+                            offender={offender}
+                            index={index}
+                            processingId={processingId}
+                            onResolve={handleResolve}
+                            onBanClick={handleBanClick}
+                            onViewContext={handleViewContext}
                         />
-                    </div>
+                    ))}
 
-                    {offenders.length === 0 ? (
-                        <motion.div
-                            initial={{ opacity: 0, y: 12 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-                            className="flex flex-col items-center justify-center rounded-xl border border-dashed p-12 text-center"
-                        >
-                            <CheckCircle2 className="w-12 h-12 text-green-500/60 mb-4" />
-                            <p className="text-lg font-medium mb-1">{t('admin.reports.empty_title')}</p>
-                            <p className="text-sm text-muted-foreground">{t('admin.reports.empty_desc')}</p>
-                        </motion.div>
-                    ) : (
-                        <div className="space-y-3">
-                            {offenders.map((offender, index) => (
-                                <OffenderCard
-                                    key={offender.user.id}
-                                    offender={offender}
-                                    index={index}
-                                    processingId={processingId}
-                                    onResolve={handleResolve}
-                                    onBanClick={handleBanClick}
-                                    onViewContext={handleViewContext}
-                                />
-                            ))}
-
-                            {pagination && pagination.totalPages > 1 && (
-                                <div className="flex justify-center pt-2">
-                                    <Pagination
-                                        currentPage={page}
-                                        totalPages={pagination.totalPages}
-                                        onPageChange={setPage}
-                                        isLoading={loading}
-                                    />
-                                </div>
-                            )}
+                    {pagination && pagination.totalPages > 1 && (
+                        <div className="flex justify-center pt-2">
+                            <Pagination
+                                currentPage={page}
+                                totalPages={pagination.totalPages}
+                                onPageChange={setPage}
+                                isLoading={loading}
+                            />
                         </div>
                     )}
-                </>
+                </div>
             )}
 
             <BanDialog
