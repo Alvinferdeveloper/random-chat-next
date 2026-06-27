@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useDebounce } from '@/src/app/hooks/useDebounce';
 import { Message } from '@/src/types/chat';
 
 export interface Offender {
@@ -39,13 +40,14 @@ export function useAdminReports() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [search, setSearch] = useState('');
+    const debouncedSearch = useDebounce(search, 300);
     const [page, setPage] = useState(1);
 
     const fetchReports = useCallback(async () => {
         try {
             setLoading(true);
             const params = new URLSearchParams({ page: String(page) });
-            if (search) params.set('search', search);
+            if (debouncedSearch) params.set('search', debouncedSearch);
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/reports/admin/top-offenders?${params}`, {
                 credentials: 'include'
             });
@@ -61,7 +63,7 @@ export function useAdminReports() {
         } finally {
             setLoading(false);
         }
-    }, [page, search]);
+    }, [page, debouncedSearch]);
 
     useEffect(() => {
         fetchReports();

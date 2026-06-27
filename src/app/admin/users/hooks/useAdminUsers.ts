@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useDebounce } from '@/src/app/hooks/useDebounce';
 
 export interface User {
     id: string;
@@ -26,12 +27,13 @@ export function useAdminUsers() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [search, setSearch] = useState('');
+    const debouncedSearch = useDebounce(search, 300);
     const [page, setPage] = useState(1);
 
     const fetchUsers = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/users?page=${page}&search=${search}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/users?page=${page}&search=${debouncedSearch}`, {
                 credentials: 'include'
             });
             const data = await response.json();
@@ -46,7 +48,7 @@ export function useAdminUsers() {
         } finally {
             setLoading(false);
         }
-    }, [page, search]);
+    }, [page, debouncedSearch]);
 
     useEffect(() => {
         fetchUsers();

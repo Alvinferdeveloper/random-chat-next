@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/src/app/lib/i18n';
+import { useDebounce } from '@/src/app/hooks/useDebounce';
 
 interface Category {
     id: string;
@@ -24,11 +25,12 @@ export function useAdminCategories() {
     const [error, setError] = useState<string | null>(null);
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState('');
+    const debouncedSearch = useDebounce(search, 300);
 
     const fetchCategories = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/categories?page=${page}&limit=20&search=${search}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/categories?page=${page}&limit=20&search=${debouncedSearch}`, {
                 credentials: 'include'
             });
             const data = await response.json();
@@ -43,7 +45,7 @@ export function useAdminCategories() {
         } finally {
             setLoading(false);
         }
-    }, [page, search, t]);
+    }, [page, debouncedSearch, t]);
 
     useEffect(() => {
         fetchCategories();
