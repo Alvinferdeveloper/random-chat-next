@@ -10,37 +10,55 @@ export interface AdminRoom extends Room {
     };
 }
 
-export function useAdminRooms(status: 'IN_REVISION' | 'ACCEPTED' | 'REJECTED' = 'IN_REVISION') {
+export type RoomStatus = 'IN_REVISION' | 'ACCEPTED' | 'REJECTED';
+export type RoomStatusFilter = RoomStatus | 'ALL';
+
+export function useAdminRooms(statusFilter: RoomStatusFilter = 'IN_REVISION', page: number = 1) {
     const [rooms, setRooms] = useState<AdminRoom[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [total, setTotal] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
     const fetchRooms = useCallback(async () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/admin/rooms?status=${status}&limit=50`, { credentials: 'include' });
+            const params = new URLSearchParams();
+            params.set('status', statusFilter);
+            params.set('page', String(page));
+            params.set('limit', '12');
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/admin/rooms?${params}`, { credentials: 'include' });
             const json = await response.json();
             setRooms(json.data);
+            if (json.meta) {
+                setTotal(json.meta.total);
+                setTotalPages(json.meta.totalPages);
+            }
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Error al cargar las salas.');
+            setError(err.response?.data?.message || 'Error loading rooms.');
         } finally {
             setLoading(false);
         }
-    }, [status]);
+    }, [statusFilter, page]);
 
-    const updateStatus = async (roomId: string, newStatus: 'ACCEPTED' | 'REJECTED') => {
+    const updateStatus = async (roomId: string, newStatus: RoomStatus) => {
         try {
             await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/admin/rooms/${roomId}/status`, {
                 method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus }),
                 credentials: 'include',
             });
-            // Remove the room from the list if status changed (assuming we are filtering by status)
-            setRooms((prev) => prev.filter((r) => r.id !== roomId));
+
+            if (statusFilter === 'ALL') {
+                setRooms((prev) =>
+                    prev.map((r) => (r.id === roomId ? { ...r, status: newStatus } : r))
+                );
+            } else {
+                setRooms((prev) => prev.filter((r) => r.id !== roomId));
+            }
             return true;
         } catch (err: any) {
             console.error(err);
@@ -52,5 +70,5 @@ export function useAdminRooms(status: 'IN_REVISION' | 'ACCEPTED' | 'REJECTED' = 
         fetchRooms();
     }, [fetchRooms]);
 
-    return { rooms, loading, error, updateStatus, refetch: fetchRooms };
+    return { rooms, loading, error, total, totalPages, updateStatus, refetch: fetchRooms };
 }

@@ -6,18 +6,48 @@ import Image from 'next/image';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/src/components/ui/card';
 import { Button } from '@/src/components/ui/button';
 import { Badge } from '@/src/components/ui/badge';
-import { Check, X, Hash } from 'lucide-react';
-import { AdminRoom } from '../hooks/useAdminRooms';
+import { Check, X, RotateCcw, Hash } from 'lucide-react';
+import { AdminRoom, RoomStatus } from '../hooks/useAdminRooms';
 
 interface RoomCardProps {
     room: AdminRoom;
     index: number;
-    onAction: (roomId: string, status: 'ACCEPTED' | 'REJECTED') => void;
+    onAction: (roomId: string, status: RoomStatus) => void;
     isSubmitting: boolean;
+}
+
+const statusConfig: Record<RoomStatus, { labelKey: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
+    IN_REVISION: { labelKey: 'rooms.status.in_revision', variant: 'secondary' },
+    ACCEPTED: { labelKey: 'rooms.status.accepted', variant: 'default' },
+    REJECTED: { labelKey: 'rooms.status.rejected', variant: 'destructive' },
+};
+
+type ActionDef = { status: RoomStatus; labelKey: string; variant: 'default' | 'destructive'; icon: typeof Check };
+
+function getActions(roomStatus: RoomStatus): [ActionDef, ActionDef] {
+    switch (roomStatus) {
+        case 'IN_REVISION':
+            return [
+                { status: 'REJECTED', labelKey: 'admin.rooms.reject', variant: 'destructive', icon: X },
+                { status: 'ACCEPTED', labelKey: 'admin.rooms.accept', variant: 'default', icon: Check },
+            ];
+        case 'ACCEPTED':
+            return [
+                { status: 'REJECTED', labelKey: 'admin.rooms.reject', variant: 'destructive', icon: X },
+                { status: 'IN_REVISION', labelKey: 'admin.rooms.revision', variant: 'default', icon: RotateCcw },
+            ];
+        case 'REJECTED':
+            return [
+                { status: 'IN_REVISION', labelKey: 'admin.rooms.revision', variant: 'default', icon: RotateCcw },
+                { status: 'ACCEPTED', labelKey: 'admin.rooms.accept', variant: 'default', icon: Check },
+            ];
+    }
 }
 
 export default function RoomCard({ room, index, onAction, isSubmitting }: RoomCardProps) {
     const { t } = useTranslation();
+    const cfg = statusConfig[room.status];
+    const actions = getActions(room.status);
 
     return (
         <motion.div
@@ -40,6 +70,11 @@ export default function RoomCard({ room, index, onAction, isSubmitting }: RoomCa
                             <Hash className="h-10 w-10 text-muted-foreground/30" />
                         </div>
                     )}
+                    <div className="absolute top-3 right-3">
+                        <Badge variant={cfg.variant} className="text-[10px] uppercase tracking-wider shadow-sm">
+                            {t(cfg.labelKey)}
+                        </Badge>
+                    </div>
                     <div className="absolute -bottom-6 left-6 h-14 w-14 overflow-hidden rounded-full border-4 border-background bg-background shadow-sm">
                         {room.server_icon ? (
                             <Image
@@ -83,23 +118,25 @@ export default function RoomCard({ room, index, onAction, isSubmitting }: RoomCa
                 </CardContent>
 
                 <CardFooter className="flex justify-between gap-3 pt-4 border-t border-border">
-                    <Button
-                        variant="outline"
-                        className="flex-1 gap-2 active:scale-[0.98] cursor-pointer text-red-600 hover:text-red-600 hover:bg-red-500/10 border-red-500/20 hover:border-red-500/30"
-                        onClick={() => onAction(room.id, 'REJECTED')}
-                        disabled={isSubmitting}
-                    >
-                        <X className="h-4 w-4" />
-                        {t('admin.rooms.reject')}
-                    </Button>
-                    <Button
-                        className="flex-1 gap-2 active:scale-[0.98] cursor-pointer"
-                        onClick={() => onAction(room.id, 'ACCEPTED')}
-                        disabled={isSubmitting}
-                    >
-                        <Check className="h-4 w-4" />
-                        {t('admin.rooms.accept')}
-                    </Button>
+                    {actions.map((action) => {
+                        const Icon = action.icon;
+                        return (
+                            <Button
+                                key={action.status}
+                                variant={action.variant === 'destructive' ? 'outline' : 'default'}
+                                className={
+                                    action.variant === 'destructive'
+                                        ? 'flex-1 gap-2 active:scale-[0.98] cursor-pointer text-red-600 hover:text-red-600 hover:bg-red-500/10 border-red-500/20 hover:border-red-500/30'
+                                        : 'flex-1 gap-2 active:scale-[0.98] cursor-pointer'
+                                }
+                                onClick={() => onAction(room.id, action.status)}
+                                disabled={isSubmitting}
+                            >
+                                <Icon className="h-4 w-4" />
+                                {t(action.labelKey)}
+                            </Button>
+                        );
+                    })}
                 </CardFooter>
             </Card>
         </motion.div>

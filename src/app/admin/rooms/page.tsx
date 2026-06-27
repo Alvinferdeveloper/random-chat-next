@@ -1,14 +1,54 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { useAdminRooms } from './hooks/useAdminRooms';
+import { useAdminRooms, RoomStatus, RoomStatusFilter } from './hooks/useAdminRooms';
 import { Badge } from '@/src/components/ui/badge';
 import { ConfirmDialog } from '@/src/app/components/shared/ConfirmDialog';
+import { Pagination } from '@/src/app/components/shared/Pagination';
 import { toast } from 'sonner';
-import { MessageSquare, AlertCircle } from 'lucide-react';
+import { AlertCircle, Layers } from 'lucide-react';
 import RoomCard from './components/RoomCard';
+
+const TABS: { key: RoomStatusFilter; labelKey: string }[] = [
+    { key: 'ALL', labelKey: 'admin.rooms.tabs.all' },
+    { key: 'IN_REVISION', labelKey: 'admin.rooms.tabs.pending' },
+    { key: 'ACCEPTED', labelKey: 'admin.rooms.tabs.accepted' },
+    { key: 'REJECTED', labelKey: 'admin.rooms.tabs.rejected' },
+];
+
+const EMPTY_KEYS: Record<RoomStatusFilter, { title: string; desc: string }> = {
+    ALL: { title: 'admin.rooms.empty_title_all', desc: 'admin.rooms.empty_desc_all' },
+    IN_REVISION: { title: 'admin.rooms.empty_title', desc: 'admin.rooms.empty_desc' },
+    ACCEPTED: { title: 'admin.rooms.empty_title_accepted', desc: 'admin.rooms.empty_desc_accepted' },
+    REJECTED: { title: 'admin.rooms.empty_title_rejected', desc: 'admin.rooms.empty_desc_rejected' },
+};
+
+const COUNT_KEYS: Record<RoomStatusFilter, string> = {
+    ALL: 'admin.rooms.count_all',
+    IN_REVISION: 'admin.rooms.count',
+    ACCEPTED: 'admin.rooms.count_accepted',
+    REJECTED: 'admin.rooms.count_rejected',
+};
+
+const CONFIRM_KEYS: Record<RoomStatus, { title: string; desc: string; text: string }> = {
+    ACCEPTED: {
+        title: 'admin.rooms.confirm_accept_title',
+        desc: 'admin.rooms.confirm_accept_desc',
+        text: 'admin.rooms.confirm_accept_text',
+    },
+    REJECTED: {
+        title: 'admin.rooms.confirm_reject_title',
+        desc: 'admin.rooms.confirm_reject_desc',
+        text: 'admin.rooms.confirm_reject_text',
+    },
+    IN_REVISION: {
+        title: 'admin.rooms.confirm_revision_title',
+        desc: 'admin.rooms.confirm_revision_desc',
+        text: 'admin.rooms.confirm_revision_text',
+    },
+};
 
 function RoomSkeleton() {
     return (
@@ -37,29 +77,43 @@ function RoomSkeleton() {
     );
 }
 
-export default function PendingRoomsPage() {
+export default function ManageRoomsPage() {
     const { t } = useTranslation();
-    const { rooms, loading, error, updateStatus, refetch } = useAdminRooms('IN_REVISION');
+    const [activeTab, setActiveTab] = useState<RoomStatusFilter>('IN_REVISION');
+    const [page, setPage] = useState(1);
+    const { rooms, loading, error, total, totalPages, updateStatus, refetch } = useAdminRooms(activeTab, page);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-    const [actionData, setActionData] = useState<{ id: string, status: 'ACCEPTED' | 'REJECTED' } | null>(null);
+    const [actionData, setActionData] = useState<{ id: string; status: RoomStatus } | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleActionClick = (roomId: string, status: 'ACCEPTED' | 'REJECTED') => {
+    const handleActionClick = useCallback((roomId: string, status: RoomStatus) => {
         setActionData({ id: roomId, status });
         setIsConfirmOpen(true);
-    };
+    }, []);
 
     const handleConfirmAction = async () => {
         if (!actionData) return;
         setIsSubmitting(true);
         const success = await updateStatus(actionData.id, actionData.status);
         if (success) {
-            toast.success(actionData.status === 'ACCEPTED' ? t('admin.toast.room_accepted') : t('admin.toast.room_rejected'));
+            const keyMap: Record<string, string> = {
+                ACCEPTED: 'admin.toast.room_accepted',
+                REJECTED: 'admin.toast.room_rejected',
+                IN_REVISION: 'admin.toast.room_revision',
+            };
+            toast.success(t(keyMap[actionData.status]));
         }
         setIsSubmitting(false);
         setIsConfirmOpen(false);
         setActionData(null);
     };
+
+    const handleTabChange = (tab: RoomStatusFilter) => {
+        setActiveTab(tab);
+        setPage(1);
+    };
+
+    const confirmVariant = actionData?.status === 'REJECTED' ? 'destructive' : 'primary';
 
     return (
         <div className="space-y-6">
@@ -67,18 +121,34 @@ export default function PendingRoomsPage() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-                className="flex items-center justify-between"
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
             >
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">{t('admin.rooms.title')}</h1>
                     <p className="text-sm text-muted-foreground mt-1">{t('admin.rooms.subtitle')}</p>
                 </div>
-                {!loading && !error && (
-                    <Badge variant="outline" className="text-sm px-3 py-1">
-                        {t('admin.rooms.count', { count: rooms.length })}
+                {!loading && !error && total > 0 && (
+                    <Badge variant="outline" className="text-sm px-3 py-1 w-fit">
+                        {t(COUNT_KEYS[activeTab], { count: total })}
                     </Badge>
                 )}
             </motion.div>
+
+            <div className="flex gap-1 rounded-xl bg-muted/50 p-1 border border-border/50 w-fit">
+                {TABS.map((tab) => (
+                    <button
+                        key={tab.key}
+                        onClick={() => handleTabChange(tab.key)}
+                        className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 cursor-pointer ${
+                            activeTab === tab.key
+                                ? 'bg-background text-foreground shadow-sm'
+                                : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                    >
+                        {t(tab.labelKey)}
+                    </button>
+                ))}
+            </div>
 
             {loading ? (
                 <motion.div
@@ -87,7 +157,7 @@ export default function PendingRoomsPage() {
                     transition={{ duration: 0.2 }}
                     className="grid gap-6 md:grid-cols-2 xl:grid-cols-3"
                 >
-                    {[1, 2, 3].map((i) => (
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
                         <RoomSkeleton key={i} />
                     ))}
                 </motion.div>
@@ -115,32 +185,41 @@ export default function PendingRoomsPage() {
                     transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
                     className="flex flex-col items-center justify-center rounded-xl border border-dashed p-12 text-center"
                 >
-                    <MessageSquare className="h-10 w-10 text-muted-foreground/30 mb-4" />
-                    <p className="text-lg font-medium mb-1">{t('admin.rooms.empty_title')}</p>
-                    <p className="text-sm text-muted-foreground">{t('admin.rooms.empty_desc')}</p>
+                    <Layers className="h-10 w-10 text-muted-foreground/30 mb-4" />
+                    <p className="text-lg font-medium mb-1">{t(EMPTY_KEYS[activeTab].title)}</p>
+                    <p className="text-sm text-muted-foreground">{t(EMPTY_KEYS[activeTab].desc)}</p>
                 </motion.div>
             ) : (
-                <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                    {rooms.map((room, index) => (
-                        <RoomCard
-                            key={room.id}
-                            room={room}
-                            index={index}
-                            onAction={handleActionClick}
-                            isSubmitting={isSubmitting}
-                        />
-                    ))}
-                </div>
+                <>
+                    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                        {rooms.map((room, index) => (
+                            <RoomCard
+                                key={room.id}
+                                room={room}
+                                index={index}
+                                onAction={handleActionClick}
+                                isSubmitting={isSubmitting}
+                            />
+                        ))}
+                    </div>
+
+                    <Pagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        onPageChange={setPage}
+                        isLoading={loading}
+                    />
+                </>
             )}
 
             <ConfirmDialog
                 isOpen={isConfirmOpen}
                 onClose={() => setIsConfirmOpen(false)}
                 onConfirm={handleConfirmAction}
-                title={actionData?.status === 'ACCEPTED' ? t('admin.rooms.confirm_accept_title') : t('admin.rooms.confirm_reject_title')}
-                description={actionData?.status === 'ACCEPTED' ? t('admin.rooms.confirm_accept_desc') : t('admin.rooms.confirm_reject_desc')}
-                confirmText={actionData?.status === 'ACCEPTED' ? t('admin.rooms.confirm_accept_text') : t('admin.rooms.confirm_reject_text')}
-                variant={actionData?.status === 'ACCEPTED' ? 'primary' : 'destructive'}
+                title={actionData ? t(CONFIRM_KEYS[actionData.status].title) : ''}
+                description={actionData ? t(CONFIRM_KEYS[actionData.status].desc) : ''}
+                confirmText={actionData ? t(CONFIRM_KEYS[actionData.status].text) : ''}
+                variant={confirmVariant}
                 isLoading={isSubmitting}
             />
         </div>
