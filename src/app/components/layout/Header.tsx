@@ -80,8 +80,8 @@ export default function Header() {
 
         {/* Left side: Brand */}
         <div className="flex items-center gap-4 lg:gap-8 flex-1 md:flex-initial">
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <Image src="/images/logo_chat.png" width={40} height={40} alt="Logo" className="rounded-xl" />
+          <Link href="/" className="flex items-center shrink-0">
+            <Image src="/images/logo_chat.png" width={80} height={80} alt="Logo" className="rounded-xl" />
             <span className="text-xl font-bold tracking-tighter hidden lg:block">ChatHub</span>
           </Link>
         </div>

@@ -59,6 +59,7 @@ export default function RoomCard({ room, index, onAction, isSubmitting }: RoomCa
                 <div className="relative h-44 w-full bg-muted">
                     {room.server_banner ? (
                         <Image
+                            unoptimized
                             src={room.server_banner}
                             alt={room.name}
                             fill
