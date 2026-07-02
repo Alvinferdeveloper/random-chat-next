@@ -3,15 +3,16 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormContext, Controller } from 'react-hook-form';
+import { motion, AnimatePresence } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card';
 import { Input } from '@/src/components/ui/input';
 import { Label } from '@/src/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select';
 import { Textarea } from '@/src/components/ui/textarea';
 import { Button } from '@/src/components/ui/button';
 import { ProfileFormValues } from '@/src/lib/validators/user';
+import { Check } from 'lucide-react';
 
 interface Hobby {
     id: string;
@@ -31,6 +32,35 @@ const getLucideIcon = (name: string): LucideIcon => {
     return icons[name] ?? LucideIcons.HelpCircle;
 };
 
+const sectionVariants = {
+    hidden: { opacity: 0, y: 24 },
+    visible: (i: number) => ({
+        opacity: 1,
+        y: 0,
+        transition: {
+            delay: i * 0.12,
+            duration: 0.5,
+            ease: [0.23, 1, 0.32, 1],
+        },
+    }) as const,
+};
+
+const sections = [
+    { key: 'basic', label: 'auth.profile_form.basic_info_title' },
+    { key: 'hobbies', label: 'auth.profile_form.hobbies_title' },
+    { key: 'preferences', label: 'auth.profile_form.chat_preferences_title' },
+];
+
+function HobbySkeleton() {
+    return (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="h-20 rounded-lg bg-muted/50 animate-pulse" />
+            ))}
+        </div>
+    );
+}
+
 export function ProfileForm({ hobbies, hobbiesLoading, onSubmit, error }: ProfileFormProps) {
     const { t } = useTranslation();
     const { control, handleSubmit, formState: { errors, isSubmitting, isValid }, watch, setValue } = useFormContext<ProfileFormValues>();
@@ -39,20 +69,41 @@ export function ProfileForm({ hobbies, hobbiesLoading, onSubmit, error }: Profil
     const bio = watch('bio') || '';
 
     const toggleHobby = (hobbyId: string) => {
-        const currentHobbies = selectedHobbies || [];
-        const newHobbies = currentHobbies.includes(hobbyId)
-            ? currentHobbies.filter((id) => id !== hobbyId)
-            : [...currentHobbies, hobbyId];
-        setValue('selectedHobbies', newHobbies, { shouldValidate: true });
+        const current = selectedHobbies || [];
+        const next = current.includes(hobbyId)
+            ? current.filter((id) => id !== hobbyId)
+            : [...current, hobbyId];
+        setValue('selectedHobbies', next, { shouldValidate: true });
     };
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <Card className="border-border/50">
-                <CardHeader className="pb-4">
-                    <CardTitle className="text-lg">{t('auth.profile_form.basic_info_title')}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
+            <div className="flex items-center justify-center gap-2 pb-1">
+                {sections.map((s, i) => (
+                    <React.Fragment key={s.key}>
+                        <div className="flex items-center gap-2">
+                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
+                                {i + 1}
+                            </div>
+                            <span className="hidden sm:inline text-xs text-muted-foreground">{t(s.label)}</span>
+                        </div>
+                        {i < sections.length - 1 && (
+                            <div className="h-px w-6 bg-border/60" />
+                        )}
+                    </React.Fragment>
+                ))}
+            </div>
+
+            <motion.section
+                custom={0}
+                variants={sectionVariants}
+                initial="hidden"
+                animate="visible"
+            >
+                <h3 className="text-sm font-semibold text-foreground mb-4">
+                    {t('auth.profile_form.basic_info_title')}
+                </h3>
+                <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="username">{t('auth.profile_form.username_label')}</Label>
@@ -64,11 +115,19 @@ export function ProfileForm({ hobbies, hobbiesLoading, onSubmit, error }: Profil
                                         {...field}
                                         id="username"
                                         placeholder={t('auth.profile_form.username_placeholder')}
-                                        className="bg-input border-border focus:ring-ring"
+                                        className="h-11"
                                     />
                                 )}
                             />
-                            {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username.message}</p>}
+                            {errors.username && (
+                                <motion.p
+                                    initial={{ opacity: 0, y: -4 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="text-xs font-medium text-destructive"
+                                >
+                                    {errors.username.message}
+                                </motion.p>
+                            )}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="age">{t('auth.profile_form.age_label')}</Label>
@@ -77,7 +136,7 @@ export function ProfileForm({ hobbies, hobbiesLoading, onSubmit, error }: Profil
                                 control={control}
                                 render={({ field }) => (
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <SelectTrigger className="bg-input border-border">
+                                        <SelectTrigger className="h-11">
                                             <SelectValue placeholder={t('auth.profile_form.age_placeholder')} />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -101,53 +160,101 @@ export function ProfileForm({ hobbies, hobbiesLoading, onSubmit, error }: Profil
                                     {...field}
                                     id="location"
                                     placeholder={t('auth.profile_form.location_placeholder')}
-                                    className="bg-input border-border focus:ring-ring"
+                                    className="h-11"
                                 />
                             )}
                         />
                     </div>
-                </CardContent>
-            </Card>
+                </div>
+            </motion.section>
 
-            <Card className="border-border/50">
-                <CardHeader className="pb-4">
-                    <CardTitle className="text-lg">{t('auth.profile_form.hobbies_title')}</CardTitle>
-                    <CardDescription>{t('auth.profile_form.hobbies_description')}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    {hobbiesLoading ? (
-                        <p className="text-center text-muted-foreground">{t('auth.profile_form.hobbies_loading')}</p>
-                    ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                            {hobbies.map((hobby) => {
-                                const Icon = getLucideIcon(hobby.icon);
-                                const isSelected = selectedHobbies?.includes(hobby.id);
-                                return (
-                                    <button
-                                        key={hobby.id}
-                                        type="button"
-                                        onClick={() => toggleHobby(hobby.id)}
-                                        className={`p-3 rounded-lg border-2 transition-all duration-200 flex flex-col items-center gap-2 hover:scale-105 ${isSelected
+            <div className="border-t border-border/40" />
+
+            <motion.section
+                custom={1}
+                variants={sectionVariants}
+                initial="hidden"
+                animate="visible"
+            >
+                <div className="mb-1">
+                    <h3 className="text-sm font-semibold text-foreground">
+                        {t('auth.profile_form.hobbies_title')}
+                    </h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                        {t('auth.profile_form.hobbies_description')}
+                    </p>
+                </div>
+                {hobbiesLoading ? (
+                    <HobbySkeleton />
+                ) : (
+                    <motion.div
+                        className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4"
+                        initial="hidden"
+                        animate="visible"
+                        variants={{
+                            hidden: {},
+                            visible: { transition: { staggerChildren: 0.03 } },
+                        }}
+                    >
+                        {hobbies.map((hobby) => {
+                            const Icon = getLucideIcon(hobby.icon);
+                            const isSelected = selectedHobbies?.includes(hobby.id);
+                            return (
+                                <motion.button
+                                    key={hobby.id}
+                                    type="button"
+                                    onClick={() => toggleHobby(hobby.id)}
+                                    whileTap={{ scale: 0.95 }}
+                                    animate={isSelected ? { scale: [1, 1.06, 1] } : { scale: 1 }}
+                                    transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                                    className={`
+                                        relative p-3 rounded-lg border-2 transition-colors duration-200
+                                        flex flex-col items-center gap-2 cursor-pointer
+                                        ${isSelected
                                             ? 'border-primary bg-primary/10 text-primary'
-                                            : 'border-border bg-card hover:border-primary/50'
-                                            }`}
-                                    >
-                                        <Icon className="w-6 h-6" />
-                                        <span className="text-sm font-medium text-center">{hobby.name}</span>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    )}
-                    {errors.selectedHobbies && <p className="text-red-500 text-xs mt-2">{errors.selectedHobbies.message}</p>}
-                </CardContent>
-            </Card>
+                                            : 'border-border hover:border-primary/50 hover:bg-accent/50 text-muted-foreground hover:text-foreground'
+                                        }
+                                    `}
+                                >
+                                    {isSelected && (
+                                        <motion.span
+                                            initial={{ scale: 0 }}
+                                            animate={{ scale: 1 }}
+                                            className="absolute top-2 right-2 flex h-4 w-4 items-center justify-center rounded-full bg-primary"
+                                        >
+                                            <Check className="h-2.5 w-2.5 text-primary-foreground" />
+                                        </motion.span>
+                                    )}
+                                    <Icon className="w-6 h-6" />
+                                    <span className="text-sm font-medium text-center leading-tight">{hobby.name}</span>
+                                </motion.button>
+                            );
+                        })}
+                    </motion.div>
+                )}
+                {errors.selectedHobbies && (
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="text-xs font-medium text-destructive mt-2"
+                    >
+                        {errors.selectedHobbies.message}
+                    </motion.p>
+                )}
+            </motion.section>
 
-            <Card className="border-border/50">
-                <CardHeader className="pb-4">
-                    <CardTitle className="text-lg">{t('auth.profile_form.chat_preferences_title')}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
+            <div className="border-t border-border/40" />
+
+            <motion.section
+                custom={2}
+                variants={sectionVariants}
+                initial="hidden"
+                animate="visible"
+            >
+                <h3 className="text-sm font-semibold text-foreground mb-4">
+                    {t('auth.profile_form.chat_preferences_title')}
+                </h3>
+                <div className="space-y-4">
                     <div className="space-y-2">
                         <Label htmlFor="conversationType">{t('auth.profile_form.conversation_type_label')}</Label>
                         <Controller
@@ -155,7 +262,7 @@ export function ProfileForm({ hobbies, hobbiesLoading, onSubmit, error }: Profil
                             control={control}
                             render={({ field }) => (
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <SelectTrigger className="bg-input border-border">
+                                    <SelectTrigger className="h-11">
                                         <SelectValue placeholder={t('auth.profile_form.conversation_type_placeholder')} />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -167,7 +274,15 @@ export function ProfileForm({ hobbies, hobbiesLoading, onSubmit, error }: Profil
                                 </Select>
                             )}
                         />
-                        {errors.conversationType && <p className="text-red-500 text-xs mt-1">{errors.conversationType.message}</p>}
+                        {errors.conversationType && (
+                            <motion.p
+                                initial={{ opacity: 0, y: -4 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="text-xs font-medium text-destructive"
+                            >
+                                {errors.conversationType.message}
+                            </motion.p>
+                        )}
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="bio">{t('auth.profile_form.bio_label')}</Label>
@@ -179,22 +294,43 @@ export function ProfileForm({ hobbies, hobbiesLoading, onSubmit, error }: Profil
                                     {...field}
                                     id="bio"
                                     placeholder={t('auth.profile_form.bio_placeholder')}
-                                    className="bg-input border-border focus:ring-ring min-h-[80px]"
+                                    className="min-h-[80px]"
                                     maxLength={200}
                                 />
                             )}
                         />
-                        <p className="text-xs text-muted-foreground text-right">{t('auth.profile_form.bio_char_count', { count: bio.length })}</p>
-                        {errors.bio && <p className="text-red-500 text-xs mt-1">{errors.bio.message}</p>}
+                        <div className="flex justify-between items-center">
+                            {errors.bio && (
+                                <p className="text-xs font-medium text-destructive">{errors.bio.message}</p>
+                            )}
+                            <p className="text-xs text-muted-foreground ml-auto transition-colors duration-200">
+                                {t('auth.profile_form.bio_char_count', { count: bio.length })}
+                            </p>
+                        </div>
                     </div>
-                </CardContent>
-            </Card>
-            {error && <p className="text-red-500 text-center">{t(error)}</p>}
-            <div className="flex justify-end gap-3 pt-4">
+                </div>
+            </motion.section>
+
+            <AnimatePresence>
+                {error && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        className="rounded-lg bg-destructive/10 border border-destructive/20 px-4 py-3"
+                    >
+                        <p className="text-sm font-medium text-destructive text-center">
+                            {t(error)}
+                        </p>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <div className="flex justify-end gap-3 border-t border-border/40 pt-5">
                 <Button
                     type="submit"
                     disabled={!isValid || isSubmitting}
-                    className="bg-primary hover:bg-accent transition-colors disabled:opacity-50"
+                    className="min-w-[140px] h-11 cursor-pointer"
                 >
                     {isSubmitting ? t('auth.profile_form.submit_loading') : t('auth.profile_form.submit')}
                 </Button>

@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FormProvider } from 'react-hook-form';
 import {
@@ -36,26 +35,32 @@ export function AdditionalInfoModal({ isOpen, onProfileComplete, onClose }: Addi
 
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader className="text-center space-y-2">
-                    <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                        {t('auth.additional_info.title')}
-                    </DialogTitle>
-                    <DialogDescription className="text-muted-foreground">
-                        {t('auth.additional_info.description')}
-                    </DialogDescription>
-                </DialogHeader>
+            <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto gap-0 p-0">
+                <div className="relative overflow-hidden rounded-t-lg bg-gradient-to-b from-primary/[0.08] to-transparent px-6 pt-8 pb-6">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+                    <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-primary/[0.06] rounded-full blur-2xl" />
 
-                <FormProvider {...form}>
-                    <ProfileForm
-                        hobbies={hobbies}
-                        hobbiesLoading={hobbiesLoading}
-                        onSubmit={handleFormSubmit}
-                        error={error}
-                    />
-                </FormProvider>
+                    <DialogHeader className="text-center space-y-1.5 relative">
+                        <DialogTitle className="text-xl font-bold tracking-tight">
+                            {t('auth.additional_info.title')}
+                        </DialogTitle>
+                        <DialogDescription className="text-muted-foreground max-w-sm mx-auto">
+                            {t('auth.additional_info.description')}
+                        </DialogDescription>
+                    </DialogHeader>
+                </div>
+
+                <div className="px-6 py-5">
+                    <FormProvider {...form}>
+                        <ProfileForm
+                            hobbies={hobbies}
+                            hobbiesLoading={hobbiesLoading}
+                            onSubmit={handleFormSubmit}
+                            error={error}
+                        />
+                    </FormProvider>
+                </div>
             </DialogContent>
         </Dialog>
     );
 }
-
