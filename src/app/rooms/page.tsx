@@ -7,7 +7,7 @@ import useRoom from '@/src/app/rooms/hooks/useRoom';
 import { AdditionalInfoModal } from '@/src/app/components/auth/AdditionalInfoModal';
 import { useAuth } from '@/src/app/hooks/useAuth';
 import { useInfiniteScroll } from '@/src/app/hooks/useInfiniteScroll';
-import { Variants } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { RoomCard } from '@/src/app/rooms/components/RoomCard';
 import { RoomSkeleton } from '@/src/app/rooms/components/RoomSkeleton';
 
@@ -90,51 +90,78 @@ export default function Rooms() {
             />
 
             {/* HERO SECTION */}
-            <div className="relative w-full h-[340px] md:h-[400px] flex flex-col items-center justify-center p-6 overflow-hidden">
-                {/* Background Image Placeholder */}
-                <div className="absolute inset-0 z-0 px-6 rounded-lg">
+            <section className="relative w-full min-h-[360px] md:min-h-[440px] flex flex-col items-center justify-center px-6 py-12 overflow-hidden">
+                <div className="absolute inset-0 z-0">
                     <img
                         src="/illustrations/room_background.png"
-                        alt="Background Banner"
-                        className="w-full h-full object-cover opacity-95 dark:opacity-85 rounded-lg"
+                        alt=""
+                        className="w-full h-full object-cover"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-background/30 dark:from-background/95 dark:via-background/60 dark:to-background/40" />
                 </div>
 
-                <div className="relative z-10 w-full max-w-4xl flex flex-col items-center text-center mt-4">
-                    <div className="mb-4 inline-flex items-center justify-center rounded-full bg-white/10 px-3 py-1 text-sm font-medium text-white backdrop-blur-md border border-white/20 shadow-sm">
-                        <span className="mr-2 flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
-                        {t('rooms.hero.badge')}
-                    </div>
-                    <h1 className="text-white text-4xl md:text-[48px] font-black tracking-tight mb-4 drop-shadow-xl leading-tight">
-                        <span dangerouslySetInnerHTML={{ __html: t('rooms.hero.title') }} />
-                    </h1>
-                    <p className="text-white/90 text-base md:text-[20px] font-medium mb-8 max-w-2xl drop-shadow-md">
-                        {t('rooms.hero.subtitle')}
-                    </p>
-
-                    {/* Custom Search Bar */}
-                    <div className="w-full max-w-[700px] bg-white rounded-lg flex items-center p-1.5 shadow-xl transition-shadow focus-within:ring-4 focus-within:ring-black/10">
-                        <input
-                            type="text"
-                            className="w-full h-10 px-3 bg-transparent outline-none text-black placeholder:text-[#5c5e66] text-base font-medium"
-                            placeholder={t('rooms.search.placeholder')}
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                        {searchQuery && (
-                            <button
-                                onClick={() => setSearchQuery('')}
-                                className="p-2 text-gray-500 hover:text-black cursor-pointer"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        )}
-                        <div className="pr-3 pl-1">
-                            <Search className="w-6 h-6 text-black" />
+                <div className="relative z-10 w-full max-w-4xl flex flex-col items-center text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] as const }}
+                    >
+                        <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-md shadow-sm">
+                            <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
+                            {t('rooms.hero.badge')}
                         </div>
-                    </div>
+                    </motion.div>
+
+                    <motion.h1
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] as const, delay: 0.1 }}
+                        className="relative text-white text-5xl md:text-[64px] font-black tracking-tight leading-[1.05] drop-shadow-xl after:block after:content-[''] after:w-14 after:h-1 after:bg-emerald-400/60 after:mx-auto after:mt-5 after:rounded-full"
+                    >
+                        {t('rooms.hero.title').split('ChatHub').map((part, i, arr) => (
+                            <span key={i}>
+                                {part}
+                                {i < arr.length - 1 && <span className="text-primary">ChatHub</span>}
+                            </span>
+                        ))}
+                    </motion.h1>
+
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] as const, delay: 0.2 }}
+                        className="text-white/85 text-base md:text-lg font-medium mt-5 max-w-2xl drop-shadow-md leading-relaxed"
+                    >
+                        {t('rooms.hero.subtitle')}
+                    </motion.p>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] as const, delay: 0.3 }}
+                        className="w-full max-w-[680px] mt-8"
+                    >
+                        <div className="relative flex items-center gap-2 rounded-xl border border-white/20 bg-white/15 backdrop-blur-md px-4 py-2 shadow-lg transition-all duration-200 focus-within:bg-white/20 focus-within:border-white/30">
+                            <Search className="w-5 h-5 text-white/70 shrink-0" />
+                            <input
+                                type="text"
+                                className="w-full h-10 bg-transparent outline-none text-white placeholder:text-white/50 text-base"
+                                placeholder={t('rooms.search.placeholder')}
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                            {searchQuery && (
+                                <button
+                                    onClick={() => setSearchQuery('')}
+                                    className="p-1.5 text-white/60 hover:text-white cursor-pointer transition-colors"
+                                >
+                                    <X className="w-4 h-4" />
+                                </button>
+                            )}
+                        </div>
+                    </motion.div>
                 </div>
-            </div>
+            </section>
 
             <div className="max-w-[1600px] mx-auto pt-4">
 

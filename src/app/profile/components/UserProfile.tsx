@@ -96,22 +96,15 @@ export function UserProfile({ targetUsername }: { targetUsername?: string }) {
                 />
             )}
             <motion.div variants={itemVariants}>
-                <Card className="overflow-hidden shadow-xl border-border/40 bg-card/20 backdrop-blur-xl mb-8 relative">
-                    <div
-                        className="absolute inset-0 z-0 opacity-20 dark:opacity-30 mix-blend-overlay pointer-events-none"
-                        style={{
-                            backgroundImage: "url('/illustrations/profile_background.png')",
-                            backgroundSize: "cover",
-                            backgroundPosition: "center",
-                        }}
-                    />
-                    <CardHeader className="p-8 relative z-10">
+                <Card className="overflow-hidden shadow-xl border-border/40 bg-card mb-8 relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
+                    <CardHeader className="p-8">
                         <div className="flex flex-col md:flex-row items-center gap-8">
                             <div className="relative group">
                                 <div className="absolute -inset-1 bg-gradient-to-r from-primary to-primary-foreground rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
                                 <Avatar className="h-36 w-36 border-4 border-background shadow-2xl relative">
                                     <AvatarImage src={user.image || undefined} className="object-cover" />
-                                    <AvatarFallback className="text-5xl bg-gradient-to-br from-muted to-muted/50">
+                                    <AvatarFallback className="text-5xl bg-gradient-to-br from-primary/20 to-muted/50">
                                         {user.username?.charAt(0).toUpperCase()}
                                     </AvatarFallback>
                                     {isUploading && (
@@ -153,22 +146,15 @@ export function UserProfile({ targetUsername }: { targetUsername?: string }) {
             <div className="grid md:grid-cols-3 gap-6 mt-6">
                 <div className="md:col-span-2 space-y-6">
                     <motion.div variants={itemVariants}>
-                        <Card className="shadow-lg border-border/40 bg-card/20 backdrop-blur-sm relative">
-                            <div
-                                className="absolute inset-0 z-0 opacity-20 dark:opacity-30 mix-blend-overlay pointer-events-none"
-                                style={{
-                                    backgroundImage: "url('/illustrations/profile_background.png')",
-                                    backgroundSize: "cover",
-                                    backgroundPosition: "center",
-                                }}
-                            />
-                            <CardHeader className="relative z-10">
+                        <Card className="shadow-lg border-border/40 bg-card hover:shadow-xl transition-shadow duration-300">
+                            <div className="h-1 w-full bg-gradient-to-r from-primary/40 to-primary/10" />
+                            <CardHeader>
                                 <CardTitle>{t('profile.details_title')}</CardTitle>
                                 <CardDescription>
                                     {isReadOnly ? t('profile.details_description_other', { username: user.username }) : t('profile.details_description_own')}
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent className="space-y-2 relative z-10">
+                            <CardContent className="space-y-2">
                                 <EditableField
                                     name="bio"
                                     label={t('profile.bio_label')}
@@ -191,22 +177,15 @@ export function UserProfile({ targetUsername }: { targetUsername?: string }) {
                         </Card>
                     </motion.div>
                     <motion.div variants={itemVariants}>
-                        <Card className="shadow-lg border-border/40 bg-card/20 backdrop-blur-sm relative">
-                            <div
-                                className="absolute inset-0 z-0 opacity-20 dark:opacity-30 mix-blend-overlay pointer-events-none"
-                                style={{
-                                    backgroundImage: "url('/illustrations/profile_background.png')",
-                                    backgroundSize: "cover",
-                                    backgroundPosition: "center",
-                                }}
-                            />
-                            <CardHeader className="relative z-10">
+                        <Card className="shadow-lg border-border/40 bg-card hover:shadow-xl transition-shadow duration-300">
+                            <div className="h-1 w-full bg-gradient-to-r from-primary/40 to-primary/10" />
+                            <CardHeader>
                                 <CardTitle>{t('profile.hobbies_title')}</CardTitle>
                                 <CardDescription>
                                     {isReadOnly ? t('profile.hobbies_description_other', { username: user.username }) : t('profile.hobbies_description_own')}
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent className="relative z-10">
+                            <CardContent>
                                 <EditableHobbies
                                     name="hobbies"
                                     label=""
@@ -224,19 +203,12 @@ export function UserProfile({ targetUsername }: { targetUsername?: string }) {
 
                 <div className="md:col-span-1 space-y-6">
                     <motion.div variants={itemVariants}>
-                        <Card className="shadow-lg border-border/40 bg-card/20 backdrop-blur-sm relative">
-                            <div
-                                className="absolute inset-0 z-0 opacity-20 dark:opacity-30 mix-blend-overlay pointer-events-none"
-                                style={{
-                                    backgroundImage: "url('/illustrations/profile_background.png')",
-                                    backgroundSize: "cover",
-                                    backgroundPosition: "center",
-                                }}
-                            />
-                            <CardHeader className="relative z-10">
+                        <Card className="shadow-lg border-border/40 bg-card hover:shadow-xl transition-shadow duration-300">
+                            <div className="h-1 w-full bg-gradient-to-r from-primary/40 to-primary/10" />
+                            <CardHeader>
                                 <CardTitle>{t('profile.contact_title')}</CardTitle>
                             </CardHeader>
-                            <CardContent className="relative z-10">
+                            <CardContent>
                                 <div className="flex items-center justify-between py-4">
                                     <div>
                                         <Label className="text-sm font-medium text-muted-foreground">{t('profile.email_label')}</Label>
@@ -259,19 +231,12 @@ export function UserProfile({ targetUsername }: { targetUsername?: string }) {
                         </Card>
                     </motion.div>
                     <motion.div variants={itemVariants}>
-                        <Card className="shadow-lg border-border/40 bg-card/20 backdrop-blur-sm relative">
-                            <div
-                                className="absolute inset-0 z-0 opacity-20 dark:opacity-30 mix-blend-overlay pointer-events-none"
-                                style={{
-                                    backgroundImage: "url('/illustrations/profile_background.png')",
-                                    backgroundSize: "cover",
-                                    backgroundPosition: "center",
-                                }}
-                            />
-                            <CardHeader className="relative z-10">
+                        <Card className="shadow-lg border-border/40 bg-card hover:shadow-xl transition-shadow duration-300">
+                            <div className="h-1 w-full bg-gradient-to-r from-primary/40 to-primary/10" />
+                            <CardHeader>
                                 <CardTitle>{t('profile.chat_preferences_title')}</CardTitle>
                             </CardHeader>
-                            <CardContent className="space-y-2 relative z-10">
+                            <CardContent className="space-y-2">
                                 <EditableSelectField
                                     name="ageRange"
                                     label={t('profile.age_range_label')}

@@ -425,7 +425,7 @@
     "rooms.error.title": "Error loading rooms",
     "rooms.error.retry": "Try again",
     "rooms.hero.badge": "Active rooms and communities",
-    "rooms.hero.title": "Find your place <br/> in <span>ChatHub</span>",
+    "rooms.hero.title": "Find your place in ChatHub",
     "rooms.hero.subtitle": "Gaming, music, learning and more. There's a room waiting for you.",
     "rooms.search.placeholder": "Explore communities",
     "rooms.load_more.retry": "Retry loading more",

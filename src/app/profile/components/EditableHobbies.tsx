@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FieldValues, Path } from 'react-hook-form';
+import { Control, FieldValues, Path } from 'react-hook-form';
 import { Button } from '@/src/components/ui/button';
 import { Badge } from '@/src/components/ui/badge';
 import { Pencil, Save, X, Loader2 } from 'lucide-react';
@@ -11,6 +11,13 @@ import { Checkbox } from '@/src/components/ui/checkbox';
 import * as LucideIcons from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent } from '@/src/components/ui/card';
+import { motion, AnimatePresence } from 'framer-motion';
+
+function resolveIcon(iconName: string): LucideIcon | null {
+    const key = iconName.charAt(0).toUpperCase() + iconName.slice(1) as keyof typeof LucideIcons;
+    const icon = LucideIcons[key];
+    return typeof icon === 'function' ? (icon as LucideIcon) : null;
+}
 
 interface Hobby {
     id: string;
@@ -24,7 +31,7 @@ interface EditableHobbiesProps<T extends FieldValues, Name extends Path<T> = Pat
     userHobbies: Hobby[] | undefined;
     allHobbies: Hobby[];
     hobbiesLoading: boolean;
-    control: any;
+    control: Control<T>;
     updateFn: (field: Name, value: any) => Promise<void>;
     readOnly?: boolean;
 }
@@ -70,7 +77,7 @@ export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Pa
     };
 
     return (
-        <div className="border-b border-border/50 py-4">
+        <motion.div layout className="border-b border-border/50 py-4">
             <div className="flex items-start justify-between mb-2">
                 <Label className="text-sm font-medium text-muted-foreground">{label}</Label>
                 {!isEditing && !readOnly && (
@@ -80,13 +87,21 @@ export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Pa
                 )}
             </div>
 
-            {!isEditing ? (
-                <div className="flex flex-wrap gap-2 mt-1">
+            <AnimatePresence mode="wait">
+                {!isEditing ? (
+                    <motion.div
+                        key="view"
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 5 }}
+                    >
+                        <div className="flex flex-wrap gap-2 mt-1">
                     {userHobbies && userHobbies.length > 0 ? (
                         userHobbies.map((hobby) => {
+                            const IconComponent = resolveIcon(hobby.icon);
                             return (
                                 <Badge key={hobby.id} variant="secondary" className="flex items-center gap-2 py-1 px-3">
-                                    <span className='h-4 w-4'>{hobby.icon}</span>
+                                    {IconComponent ? <IconComponent className="h-4 w-4" /> : <span className="h-4 w-4 text-xs">{hobby.icon}</span>}
                                     <span className="font-normal">{hobby.name}</span>
                                 </Badge>
                             );
@@ -95,7 +110,14 @@ export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Pa
                         <span className="text-muted-foreground italic text-sm">{t('profile.editable.no_hobbies')}</span>
                     )}
                 </div>
-            ) : (
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        key="edit"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                    >
                 <Card className="mt-2 border-dashed">
                     <CardContent className="p-4">
                         {hobbiesLoading ? (
@@ -105,9 +127,11 @@ export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Pa
                         ) : (
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                                 {allHobbies.map((hobby) => {
+                                    const IconComponent = resolveIcon(hobby.icon);
                                     return (
-                                        <div
+                                        <motion.div
                                             key={hobby.id}
+                                            layout
                                             className="flex flex-col items-center justify-center gap-2"
                                         >
                                             <label
@@ -117,7 +141,7 @@ export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Pa
                                                     : 'border-border bg-card hover:border-primary/50'
                                                     }`}
                                             >
-                                                <span className="h-6 w-6 mb-1">{hobby.icon}</span>
+                                                {IconComponent ? <IconComponent className="h-6 w-6 mb-1" /> : <span className="h-6 w-6 mb-1 text-xs">{hobby.icon}</span>}
                                                 <span className="text-center text-sm">{hobby.name}</span>
                                             </label>
                                             <Checkbox
@@ -126,7 +150,7 @@ export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Pa
                                                 checked={selectedHobbyIds.includes(hobby.id)}
                                                 onCheckedChange={() => toggleHobby(hobby.id)}
                                             />
-                                        </div>
+                                        </motion.div>
                                     );
                                 })}
                             </div>
@@ -143,7 +167,9 @@ export function EditableHobbies<T extends FieldValues, Name extends Path<T> = Pa
                         </div>
                     </CardContent>
                 </Card>
-            )}
-        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </motion.div>
     );
 }
