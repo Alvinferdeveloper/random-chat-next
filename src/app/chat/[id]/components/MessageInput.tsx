@@ -14,6 +14,7 @@ import { formatTime } from "@/src/app/chat/[id]/utils/time";
 import { GifPicker } from "./GifPicker";
 import { useSocket } from "@/src/app/components/providers/SocketEventProvider";
 import { useClickOutside } from "@/src/app/hooks/useClickOutside";
+import { useChatSettings } from "@/src/app/chat/[id]/hooks/useChatSettings";
 import { cn } from "@/src/lib/utils";
 import { useTranslation } from "react-i18next";
 
@@ -89,6 +90,8 @@ export function MessageInput({
         sendAudioNote,
         audioBlob
     } = useAudioRecording();
+
+    const { chat_gifs_enabled, chat_images_enabled, chat_audio_enabled } = useChatSettings();
 
     useEffect(() => {
         if (editingMessage) {
@@ -268,7 +271,7 @@ export function MessageInput({
                         </div>
                     )}
                     
-                    {showGifPicker && (
+                    {chat_gifs_enabled && showGifPicker && (
                         <div className="absolute bottom-full mb-2 z-20">
                             <GifPicker
                                 onSelect={handleGifSelect}
@@ -305,22 +308,26 @@ export function MessageInput({
                         </div>
                     ) : (
                         <>
-                            <Button
-                                type="button"
-                                size="icon"
-                                variant="ghost"
-                                onClick={() => fileInputRef.current?.click()}
-                                className="flex-shrink-0"
-                            >
-                                <Paperclip className="h-5 w-5 text-muted-foreground" />
-                            </Button>
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                onChange={onFileChange}
-                                className="hidden"
-                                accept="image/*"
-                            />
+                            {chat_images_enabled && (
+                                <>
+                                    <Button
+                                        type="button"
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="flex-shrink-0"
+                                    >
+                                        <Paperclip className="h-5 w-5 text-muted-foreground" />
+                                    </Button>
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        onChange={onFileChange}
+                                        className="hidden"
+                                        accept="image/*"
+                                    />
+                                </>
+                            )}
                             <div className="relative flex-grow">
                                 <Input
                                     ref={inputRef}
@@ -338,21 +345,23 @@ export function MessageInput({
                                     className="pr-20 bg-background/90"
                                 />
                                 <div className="absolute inset-y-0 right-0 flex items-center gap-0.5 px-1">
-                                    <Button
-                                        type="button"
-                                        size="icon"
-                                        variant="ghost"
-                                        onClick={() => {
-                                            setShowGifPicker(!showGifPicker);
-                                            setShowEmojiPicker(false);
-                                        }}
-                                        className={cn(
-                                            "cursor-pointer",
-                                            showGifPicker ? "text-primary" : "text-muted-foreground"
-                                        )}
-                                    >
-                                        <Film className="h-4 w-4" />
-                                    </Button>
+                                    {chat_gifs_enabled && (
+                                        <Button
+                                            type="button"
+                                            size="icon"
+                                            variant="ghost"
+                                            onClick={() => {
+                                                setShowGifPicker(!showGifPicker);
+                                                setShowEmojiPicker(false);
+                                            }}
+                                            className={cn(
+                                                "cursor-pointer",
+                                                showGifPicker ? "text-primary" : "text-muted-foreground"
+                                            )}
+                                        >
+                                            <Film className="h-4 w-4" />
+                                        </Button>
+                                    )}
                                     <Button
                                         type="button"
                                         size="icon"
@@ -395,7 +404,7 @@ export function MessageInput({
                                     <Pencil className="w-4 h-4" />
                                 </Button>
                             </form>
-                        ) : newMessage.trim() === "" ? (
+                        ) : chat_audio_enabled && newMessage.trim() === "" ? (
                             <Button
                                 type="button"
                                 onClick={startRecording}
