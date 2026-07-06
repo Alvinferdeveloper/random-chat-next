@@ -19,6 +19,7 @@ export function useChatSettings(): ChatSettings {
             chat_gifs_enabled: true,
             chat_images_enabled: true,
             chat_audio_enabled: true,
+            loading: true,
         }
     );
     const [loading, setLoading] = useState(!cachedSettings);

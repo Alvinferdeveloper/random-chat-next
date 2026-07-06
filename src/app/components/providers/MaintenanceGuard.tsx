@@ -30,10 +30,14 @@ export function MaintenanceGuard({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         checkMaintenance();
-        // Poll every 15 seconds to automatically restore access when maintenance ends
+    }, []);
+
+    // Only pull when maintenance is active, to detect when it ends.
+    useEffect(() => {
+        if (!maintenanceActive) return;
         const interval = setInterval(checkMaintenance, 15000);
         return () => clearInterval(interval);
-    }, []);
+    }, [maintenanceActive]);
 
     const isUserAdmin = session?.user?.role === 'ADMIN';
     const isAdminRoute = pathname?.startsWith('/admin');
@@ -85,7 +89,8 @@ export function MaintenanceGuard({ children }: { children: React.ReactNode }) {
                     </div>
                 </div>
 
-                <style dangerouslySetInnerHTML={{ __html: `
+                <style dangerouslySetInnerHTML={{
+                    __html: `
                     @keyframes loading {
                         0% { left: -50%; width: 30%; }
                         50% { width: 40%; }
