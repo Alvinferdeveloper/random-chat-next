@@ -7,11 +7,31 @@ import { SessionProvider } from "@/src/app/components/providers/SessionProvider"
 import { MaintenanceGuard } from "@/src/app/components/providers/MaintenanceGuard";
 import { I18nProvider } from "@/src/app/components/providers/I18nProvider";
 import { Toaster } from "@/src/components/ui/sonner";
+import localfont from 'next/font/local'
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin"],
 });
+
+const chillax = localfont({
+  src: [
+    {
+      path: '../fonts/chillax/Chillax-Regular.woff2',
+      weight: '400',
+      style: 'normal',
+    }, {
+      path: '../fonts/chillax/Chillax-Semibold.woff2',
+      weight: '600',
+      style: 'normal',
+    }, {
+      path: '../fonts/chillax/Chillax-Bold.woff2',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+  variable: "--font-chillax",
+})
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
@@ -86,20 +106,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className={montserrat.className}>
+      <body className={chillax.className}>
         <I18nProvider>
-        <SessionProvider>
-          <SocketEventProvider>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-              <MaintenanceGuard>
-                <div className="flex flex-col min-h-screen">
-                  <div className="flex-1">{children}</div>
-                </div>
-              </MaintenanceGuard>
-              <Toaster richColors closeButton position="top-right" />
-            </ThemeProvider>
-          </SocketEventProvider>
-        </SessionProvider>
+          <SessionProvider>
+            <SocketEventProvider>
+              <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                <MaintenanceGuard>
+                  <div className="flex flex-col min-h-screen">
+                    <div className="flex-1">{children}</div>
+                  </div>
+                </MaintenanceGuard>
+                <Toaster richColors closeButton position="top-right" />
+              </ThemeProvider>
+            </SocketEventProvider>
+          </SessionProvider>
         </I18nProvider>
       </body>
     </html>
