@@ -61,11 +61,10 @@ export function ChatHeader({ roomId, roomName, isUserListVisible, onToggleUserLi
                     size="icon"
                     onClick={onToggleUserList}
                     aria-label={t('chat.header.show_participants')}
-                    className={`h-8 w-8 sm:h-9 sm:w-9 rounded-xl transition-all duration-200 ease-out active:scale-[0.92] ${
-                        isUserListVisible
-                            ? 'bg-accent text-accent-foreground'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
-                    }`}
+                    className={`h-8 w-8 sm:h-9 sm:w-9 rounded-xl transition-all duration-200 ease-out active:scale-[0.92] ${isUserListVisible
+                        ? 'bg-accent text-accent-foreground'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                        }`}
                 >
                     <Users className="h-4 w-4" />
                 </Button>
@@ -83,10 +82,10 @@ export function ChatHeader({ roomId, roomName, isUserListVisible, onToggleUserLi
                 <Link href="/" className="flex items-center shrink-0 ml-0.5">
                     <Image
                         src="/images/logo_chat.png"
-                        width={32}
-                        height={32}
+                        width={60}
+                        height={60}
                         alt="ChatHub"
-                        className="w-7 h-7 sm:w-8 sm:h-8 object-contain opacity-70 hover:opacity-100 transition-opacity duration-200"
+                        className="w-10 h-10 sm:w-10 sm:h-10 object-contain opacity-70 hover:opacity-100 transition-opacity duration-200"
                     />
                 </Link>
             </div>
