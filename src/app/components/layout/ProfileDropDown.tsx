@@ -46,7 +46,7 @@ export function UserNav() {
     if (!session?.user) {
         return (
             <a href="/login" title={t('layout.profile_dropdown.login_title')}>
-                <Button size="sm" className="flex items-center justify-center gap-2 cursor-pointer h-9 w-9 p-0 md:w-auto md:px-4 shrink-0 transition-all">
+                <Button size="sm" className="flex items-center justify-center gap-2 cursor-pointer h-9 w-9 p-0 md:w-auto md:px-4 shrink-0 active:scale-95 transition-transform duration-150 ease-out">
                     <UserIcon className="w-4 h-4" />
                     <span className="hidden md:inline">{t('layout.profile_dropdown.login_title')}</span>
                 </Button>
@@ -64,14 +64,14 @@ export function UserNav() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full cursor-pointer">
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full cursor-pointer ring-2 ring-transparent hover:ring-primary/20 transition-all duration-200 active:scale-95">
                     <Avatar className="h-9 w-9">
                         <AvatarImage src={user.image ?? ''} alt={`@${user.name}`} />
                         <AvatarFallback>{initials}</AvatarFallback>
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
+            <DropdownMenuContent className="w-56 backdrop-blur-xl bg-background/95" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium leading-none">{user.name}</p>
@@ -82,28 +82,28 @@ export function UserNav() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem className='cursor-pointer' onClick={() => navigation.push("/profile")}>
-                        <UserIcon className="mr-2 h-4 w-4" />
+                    <DropdownMenuItem className='cursor-pointer transition-colors duration-150' onClick={() => navigation.push("/profile")}>
+                        <UserIcon className="size-4" />
                         <span>{t('layout.profile_dropdown.profile')}</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className='cursor-pointer' onClick={() => navigation.push("/rooms/my-rooms")}>
-                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                    <DropdownMenuItem className='cursor-pointer transition-colors duration-150' onClick={() => navigation.push("/rooms/my-rooms")}>
+                        <LayoutDashboard className="size-4" />
                         <span>{t('layout.profile_dropdown.my_rooms')}</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className='cursor-pointer' onClick={() => navigation.push("/rooms/favorites")}>
-                        <Heart className="mr-2 h-4 w-4" />
+                    <DropdownMenuItem className='cursor-pointer transition-colors duration-150' onClick={() => navigation.push("/rooms/favorites")}>
+                        <Heart className="size-4" />
                         <span>{t('layout.profile_dropdown.favorites')}</span>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuGroup>
-                    <DropdownMenuItem className='cursor-pointer' onClick={() => navigation.push("/rooms/create")}>
-                        <BadgePlus className="mr-2 h-4 w-4" />
+                    <DropdownMenuItem className='cursor-pointer transition-colors duration-150' onClick={() => navigation.push("/rooms/create")}>
+                        <BadgePlus className="size-4" />
                         <span>{t('layout.profile_dropdown.create_room')}</span>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className='cursor-pointer' onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
+                <DropdownMenuItem className='cursor-pointer transition-colors duration-150' variant="destructive" onClick={handleLogout}>
+                    <LogOut className="size-4" />
                     <span>{t('layout.profile_dropdown.logout')}</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>
