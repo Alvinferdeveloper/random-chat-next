@@ -442,10 +442,12 @@
 
     "rooms.favorites.loading_session": "Loading session...",
     "rooms.favorites.title": "My Favorites",
+    "rooms.favorites.subtitle": "Rooms you've saved to revisit later.",
     "rooms.favorites.search_placeholder": "Search favorites...",
     "rooms.favorites.empty": "You don't have any favorite rooms yet.",
     "rooms.favorites.browse": "Browse rooms",
     "rooms.favorites.end": "You've reached the end of your favorites.",
+    "rooms.favorites.back": "Browse all rooms",
 
     "rooms.my-rooms.loading": "Loading your rooms...",
     "rooms.my-rooms.back": "Browse all rooms",
