@@ -1,18 +1,42 @@
 'use client';
 
-import { useState, useEffect, useCallback } from "react";
-import { Room } from "@/src/app/rooms/hooks/useRoom";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { Room, RoomStatus } from "@/src/app/rooms/hooks/useRoom";
 
-export function useMyRooms() {
+export function useMyRooms(statusFilter: RoomStatus | 'ALL' = 'ALL') {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const fetchingRef = useRef(false);
 
-    const fetchMyRooms = useCallback(async () => {
+    useEffect(() => {
+        setRooms([]);
+        setPage(1);
+        setHasMore(true);
         setLoading(true);
         setError(null);
+    }, [statusFilter]);
+
+    const loadMoreRooms = useCallback(async () => {
+        if (fetchingRef.current || error || (!hasMore && page !== 1)) return;
+
+        fetchingRef.current = true;
+        setLoading(true);
+        setError(null);
+
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/rooms/my-rooms`, {
+            const queryParams = new URLSearchParams({
+                page: page.toString(),
+                limit: (process.env.NEXT_PUBLIC_ROOMS_FETCH_LIMIT || 10).toString(),
+            });
+
+            if (statusFilter !== 'ALL') {
+                queryParams.append("status", statusFilter);
+            }
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/rooms/my-rooms?${queryParams.toString()}`, {
                 credentials: 'include',
             });
 
@@ -22,13 +46,27 @@ export function useMyRooms() {
             }
 
             const json = await response.json();
-            setRooms(json.data);
+            setRooms(prevRooms => page === 1 ? json.data : [...prevRooms, ...json.data]);
+            setPage(prevPage => prevPage + 1);
+            setHasMore(json.pagination?.hasNextPage ?? false);
+
         } catch (err: any) {
-            setError(err.message);
+            if (err instanceof TypeError) {
+                setError("NETWORK_ERROR");
+            } else {
+                setError(err.message || "MY_ROOMS_LOAD_ERROR");
+            }
         } finally {
+            fetchingRef.current = false;
             setLoading(false);
         }
-    }, []);
+    }, [page, error, hasMore, statusFilter]);
+
+    useEffect(() => {
+        if (page === 1 && !error) {
+            loadMoreRooms();
+        }
+    }, [page, statusFilter, error, loadMoreRooms]);
 
     const deleteRoom = async (roomId: string) => {
         try {
@@ -42,7 +80,6 @@ export function useMyRooms() {
                 throw new Error(result.message || "ROOM_DELETE_ERROR");
             }
 
-            // Update local state after deletion
             setRooms(prevRooms => prevRooms.filter(room => room.id !== roomId));
             return { success: true };
         } catch (err: any) {
@@ -50,15 +87,12 @@ export function useMyRooms() {
         }
     };
 
-    useEffect(() => {
-        fetchMyRooms();
-    }, [fetchMyRooms]);
-
     return {
         rooms,
         loading,
         error,
-        refetch: fetchMyRooms,
+        hasMore,
+        loadMoreRooms,
         deleteRoom
     };
 }
