@@ -105,7 +105,7 @@ export default function LoginPage() {
         <div className="flex-1 flex flex-col justify-center">
           <div className="flex justify-center mb-2">
             <Link href="/">
-              <Image src="/images/logo_chat.png" width={150} height={150} alt="ChatHub" priority className="h-auto" />
+              <Image src="/images/logo_chat.png" width={50} height={50} alt="ChatHub" priority className="h-auto" />
             </Link>
           </div>
 
