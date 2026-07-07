@@ -143,7 +143,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                 );
             }
             return part; // This is a normal text part
-        });
+        })
     };
 
     // System and Global Announcement rendering
@@ -187,7 +187,7 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
         <div
             ref={messageRef}
             className={cn(
-                "max-w-xs rounded-2xl text-sm md:max-w-md relative mb-4",
+                "max-w-xs rounded-2xl text-sm md:max-w-md relative mb-4 self-start",
                 isMyMessage ? "bg-blue-700 text-white rounded-tr-none" : "bg-muted rounded-tl-none",
                 isImageMessage(msg) || isGifMessage(msg) ? "p-0.5" : "p-3 shadow-sm"
             )}

@@ -27,9 +27,9 @@ export default function Header() {
   const isAppView = pathname?.startsWith('/chat') || pathname?.startsWith('/rooms') || pathname?.startsWith('/profile') || pathname?.startsWith('/dashboard');
 
   const navItems = isAppView ? [
-    { href: '/rooms', label: t('layout.header.nav_explore'), icon: Compass },
+    { href: '/rooms', label: t('layout.header.nav_explore') },
   ] : [
-    { href: '/rooms', label: t('layout.header.nav_explore'), icon: Compass },
+    { href: '/rooms', label: t('layout.header.nav_explore') },
     { href: '/faq', label: t('layout.header.nav_faq'), icon: HelpCircle },
     { href: '/guia-comunidad', label: t('layout.header.nav_community'), icon: Users },
   ];
@@ -65,7 +65,7 @@ export default function Header() {
                         : "text-muted-foreground hover:bg-secondary"
                     )}
                   >
-                    <item.icon className="w-5 h-5" />
+                    {item.icon && <item.icon className="w-5 h-5" />}
                     {item.label}
                   </Link>
                 ))}
@@ -81,7 +81,7 @@ export default function Header() {
         {/* Left side: Brand */}
         <div className="flex items-center gap-4 lg:gap-8 flex-1 md:flex-initial">
           <Link href="/" className="flex items-center shrink-0 gap-2">
-            <Image src="/images/logo_chat.png" width={35} height={35} alt="Logo" className="rounded-xl" />
+            <Image src="/images/logo_chat.png" width={30} height={30} alt="Logo" className="rounded-xl" />
             <span className="text-xl font-bold tracking-tighter hidden lg:block">ChatHub</span>
           </Link>
         </div>
@@ -100,7 +100,7 @@ export default function Header() {
                     : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                 )}
               >
-                <item.icon className="w-4 h-4" />
+                {item.icon && <item.icon className="w-4 h-4" />}
                 <span>{item.label}</span>
               </Link>
             ))}

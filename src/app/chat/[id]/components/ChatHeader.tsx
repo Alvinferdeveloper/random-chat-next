@@ -55,7 +55,7 @@ export function ChatHeader({ roomId, roomName, isUserListVisible, onToggleUserLi
                 </div>
             </div>
 
-            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            <div className="flex items-center gap-3 sm:gap-6 shrink-0">
                 <Button
                     variant="ghost"
                     size="icon"
@@ -82,10 +82,10 @@ export function ChatHeader({ roomId, roomName, isUserListVisible, onToggleUserLi
                 <Link href="/" className="flex items-center shrink-0 ml-0.5">
                     <Image
                         src="/images/logo_chat.png"
-                        width={60}
-                        height={60}
+                        width={40}
+                        height={40}
                         alt="ChatHub"
-                        className="w-10 h-10 sm:w-10 sm:h-10 object-contain opacity-70 hover:opacity-100 transition-opacity duration-200"
+                        className="w-8 h-8 sm:w-8 sm:h-8 object-contain opacity-70 hover:opacity-100 transition-opacity duration-200"
                     />
                 </Link>
             </div>
