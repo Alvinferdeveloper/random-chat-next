@@ -97,7 +97,7 @@ export default function Rooms() {
                         alt=""
                         className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-background/30 dark:from-background/95 dark:via-background/60 dark:to-background/40" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/30 to-black/20 dark:from-background/95 dark:via-background/60 dark:to-background/40" />
                 </div>
 
                 <div className="relative z-10 w-full max-w-4xl flex flex-col items-center text-center">
