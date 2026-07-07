@@ -91,7 +91,7 @@ const AboutAndCtaSection = forwardRef<HTMLDivElement>((props, ref) => {
                     </h2>
 
                     <div className="flex flex-col sm:flex-row gap-4 shrink-0">
-                        <Button asChild variant="outline" className="rounded-full px-8 py-6 text-base font-semibold bg-white text-gray-900 border-none hover:bg-gray-100">
+                        <Button asChild variant="outline" className="rounded-full px-8 py-6 text-base font-semibold bg-white text-foreground border-none hover:bg-gray-100">
                             <Link href="#demo">{t('landing.cta.demo_button')}</Link>
                         </Button>
                         <Button asChild className="rounded-full px-8 py-6 text-base font-semibold bg-[#D6F045] text-gray-900 hover:bg-[#c2db3b] shadow-none">
