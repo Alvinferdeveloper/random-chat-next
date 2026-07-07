@@ -90,8 +90,8 @@ export default function Rooms() {
             />
 
             {/* HERO SECTION */}
-            <section className="relative w-full min-h-[360px] md:min-h-[550px] flex flex-col items-center justify-center px-6 py-12 -mt-16 pt-16 overflow-hidden">
-                <div className="absolute inset-0 z-0">
+            <section className="relative w-full min-h-[360px] md:min-h-[550px] flex flex-col items-center justify-center px-6 py-12">
+                <div className="absolute inset-x-0 top-[-64px] bottom-0 z-0">
                     <img
                         src="/illustrations/room_background.png"
                         alt=""
