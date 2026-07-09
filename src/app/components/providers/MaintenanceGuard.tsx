@@ -39,7 +39,7 @@ export function MaintenanceGuard({ children }: { children: React.ReactNode }) {
         return () => clearInterval(interval);
     }, [maintenanceActive]);
 
-    const isUserAdmin = session?.user?.role === 'ADMIN';
+    const isUserAdmin = (session?.user as any)?.role === 'ADMIN';
     const isAdminRoute = pathname?.startsWith('/admin');
 
     // If maintenance is active, user is NOT admin, and it's not a bypass route
