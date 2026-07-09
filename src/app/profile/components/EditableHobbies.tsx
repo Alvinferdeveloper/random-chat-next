@@ -13,7 +13,8 @@ import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent } from '@/src/components/ui/card';
 import { motion, AnimatePresence } from 'framer-motion';
 
-function resolveIcon(iconName: string): LucideIcon | null {
+function resolveIcon(iconName: string | null): LucideIcon | null {
+    if (!iconName) return null;
     const key = iconName.charAt(0).toUpperCase() + iconName.slice(1) as keyof typeof LucideIcons;
     const icon = LucideIcons[key];
     return typeof icon === 'function' ? (icon as LucideIcon) : null;
