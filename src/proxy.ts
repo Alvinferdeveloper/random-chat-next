@@ -19,6 +19,7 @@ export async function proxy(request: NextRequest) {
     try {
         const response = await fetch(SESSION_URL, {
             headers: request.headers,
+            credentials: 'include',
         });
 
         if (response.ok) {
