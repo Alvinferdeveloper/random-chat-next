@@ -17,14 +17,14 @@ export async function proxy(request: NextRequest) {
 
     let isAuthenticated = false;
     try {
-        console.log(request)
-        const cookieString = request.cookies.toString();
-
         const headers = new Headers();
 
-        if (cookieString) {
-            headers.append('Cookie', cookieString);
+        const cookieHeader = request.headers.get('cookie');
+        if (cookieHeader) {
+            headers.append('Cookie', cookieHeader);
         }
+
+        console.log(`[Middleware] Verificando ruta: ${pathname}. Cookies presentes:`, request.cookies.getAll().map(c => c.name));
 
         const userAgent = request.headers.get('user-agent');
         if (userAgent) headers.append('user-agent', userAgent);
@@ -36,6 +36,8 @@ export async function proxy(request: NextRequest) {
 
         if (response.ok) {
             isAuthenticated = true;
+        } else {
+            console.log(`[Middleware] API respondió con estado: ${response.status} para la ruta ${pathname}`);
         }
     } catch (error) {
         console.error('Error al verificar la sesión:', error);
