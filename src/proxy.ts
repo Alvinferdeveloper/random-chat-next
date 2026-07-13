@@ -17,6 +17,7 @@ export async function proxy(request: NextRequest) {
 
     let isAuthenticated = false;
     try {
+        console.log(request)
         const cookieString = request.cookies.toString();
 
         const headers = new Headers();
