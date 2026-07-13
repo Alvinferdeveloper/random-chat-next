@@ -17,9 +17,20 @@ export async function proxy(request: NextRequest) {
 
     let isAuthenticated = false;
     try {
+        const cookieString = request.cookies.toString();
+
+        const headers = new Headers();
+
+        if (cookieString) {
+            headers.append('Cookie', cookieString);
+        }
+
+        const userAgent = request.headers.get('user-agent');
+        if (userAgent) headers.append('user-agent', userAgent);
+
         const response = await fetch(SESSION_URL, {
-            headers: request.headers,
-            credentials: 'include',
+            method: 'GET',
+            headers: headers,
         });
 
         if (response.ok) {
