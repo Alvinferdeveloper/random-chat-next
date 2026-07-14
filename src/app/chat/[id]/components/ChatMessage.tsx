@@ -150,24 +150,37 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
     if ((msg as any).system) {
         if ((msg as any).isGlobal) {
             return (
-                <div className="w-full flex justify-center my-6 px-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="max-w-md bg-primary/10 border-2 border-primary/20 backdrop-blur-md rounded-2xl p-4 shadow-xl relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:scale-110 transition-transform">
-                            <Megaphone className="w-12 h-12 rotate-12" />
-                        </div>
-                        <div className="flex items-center gap-3 mb-2">
-                            <div className="p-2 rounded-lg bg-primary text-primary-foreground">
-                                <ShieldCheck className="w-4 h-4" />
+                <div
+                    className="w-full flex justify-center my-5 px-4 animate-in fade-in duration-500"
+                    style={{ animationTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
+                >
+                    <div className="relative w-full max-w-sm rounded-xl bg-primary/[0.06] ring-1 ring-primary/[0.1] overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.03] to-transparent pointer-events-none" />
+                        <div className="relative p-3.5">
+                            <div className="flex items-center gap-2 mb-2.5">
+                                <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 shrink-0">
+                                    <Megaphone className="w-3 h-3 text-primary" />
+                                </div>
+                                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary/80">
+                                    {t('chat.message.official_announcement')}
+                                </span>
+                                <div className="ml-auto flex items-center gap-1" aria-hidden="true">
+                                    <span className="w-1 h-1 rounded-full bg-primary/30" />
+                                    <span className="w-1 h-1 rounded-full bg-primary/20" />
+                                    <span className="w-1 h-1 rounded-full bg-primary/10" />
+                                </div>
                             </div>
-                            <span className="font-bold text-xs uppercase tracking-widest text-primary">{t('chat.message.official_announcement')}</span>
-                        </div>
-                        {isTextMessage(msg) && (
-                            <p className="text-sm font-medium leading-relaxed italic">
-                                "{msg.message}"
-                            </p>
-                        )}
-                        <div className="mt-3 text-[10px] text-muted-foreground flex justify-end">
-                            {formatTime(msg.timestamp)}
+                            {isTextMessage(msg) && (
+                                <p className="text-sm leading-relaxed text-foreground/85 font-medium">
+                                    {msg.message}
+                                </p>
+                            )}
+                            <div className="mt-2.5 flex items-center gap-2">
+                                <ShieldCheck className="w-3 h-3 text-primary/35" />
+                                <time className="text-[10px] text-muted-foreground/50 font-medium tabular-nums">
+                                    {formatTime(msg.timestamp)}
+                                </time>
+                            </div>
                         </div>
                     </div>
                 </div>
