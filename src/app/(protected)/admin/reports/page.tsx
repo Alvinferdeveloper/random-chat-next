@@ -8,7 +8,7 @@ import { Badge } from '@/src/components/ui/badge';
 import { Input } from '@/src/components/ui/input';
 import { CheckCircle2, ShieldAlert, Search } from 'lucide-react';
 import { useState } from 'react';
-import { BanDialog } from '@/src/app/admin/users/components/BanDialog';
+import { BanDialog } from '@/src/app/(protected)/admin/users/components/BanDialog';
 import { Pagination } from '@/src/app/components/shared/Pagination';
 import { ChatContextDialog } from './components/ChatContextDialog';
 import { DetailedReport } from './hooks/useAdminReports';

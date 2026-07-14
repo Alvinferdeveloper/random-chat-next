@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { Loader2, ShieldCheck, LayoutDashboard, MessageSquare, Users, AlertCircle, Tag, LogOut, ChevronRight, SunMoon } from 'lucide-react';
 import { ThemeToggle } from '@/src/app/components/layout/ThemeToggle';
 import { cn } from '@/src/lib/utils';
-import { useAdminNotifications } from '@/src/app/admin/hooks/useAdminNotifications';
+import { useAdminNotifications } from '@/src/app/(protected)/admin/hooks/useAdminNotifications';
 import { useTranslation } from 'react-i18next';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

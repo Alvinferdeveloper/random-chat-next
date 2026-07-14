@@ -1,5 +1,6 @@
 'use client';
 
+import { AuthGuard } from "@/src/app/components/auth/AuthGuard";
 import { useTranslation } from 'react-i18next';
 import { useMyRooms } from '@/src/app/rooms/my-rooms/hooks/useMyRooms';
 import { RoomCard } from '@/src/app/rooms/components/RoomCard';
@@ -65,102 +66,104 @@ export default function MyRoomsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-main-gradient p-6">
-            <div className="max-w-7xl mx-auto space-y-8">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="space-y-1">
-                        <Link href="/rooms" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-2">
-                            <ArrowLeft className="h-4 w-4" />
-                            {t('rooms.my-rooms.back')}
-                        </Link>
-                        <h1 className="text-3xl font-bold tracking-tight text-white">{t('rooms.my-rooms.title')}</h1>
-                        <p className="text-muted-foreground">{t('rooms.my-rooms.subtitle')}</p>
-                    </div>
-                    <Link href="/rooms/create">
-                        <button className="bg-primary cursor-pointer hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-md font-medium transition-colors">
-                            {t('rooms.my-rooms.create_new')}
-                        </button>
-                    </Link>
-                </div>
-
-                <div className="flex gap-1 bg-muted/30 rounded-lg p-1 w-fit">
-                    {STATUS_TABS.map(tab => (
-                        <button
-                            key={tab}
-                            onClick={() => setActiveTab(tab)}
-                            className={cn(
-                                "px-4 py-2 rounded-md text-sm font-medium transition-all cursor-pointer",
-                                activeTab === tab
-                                    ? "bg-primary text-primary-foreground shadow-sm"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                            )}
-                        >
-                            {tabLabel(tab)}
-                        </button>
-                    ))}
-                </div>
-
-                {error && rooms.length === 0 && (
-                    <div className="bg-destructive/15 border border-destructive text-destructive px-4 py-3 rounded-md">
-                        {error}
-                    </div>
-                )}
-
-                {rooms.length === 0 && !loading ? (
-                    <div className="flex flex-col items-center justify-center py-20 text-center space-y-4 bg-muted/20 rounded-xl border border-dashed border-border">
-                        <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center">
-                            <Loader2 className="h-8 w-8 text-muted-foreground" />
-                        </div>
-                        <div className="space-y-2">
-                            <h2 className="text-xl font-semibold text-white">
-                                {t(`rooms.my-rooms.${emptyKey}_title`)}
-                            </h2>
-                            <p className="text-muted-foreground max-w-sm">
-                                {t(`rooms.my-rooms.${emptyKey}_desc`)}
-                            </p>
-                        </div>
-                        {activeTab === 'ALL' && (
-                            <Link href="/rooms/create">
-                                <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 rounded-md font-medium transition-colors">
-                                    {t('rooms.my-rooms.create_first')}
-                                </button>
+        <AuthGuard>
+            <div className="min-h-screen bg-main-gradient p-6">
+                <div className="max-w-7xl mx-auto space-y-8">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="space-y-1">
+                            <Link href="/rooms" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-2">
+                                <ArrowLeft className="h-4 w-4" />
+                                {t('rooms.my-rooms.back')}
                             </Link>
-                        )}
+                            <h1 className="text-3xl font-bold tracking-tight text-white">{t('rooms.my-rooms.title')}</h1>
+                            <p className="text-muted-foreground">{t('rooms.my-rooms.subtitle')}</p>
+                        </div>
+                        <Link href="/rooms/create">
+                            <button className="bg-primary cursor-pointer hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-md font-medium transition-colors">
+                                {t('rooms.my-rooms.create_new')}
+                            </button>
+                        </Link>
                     </div>
-                ) : (
-                    <>
-                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                            {rooms.map((room, index) => (
-                                <RoomCard
-                                    key={room.id}
-                                    room={room}
-                                    index={index}
-                                    userCount={userCounts[room.id] || 0}
-                                    isConnecting={connecting === room.id}
-                                    onJoin={handleJoinRoom}
-                                    cardVariants={cardVariants}
-                                    onDelete={deleteRoom}
-                                    footer={
-                                        <RoomCardFooter room={room} />
-                                    }
-                                />
-                            ))}
-                        </div>
 
-                        <div ref={sentinelRef} className="flex justify-center items-center h-20">
-                            {loading && rooms.length > 0 && (
-                                <div className="flex items-center gap-2 text-muted-foreground">
-                                    <Loader2 className="w-5 h-5 animate-spin" />
-                                    <span>{t('rooms.load_more.loading')}</span>
-                                </div>
-                            )}
-                            {!loading && !hasMore && rooms.length > 0 && (
-                                <p className="text-muted-foreground">{t('rooms.my-rooms.end')}</p>
+                    <div className="flex gap-1 bg-muted/30 rounded-lg p-1 w-fit">
+                        {STATUS_TABS.map(tab => (
+                            <button
+                                key={tab}
+                                onClick={() => setActiveTab(tab)}
+                                className={cn(
+                                    "px-4 py-2 rounded-md text-sm font-medium transition-all cursor-pointer",
+                                    activeTab === tab
+                                        ? "bg-primary text-primary-foreground shadow-sm"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                )}
+                            >
+                                {tabLabel(tab)}
+                            </button>
+                        ))}
+                    </div>
+
+                    {error && rooms.length === 0 && (
+                        <div className="bg-destructive/15 border border-destructive text-destructive px-4 py-3 rounded-md">
+                            {error}
+                        </div>
+                    )}
+
+                    {rooms.length === 0 && !loading ? (
+                        <div className="flex flex-col items-center justify-center py-20 text-center space-y-4 bg-muted/20 rounded-xl border border-dashed border-border">
+                            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center">
+                                <Loader2 className="h-8 w-8 text-muted-foreground" />
+                            </div>
+                            <div className="space-y-2">
+                                <h2 className="text-xl font-semibold text-white">
+                                    {t(`rooms.my-rooms.${emptyKey}_title`)}
+                                </h2>
+                                <p className="text-muted-foreground max-w-sm">
+                                    {t(`rooms.my-rooms.${emptyKey}_desc`)}
+                                </p>
+                            </div>
+                            {activeTab === 'ALL' && (
+                                <Link href="/rooms/create">
+                                    <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 rounded-md font-medium transition-colors">
+                                        {t('rooms.my-rooms.create_first')}
+                                    </button>
+                                </Link>
                             )}
                         </div>
-                    </>
-                )}
+                    ) : (
+                        <>
+                            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                                {rooms.map((room, index) => (
+                                    <RoomCard
+                                        key={room.id}
+                                        room={room}
+                                        index={index}
+                                        userCount={userCounts[room.id] || 0}
+                                        isConnecting={connecting === room.id}
+                                        onJoin={handleJoinRoom}
+                                        cardVariants={cardVariants}
+                                        onDelete={deleteRoom}
+                                        footer={
+                                            <RoomCardFooter room={room} />
+                                        }
+                                    />
+                                ))}
+                            </div>
+
+                            <div ref={sentinelRef} className="flex justify-center items-center h-20">
+                                {loading && rooms.length > 0 && (
+                                    <div className="flex items-center gap-2 text-muted-foreground">
+                                        <Loader2 className="w-5 h-5 animate-spin" />
+                                        <span>{t('rooms.load_more.loading')}</span>
+                                    </div>
+                                )}
+                                {!loading && !hasMore && rooms.length > 0 && (
+                                    <p className="text-muted-foreground">{t('rooms.my-rooms.end')}</p>
+                                )}
+                            </div>
+                        </>
+                    )}
+                </div>
             </div>
-        </div>
+        </AuthGuard>
     );
 }

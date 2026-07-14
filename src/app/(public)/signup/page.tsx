@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
-import { authClient } from '../lib/auth-client';
+import { authClient } from '@/src/app/lib/auth-client';
 import Image from 'next/image';
 import { ArrowLeft, MailCheck } from "lucide-react";
 import { AuthSplitScreen } from '@/src/app/components/auth/AuthSplitScreen';
