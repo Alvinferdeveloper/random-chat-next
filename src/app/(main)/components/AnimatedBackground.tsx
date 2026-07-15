@@ -53,7 +53,7 @@ export default function AnimatedBackground() {
 
       {!prefersReduced && (
         <>
-          <div className="absolute top-0 left-1/4 w-[600px] h-[600px] dark:bg-emerald-500/5 bg-emerald-300/20 rounded-full blur-[120px] max-md:blur-[60px] animate-blob-1" />
+          <div className="absolute top-0 left-1/4 w-[600px] h-[600px] dark:bg-emerald-500/10 bg-emerald-300/20 rounded-full blur-[120px] max-md:blur-[60px] animate-blob-1" />
 
           <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] dark:bg-[#D6F045]/5 bg-lime-200/30 rounded-full blur-[100px] max-md:blur-[50px] animate-blob-2" />
 
