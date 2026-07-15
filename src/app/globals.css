@@ -156,40 +156,29 @@
 }
 
 /* Custom Scrollbar Styles */
-/* Clase principal */
 .scrollbar-thin-light {
   overflow-y: auto;
-
-  /* Firefox */
   scrollbar-width: thin;
-  /* Color del thumb (barra) y track (fondo) */
   scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
 }
 
-/* Chrome, Edge, Safari */
 .scrollbar-thin-light::-webkit-scrollbar {
   width: 8px;
-  /* Un poco más ancho para permitir el "efecto flotante" */
 }
 
 .scrollbar-thin-light::-webkit-scrollbar-track {
   background: transparent;
-  /* Fondo totalmente invisible */
 }
 
 .scrollbar-thin-light::-webkit-scrollbar-thumb {
   background-color: hsl(var(--muted-foreground) / 0.3);
   border-radius: 20px;
-
-  /* EL TRUCO MINIMALISTA: */
-  /* El borde transparente ocupa espacio, empujando el color de fondo hacia adentro */
   border: 3px solid transparent;
   background-clip: content-box;
 }
 
 .scrollbar-thin-light::-webkit-scrollbar-thumb:hover {
   background-color: hsl(var(--muted-foreground) / 0.6);
-  /* Reducimos el borde al hacer hover para que la barra se "hinche" un poco */
   border: 2px solid transparent;
 }
 
@@ -202,4 +191,56 @@
 @keyframes pulse-glow {
   0%, 100% { opacity: 0.3; transform: scale(1); }
   50% { opacity: 0.6; transform: scale(1.05); }
+}
+
+/* AnimatedBackground blobs */
+@keyframes blob-1 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  25% { transform: translate3d(40px, -60px, 0) rotate(90deg) scale(1.05); }
+  50% { transform: translate3d(80px, 20px, 0) rotate(180deg) scale(0.95); }
+  75% { transform: translate3d(20px, 40px, 0) rotate(270deg) scale(1.02); }
+}
+
+@keyframes blob-2 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  25% { transform: translate3d(-50px, 30px, 0) rotate(-90deg) scale(1.03); }
+  50% { transform: translate3d(-30px, -40px, 0) rotate(-180deg) scale(0.97); }
+  75% { transform: translate3d(-70px, 10px, 0) rotate(-270deg) scale(1.01); }
+}
+
+@keyframes blob-3 {
+  0% { transform: translate3d(-50%, -50%, 0) rotate(0deg) scale(1); }
+  33% { transform: translate3d(-50%, -50%, 0) rotate(120deg) scale(1.1); }
+  66% { transform: translate3d(-50%, -50%, 0) rotate(240deg) scale(0.9); }
+  100% { transform: translate3d(-50%, -50%, 0) rotate(360deg) scale(1); }
+}
+
+@keyframes particle-float-0 {
+  0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.2; }
+  50% { transform: translate3d(15px, -60px, 0); opacity: 0.7; }
+}
+
+@keyframes particle-float-1 {
+  0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.15; }
+  50% { transform: translate3d(-20px, -40px, 0); opacity: 0.6; }
+}
+
+@keyframes particle-float-2 {
+  0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.25; }
+  50% { transform: translate3d(10px, -80px, 0); opacity: 0.8; }
+}
+
+.animate-blob-1 {
+  animation: blob-1 22s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-blob-2 {
+  animation: blob-2 18s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-blob-3 {
+  animation: blob-3 25s linear infinite;
+  will-change: transform;
 }

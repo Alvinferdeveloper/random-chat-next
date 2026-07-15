@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { forwardRef } from "react";
 import Reveal from "@/src/app/(main)/components/Reveal";
-import ParallaxImage from "@/src/app/(main)/components/ParallaxImage";
 import { useTranslation } from '@/src/app/lib/i18n'
 import { Trans } from 'react-i18next'
 
@@ -66,7 +65,7 @@ const FeaturesSection = forwardRef<HTMLDivElement>((props, ref) => {
                                     <div className="absolute inset-0 bg-gradient-to-tr from-[#D6F045] to-emerald-400 rounded-[3rem] blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-700 z-0"></div>
 
                                     <div className="relative z-10 aspect-square md:aspect-[4/3] w-full rounded-[3rem] overflow-hidden shadow-2xl border border-white/60 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
-                                        <ParallaxImage speed={0.3} className="relative w-full h-full">
+                                        <div className="relative w-full h-full">
                                             <Image
                                                 src={feature.illustration}
                                                 alt={feature.title}
@@ -74,7 +73,7 @@ const FeaturesSection = forwardRef<HTMLDivElement>((props, ref) => {
                                                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                                                 sizes="(max-width: 768px) 100vw, 50vw"
                                             />
-                                        </ParallaxImage>
+                                        </div>
                                     </div>
                                 </div>
 

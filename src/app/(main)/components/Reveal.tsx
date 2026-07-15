@@ -1,7 +1,6 @@
 "use client"
 
-import { motion, useInView } from "framer-motion"
-import { useRef, type ReactNode } from "react"
+import { useEffect, useRef, useState, type ReactNode } from "react"
 
 interface RevealProps {
     children: ReactNode
@@ -12,34 +11,58 @@ interface RevealProps {
     once?: boolean
 }
 
-export default function Reveal({ 
-    children, 
-    direction = "up", 
-    delay = 0, 
+export default function Reveal({
+    children,
+    direction = "up",
+    delay = 0,
     duration = 0.5,
     className = "",
-    once = true
+    once = true,
 }: RevealProps) {
-    const ref = useRef(null)
-    const isInView = useInView(ref, { once, margin: "-100px" })
+    const ref = useRef<HTMLDivElement>(null)
+    const [isVisible, setIsVisible] = useState(false)
 
-    const directions = {
-        up: { y: 50, x: 0 },
-        down: { y: -50, x: 0 },
-        left: { x: 50, y: 0 },
-        right: { x: -50, y: 0 },
-        fade: { opacity: 0 }
+    useEffect(() => {
+        const el = ref.current
+        if (!el) return
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true)
+                    if (once) observer.unobserve(el)
+                } else if (!once) {
+                    setIsVisible(false)
+                }
+            },
+            { rootMargin: "-100px" }
+        )
+
+        observer.observe(el)
+        return () => observer.disconnect()
+    }, [once])
+
+    const offsets: Record<string, { x?: string; y?: string }> = {
+        up: { y: "30px" },
+        down: { y: "-30px" },
+        left: { x: "30px" },
+        right: { x: "-30px" },
+        fade: {},
     }
 
+    const offset = offsets[direction]
+
     return (
-        <motion.div
+        <div
             ref={ref}
-            initial={{ ...directions[direction], opacity: 0 }}
-            animate={isInView ? { y: 0, x: 0, opacity: 1 } : { ...directions[direction], opacity: 0 }}
-            transition={{ duration, delay, ease: "easeOut" }}
             className={className}
+            style={{
+                opacity: isVisible ? 1 : 0,
+                transform: isVisible ? "translate(0, 0)" : `translate(${offset.x || "0"}, ${offset.y || "0"})`,
+                transition: `opacity ${duration}s cubic-bezier(0.23, 1, 0.32, 1) ${delay}s, transform ${duration}s cubic-bezier(0.23, 1, 0.32, 1) ${delay}s`,
+            }}
         >
             {children}
-        </motion.div>
+        </div>
     )
 }
