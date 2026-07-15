@@ -93,7 +93,7 @@ export default function Rooms() {
             <section className="relative w-full min-h-[360px] md:min-h-[550px] flex flex-col items-center justify-center px-6 py-12">
                 <div className="absolute inset-x-0 top-[-64px] bottom-0 z-0">
                     <img
-                        src="/illustrations/room_background.png"
+                        src="/illustrations/room_background.jpg"
                         alt=""
                         className="w-full h-full object-cover"
                     />
