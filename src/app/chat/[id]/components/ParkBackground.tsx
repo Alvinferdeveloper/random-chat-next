@@ -1,19 +1,25 @@
 "use client"
 
-import { motion } from "framer-motion"
 import { useEffect, useState, memo } from "react"
 
+interface Cloud {
+    id: number
+    y: number
+    scale: number
+    duration: number
+    delay: number
+}
+
 function ParkBackgroundComponent() {
-    const [clouds, setClouds] = useState<{ id: number; x: number; y: number; scale: number; duration: number; delay: number }[]>([])
+    const [clouds, setClouds] = useState<Cloud[]>([])
 
     useEffect(() => {
-        const newClouds = Array.from({ length: 6 }, (_, i) => ({
+        const newClouds: Cloud[] = Array.from({ length: 6 }, (_, i) => ({
             id: i,
-            x: -20, // Start off-screen left
             y: 10 + Math.random() * 40,
             scale: 0.5 + Math.random() * 1.5,
             duration: 40 + Math.random() * 40,
-            delay: Math.random() * -60, // Negative delay to start at random positions
+            delay: Math.random() * -60,
         }))
         setClouds(newClouds)
     }, [])
@@ -24,26 +30,18 @@ function ParkBackgroundComponent() {
             <div className="absolute inset-0 bg-gradient-to-b from-sky-300 via-sky-200 to-emerald-50" />
 
             {/* Sun */}
-            <motion.div
-                className="absolute top-10 right-1/3 w-32 h-32 rounded-full bg-yellow-200 blur-2xl opacity-60"
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            />
+            <div className="absolute top-10 right-1/3 w-32 h-32 rounded-full bg-yellow-200 blur-2xl opacity-60 animate-sun-pulse" />
             <div className="absolute top-16 right-1/3 w-20 h-20 rounded-full bg-yellow-400 opacity-80 shadow-[0_0_50px_rgba(250,204,21,0.5)]" />
 
             {/* Clouds */}
             {clouds.map((cloud) => (
-                <motion.div
+                <div
                     key={cloud.id}
-                    className="absolute text-white opacity-40"
-                    style={{ top: `${cloud.y}%`, left: `${cloud.x}%` }}
-                    initial={{ x: "-20vw" }}
-                    animate={{ x: "120vw" }}
-                    transition={{
-                        duration: cloud.duration,
-                        repeat: Infinity,
-                        delay: cloud.delay,
-                        ease: "linear",
+                    className="absolute text-white opacity-40 animate-cloud-drift"
+                    style={{
+                        top: `${cloud.y}%`,
+                        animationDuration: `${cloud.duration}s`,
+                        animationDelay: `${cloud.delay}s`,
                     }}
                 >
                     <svg width={100 * cloud.scale} height={60 * cloud.scale} viewBox="0 0 100 60">
@@ -52,7 +50,7 @@ function ParkBackgroundComponent() {
                             d="M20,40 Q20,20 40,20 Q45,10 60,10 Q80,10 80,30 Q95,30 95,45 Q95,60 80,60 L20,60 Q5,60 5,45 Q5,30 20,40 Z"
                         />
                     </svg>
-                </motion.div>
+                </div>
             ))}
 
             {/* Mountains/Hills */}

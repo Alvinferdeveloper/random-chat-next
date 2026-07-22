@@ -2,7 +2,6 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSocketHandler } from "@/src/app/hooks/useSocketHandler";
 import Link from "next/link";
 import { cn } from "@/src/lib/utils";
 import { Flag } from 'lucide-react';
@@ -19,6 +18,7 @@ interface User {
 
 interface UserListProps {
     users: User[];
+    typingUsers: Set<string>;
     roomId?: string;
 }
 
@@ -50,9 +50,8 @@ const TypingDots = () => {
     );
 };
 
-export function UserList({ users, roomId }: UserListProps) {
+export function UserList({ users, typingUsers, roomId }: UserListProps) {
     const { t } = useTranslation();
-    const { typingUsers } = useSocketHandler();
     const [reportDialogOpen, setReportDialogOpen] = useState(false);
     const [userToReport, setUserToReport] = useState<{ id: string, username: string } | null>(null);
 

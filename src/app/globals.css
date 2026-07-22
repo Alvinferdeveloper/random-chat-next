@@ -244,3 +244,55 @@
   animation: blob-3 25s linear infinite;
   will-change: transform;
 }
+
+/* Chat Background Animations */
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+@keyframes sun-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes cloud-drift {
+  0% { transform: translateX(-20vw); }
+  100% { transform: translateX(120vw); }
+}
+
+@keyframes tree-sway {
+  0%, 100% { transform: rotate(-1deg) translateX(-0.5px); }
+  50% { transform: rotate(1deg) translateX(0.5px); }
+}
+
+@keyframes leaf-fall {
+  0% { opacity: 0; transform: translateY(0) rotate(0deg); }
+  10% { opacity: 0.6; }
+  100% { opacity: 0; transform: translateY(100px) rotate(360deg); }
+}
+
+.animate-star-twinkle {
+  animation: star-twinkle var(--duration, 3s) ease-in-out var(--delay, 0s) infinite;
+  will-change: opacity;
+}
+
+.animate-sun-pulse {
+  animation: sun-pulse 4s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-cloud-drift {
+  animation: cloud-drift var(--duration, 60s) linear var(--delay, 0s) infinite;
+  will-change: transform;
+}
+
+.animate-tree-sway {
+  animation: tree-sway 4s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-leaf-fall {
+  animation: leaf-fall var(--duration, 4s) linear var(--delay, 0s) infinite;
+  will-change: transform, opacity;
+}

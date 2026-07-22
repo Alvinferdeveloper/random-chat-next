@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar"
 import { Button } from "@/src/components/ui/button";
 import Link from "next/link";
 import { Reply, ChevronRight, SmilePlus, Loader2, Heart, Megaphone, ShieldCheck, Pencil, Trash2 } from "lucide-react";
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, memo } from "react";
 import { useLongPress } from "@/src/app/chat/[id]/hooks/useLongPress";
 import { useHover } from "@/src/app/hooks/useHover";
 import { ReactionPicker } from "@/src/app/chat/[id]/components/ReactionPicker";
@@ -38,7 +38,7 @@ function formatTime(dateStr: string) {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
-export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, setReplyingToMessage, sendReaction, usersInRoom, favoriteGifs, toggleFavorite, onEdit, onDelete }: ChatMessageProps) {
+export const ChatMessage = memo(function ChatMessage({ msg, username, openImageViewer, scrollToBottom, setReplyingToMessage, sendReaction, usersInRoom, favoriteGifs, toggleFavorite, onEdit, onDelete }: ChatMessageProps) {
     const { t } = useTranslation();
     const isMyMessage = msg.username === username;
     const [menuVisible, setMenuVisible] = useState(false);
@@ -242,6 +242,8 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
                         src={gifUrl}
                         alt={t('chat.message.gif_alt')}
                         className="w-full object-cover"
+                        loading="lazy"
+                        decoding="async"
                         onLoad={scrollToBottom}
                     />
 
@@ -416,4 +418,4 @@ export function ChatMessage({ msg, username, openImageViewer, scrollToBottom, se
             )}
         </>
     );
-}
+});

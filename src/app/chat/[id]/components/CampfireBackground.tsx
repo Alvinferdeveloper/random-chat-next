@@ -1,13 +1,14 @@
 "use client"
 
-import { motion } from "framer-motion"
 import { useEffect, useState, memo } from "react"
 
 function CampfireBackgroundComponent() {
     const [stars, setStars] = useState<{ id: number; x: number; y: number; size: number; delay: number; duration: number }[]>([])
 
     useEffect(() => {
-        const newStars = Array.from({ length: 100 }, (_, i) => ({
+        const isMobile = window.innerWidth < 768
+        const count = isMobile ? 30 : 100
+        const newStars = Array.from({ length: count }, (_, i) => ({
             id: i,
             x: Math.random() * 100,
             y: Math.random() * 50,
@@ -53,19 +54,16 @@ function CampfireBackgroundComponent() {
                 <rect width="100" height="100" fill="url(#skyGlow)" />
 
                 {stars.map((star) => (
-                    <motion.circle
+                    <circle
                         key={star.id}
                         cx={`${star.x}%`}
                         cy={`${star.y}%`}
                         r={star.size}
                         fill="white"
-                        initial={{ opacity: 0.3 }}
-                        animate={{ opacity: [0.3, 1, 0.3] }}
-                        transition={{
-                            duration: star.duration,
-                            repeat: Infinity,
-                            delay: star.delay,
-                            ease: "easeInOut",
+                        className="animate-star-twinkle"
+                        style={{
+                            animationDuration: `${star.duration}s`,
+                            animationDelay: `${star.delay}s`,
                         }}
                     />
                 ))}

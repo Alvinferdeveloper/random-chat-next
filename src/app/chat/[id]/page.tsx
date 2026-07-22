@@ -141,7 +141,7 @@ export default function ChatPage() {
                         {mounted && (currentTheme === "light" ? (
                             <TreeIllustration className="w-80 h-80 opacity-90" />
                         ) : (
-                            <CampfireLottie src="/illustrations/fire/animations/12345.json" className="w-64 h-64 opacity-80" />
+                            hasHover && <CampfireLottie src="/illustrations/fire/animations/12345.json" className="w-64 h-64 opacity-80" />
                         ))}
                     </div>
                     <div className="relative z-10 flex-1 scrollbar-thin-light">
@@ -187,7 +187,7 @@ export default function ChatPage() {
                     "hidden md:flex flex-col h-full transition-all duration-300 ease-in-out",
                     isUserListVisible ? "w-[300px]" : "w-0"
                 )}>
-                    <UserList users={usersInRoom} />
+                    <UserList users={usersInRoom} typingUsers={typingUsers} />
                 </aside>
 
                 {/* Mobile Overlay */}
@@ -198,7 +198,7 @@ export default function ChatPage() {
                             className="fixed inset-0 z-20 bg-black/30 backdrop-blur-sm"
                         />
                         <aside className="fixed top-0 right-0 z-30 h-full w-[300px] bg-background transition-transform duration-300 ease-in-out translate-x-0">
-                            <UserList users={usersInRoom} />
+                            <UserList users={usersInRoom} typingUsers={typingUsers} />
                         </aside>
                     </>
                 )}

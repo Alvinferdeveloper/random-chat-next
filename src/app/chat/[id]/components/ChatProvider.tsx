@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import { useSocket } from '@/src/app/components/providers/SocketEventProvider';
 import { Message } from '@/src/types/chat';
 import { produce } from 'immer';
@@ -217,21 +217,23 @@ export const ChatProvider = ({ children, username }: ChatProviderProps) => {
         socket?.emit('delete-message', { messageId });
     }, [socket]);
 
+    const contextValue = useMemo(() => ({
+        messages,
+        usersInRoom,
+        notificationUser,
+        typingUsers,
+        startTyping,
+        stopTyping,
+        sendReaction,
+        addOptimisticMessage,
+        editMessage,
+        deleteMessage,
+        editingMessage,
+        setEditingMessage,
+    }), [messages, usersInRoom, notificationUser, typingUsers, startTyping, stopTyping, sendReaction, addOptimisticMessage, editMessage, deleteMessage, editingMessage, setEditingMessage]);
+
     return (
-        <ChatContext.Provider value={{
-            messages,
-            usersInRoom,
-            notificationUser,
-            typingUsers,
-            startTyping,
-            stopTyping,
-            sendReaction,
-            addOptimisticMessage,
-            editMessage,
-            deleteMessage,
-            editingMessage,
-            setEditingMessage,
-        }}>
+        <ChatContext.Provider value={contextValue}>
             {children}
         </ChatContext.Provider>
     );
