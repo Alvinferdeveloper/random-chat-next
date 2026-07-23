@@ -12,6 +12,7 @@ export type Room = {
     status: RoomStatus,
     ownerId: string,
     created_at: string,
+    categories?: { id: string; name: string; icon: string | null }[],
 }
 
 export type RoomStatus = 'IN_REVISION' | 'ACCEPTED' | 'REJECTED';

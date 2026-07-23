@@ -4,7 +4,7 @@ import { useAuth } from '@/src/app/hooks/useAuth';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { Loader2, ShieldCheck, LayoutDashboard, MessageSquare, Users, AlertCircle, Tag, LogOut, ChevronRight, SunMoon } from 'lucide-react';
+import { Loader2, ShieldCheck, LayoutDashboard, MessageSquare, Users, AlertCircle, Tag, LogOut, ChevronRight, SunMoon, Home } from 'lucide-react';
 import { ThemeToggle } from '@/src/app/components/layout/ThemeToggle';
 import { cn } from '@/src/lib/utils';
 import { useAdminNotifications } from '@/src/app/(protected)/admin/hooks/useAdminNotifications';
@@ -18,6 +18,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     const NAV_ITEMS = [
         { href: '/admin', label: t('admin.nav.dashboard'), icon: LayoutDashboard, exact: true },
+        { href: '/admin/my-rooms', label: t('admin.nav.my_rooms'), icon: Home },
         { href: '/admin/rooms', label: t('admin.nav.pending_rooms'), icon: MessageSquare },
         { href: '/admin/users', label: t('admin.nav.users'), icon: Users },
         { href: '/admin/reports', label: t('admin.nav.reports'), icon: AlertCircle },

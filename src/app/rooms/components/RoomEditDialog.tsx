@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { Room } from '@/src/app/rooms/hooks/useRoom';
 import { useUpdateRoom } from '@/src/app/rooms/hooks/useUpdateRoom';
 import { useCreateRoom } from '@/src/app/rooms/create/hooks/useCreateRoom';
+import { useCategories } from '@/src/app/rooms/create/hooks/useCategories';
+import { CategorySelector } from '@/src/app/rooms/create/components/CategorySelector';
 import {
     Dialog,
     DialogContent,
@@ -29,6 +31,7 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
     const { t } = useTranslation();
     const { updateRoom, loading: updatingInfo } = useUpdateRoom();
     const { uploadRoomImage, uploading } = useCreateRoom();
+    const { categories: allCategories, loading: categoriesLoading } = useCategories();
 
     const [editForm, setEditForm] = useState({
         name: room.name,
@@ -36,7 +39,10 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
         full_description: room.full_description,
     });
 
-    // Local states for file selection and previews
+    const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>(
+        room.categories?.map(c => c.id) || []
+    );
+
     const [selectedBanner, setSelectedBanner] = useState<File | null>(null);
     const [selectedIcon, setSelectedIcon] = useState<File | null>(null);
     const [bannerPreview, setBannerPreview] = useState<string | null>(null);
@@ -61,7 +67,6 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
 
     const handleSaveInfo = async () => {
         try {
-            // 1. Upload images if selected
             if (selectedBanner) {
                 await uploadRoomImage(room.id, 'banner', selectedBanner);
             }
@@ -69,13 +74,25 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
                 await uploadRoomImage(room.id, 'icon', selectedIcon);
             }
 
-            // 2. Update text fields
             const fields = Object.keys(editForm) as (keyof typeof editForm)[];
-            let changed = false;
             for (const field of fields) {
                 if (editForm[field] !== (room as any)[field]) {
                     await updateRoom(room.id, field, editForm[field]);
-                    changed = true;
+                }
+            }
+
+            const originalIds = (room.categories?.map(c => c.id) || []).sort();
+            const newIds = [...selectedCategoryIds].sort();
+            if (JSON.stringify(originalIds) !== JSON.stringify(newIds)) {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/rooms/${room.id}/categories`, {
+                    method: 'PATCH',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ categoryIds: selectedCategoryIds }),
+                });
+                if (!res.ok) {
+                    const json = await res.json();
+                    throw new Error(json.message || 'CATEGORIES_UPDATE_ERROR');
                 }
             }
 
@@ -103,7 +120,6 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
                 </DialogHeader>
 
                 <div className="grid gap-6 py-4">
-                    {/* Images Section */}
                     <div className="grid grid-cols-2 gap-4">
                         <ImageUploadField
                             label={t('rooms.edit.icon_label')}
@@ -149,6 +165,15 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
                             value={editForm.full_description}
                             onChange={(e) => setEditForm({ ...editForm, full_description: e.target.value })}
                             className="bg-[#36393f] border-none text-white focus-visible:ring-blue-500 min-h-[100px]"
+                        />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <CategorySelector
+                            categories={allCategories}
+                            selectedIds={selectedCategoryIds}
+                            onChange={setSelectedCategoryIds}
+                            loading={categoriesLoading}
                         />
                     </div>
                 </div>

@@ -36,7 +36,10 @@ export function RoomCard({
     const [hovered, setHovered] = useState(false);
     const { session } = useAuth();
 
-    const isOwner = session?.user?.id === room.ownerId;
+    const id1 = String(session?.user?.id).trim();
+    const id2 = String(room?.ownerId).trim();
+
+    const isOwner = Boolean(id1) && id1 === id2;
 
     return (
         <motion.div
