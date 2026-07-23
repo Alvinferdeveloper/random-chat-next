@@ -20,6 +20,8 @@ interface RoomCardProps {
     cardVariants: any;
     footer?: React.ReactNode;
     onDelete?: (roomId: string) => Promise<any>;
+    onUpdate?: (roomId: string, updates: Partial<Room>) => void;
+    onUpdateCategories?: (roomId: string, categoryIds: string[]) => Promise<any>;
 }
 
 export function RoomCard({
@@ -30,7 +32,9 @@ export function RoomCard({
     onJoin,
     cardVariants,
     footer,
-    onDelete
+    onDelete,
+    onUpdate,
+    onUpdateCategories,
 }: RoomCardProps) {
     const { isFavorite, toggleFavorite } = useFavoriteRoom(room.id, room.isFavorite);
     const [hovered, setHovered] = useState(false);
@@ -69,6 +73,8 @@ export function RoomCard({
                         isFavorite={isFavorite}
                         onToggleFavorite={toggleFavorite}
                         onDelete={onDelete}
+                        onUpdate={onUpdate}
+                        onUpdateCategories={onUpdateCategories}
                     />
                 </RoomCardBanner>
 

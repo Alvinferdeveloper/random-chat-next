@@ -87,12 +87,45 @@ export function useMyRooms(statusFilter: RoomStatus | 'ALL' = 'ALL') {
         }
     };
 
+    const updateRoom = (roomId: string, updates: Partial<Room>) => {
+        setRooms(prev => prev.map(room => room.id === roomId ? { ...room, ...updates } : room));
+    };
+
+    const updateCategories = async (roomId: string, categoryIds: string[]) => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/rooms/${roomId}/categories`, {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ categoryIds }),
+            });
+
+            if (!response.ok) {
+                const result = await response.json();
+                throw new Error(result.message || "CATEGORIES_UPDATE_ERROR");
+            }
+
+            setRooms(prev => prev.map(room => {
+                if (room.id === roomId) {
+                    return { ...room, categories: (room.categories || []).filter(c => categoryIds.includes(c.id)) };
+                }
+                return room;
+            }));
+
+            return { success: true };
+        } catch (err: any) {
+            return { success: false, message: err.message };
+        }
+    };
+
     return {
         rooms,
         loading,
         error,
         hasMore,
         loadMoreRooms,
-        deleteRoom
+        deleteRoom,
+        updateRoom,
+        updateCategories,
     };
 }

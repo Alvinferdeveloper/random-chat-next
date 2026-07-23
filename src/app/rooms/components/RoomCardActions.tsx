@@ -13,9 +13,11 @@ interface RoomCardActionsProps {
     isFavorite: boolean;
     onToggleFavorite: (e: React.MouseEvent) => void;
     onDelete?: (roomId: string) => Promise<void>;
+    onUpdate?: (roomId: string, updates: Partial<Room>) => void;
+    onUpdateCategories?: (roomId: string, categoryIds: string[]) => Promise<any>;
 }
 
-export function RoomCardActions({ room, isOwner, isFavorite, onToggleFavorite, onDelete }: RoomCardActionsProps) {
+export function RoomCardActions({ room, isOwner, isFavorite, onToggleFavorite, onDelete, onUpdate, onUpdateCategories }: RoomCardActionsProps) {
     const { t } = useTranslation();
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -64,6 +66,8 @@ export function RoomCardActions({ room, isOwner, isFavorite, onToggleFavorite, o
                         room={room}
                         open={isEditDialogOpen}
                         onOpenChange={setIsEditDialogOpen}
+                        onUpdate={onUpdate}
+                        onUpdateCategories={onUpdateCategories}
                     />
                 </>
             )}

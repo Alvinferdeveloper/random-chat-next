@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Room } from '@/src/app/rooms/hooks/useRoom';
 import { useUpdateRoom } from '@/src/app/rooms/hooks/useUpdateRoom';
@@ -25,9 +25,11 @@ interface RoomEditDialogProps {
     room: Room;
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    onUpdate?: (roomId: string, updates: Partial<Room>) => void;
+    onUpdateCategories?: (roomId: string, categoryIds: string[]) => Promise<any>;
 }
 
-export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps) {
+export function RoomEditDialog({ room, open, onOpenChange, onUpdate, onUpdateCategories }: RoomEditDialogProps) {
     const { t } = useTranslation();
     const { updateRoom, loading: updatingInfo } = useUpdateRoom();
     const { uploadRoomImage, uploading } = useCreateRoom();
@@ -51,6 +53,21 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
     const bannerInputRef = useRef<HTMLInputElement>(null);
     const iconInputRef = useRef<HTMLInputElement>(null);
 
+    useEffect(() => {
+        if (open) {
+            setEditForm({
+                name: room.name,
+                short_description: room.short_description,
+                full_description: room.full_description,
+            });
+            setSelectedCategoryIds(room.categories?.map(c => c.id) || []);
+            setSelectedBanner(null);
+            setSelectedIcon(null);
+            setBannerPreview(null);
+            setIconPreview(null);
+        }
+    }, [open, room]);
+
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, type: 'banner' | 'icon') => {
         const file = event.target.files?.[0];
         if (!file) return;
@@ -67,36 +84,36 @@ export function RoomEditDialog({ room, open, onOpenChange }: RoomEditDialogProps
 
     const handleSaveInfo = async () => {
         try {
+            const updates: Partial<Room> = {};
+
             if (selectedBanner) {
-                await uploadRoomImage(room.id, 'banner', selectedBanner);
+                const result = await uploadRoomImage(room.id, 'banner', selectedBanner);
+                if (result?.publicUrl) updates.server_banner = result.publicUrl;
             }
             if (selectedIcon) {
-                await uploadRoomImage(room.id, 'icon', selectedIcon);
+                const result = await uploadRoomImage(room.id, 'icon', selectedIcon);
+                if (result?.publicUrl) updates.server_icon = result.publicUrl;
             }
 
             const fields = Object.keys(editForm) as (keyof typeof editForm)[];
             for (const field of fields) {
                 if (editForm[field] !== (room as any)[field]) {
                     await updateRoom(room.id, field, editForm[field]);
+                    updates[field] = editForm[field];
                 }
+            }
+
+            if (Object.keys(updates).length > 0 && onUpdate) {
+                onUpdate(room.id, updates);
             }
 
             const originalIds = (room.categories?.map(c => c.id) || []).sort();
             const newIds = [...selectedCategoryIds].sort();
             if (JSON.stringify(originalIds) !== JSON.stringify(newIds)) {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/rooms/${room.id}/categories`, {
-                    method: 'PATCH',
-                    credentials: 'include',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ categoryIds: selectedCategoryIds }),
-                });
-                if (!res.ok) {
-                    const json = await res.json();
-                    throw new Error(json.message || 'CATEGORIES_UPDATE_ERROR');
+                if (onUpdateCategories) {
+                    await onUpdateCategories(room.id, selectedCategoryIds);
                 }
             }
-
-            window.location.reload();
         } catch (error) {
             console.error("Error saving room info:", error);
         } finally {

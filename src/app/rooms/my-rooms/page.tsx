@@ -36,7 +36,7 @@ export default function MyRoomsPage() {
     const [connecting, setConnecting] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<StatusTab>('ALL');
     const { userCounts } = useRoomUserCounts();
-    const { rooms, loading, error, hasMore, loadMoreRooms, deleteRoom } = useMyRooms(activeTab);
+    const { rooms, loading, error, hasMore, loadMoreRooms, deleteRoom, updateRoom, updateCategories } = useMyRooms(activeTab);
 
     const { sentinelRef } = useInfiniteScroll({ loading, hasMore, onLoadMore: loadMoreRooms });
 
@@ -142,6 +142,8 @@ export default function MyRoomsPage() {
                                         onJoin={handleJoinRoom}
                                         cardVariants={cardVariants}
                                         onDelete={deleteRoom}
+                                        onUpdate={updateRoom}
+                                        onUpdateCategories={updateCategories}
                                         footer={
                                             <RoomCardFooter room={room} />
                                         }
