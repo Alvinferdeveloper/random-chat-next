@@ -93,7 +93,15 @@ export function GlobalSearch() {
                                             className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-secondary rounded-xl transition-colors text-left cursor-pointer"
                                         >
                                             <div className="w-10 h-10 rounded-full">
-                                                <img src={result.serverIcon} className='w-full h-full object-cover rounded-full' alt="" />
+                                                {result.serverIcon ? (
+                                                    <img src={result.serverIcon} className='w-full h-full object-cover rounded-full' alt="" />
+                                                ) : (
+                                                    <div className="w-full h-full bg-primary/10 flex items-center justify-center rounded-full">
+                                                        <span className="text-primary text-xl font-bold">
+                                                            {result.name.charAt(0).toUpperCase()}
+                                                        </span>
+                                                    </div>
+                                                )}
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center justify-between">
