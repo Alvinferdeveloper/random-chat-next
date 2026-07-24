@@ -1,8 +1,9 @@
 import { Metadata } from "next";
+import { APP_NAME } from "@/src/app/constants";
 
 export const metadata: Metadata = {
-    title: "Create Room",
-    description: "Create your own themed chat room. Set up the perfect space to gather people who share your interests.",
+    title: "Crear Sala",
+    description: `Crea tu propia sala de chat temática en ${APP_NAME}. Reúne a personas que comparten tus intereses.`,
     robots: {
         index: true,
         follow: true,

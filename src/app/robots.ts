@@ -1,14 +1,13 @@
 import { MetadataRoute } from 'next'
-
-const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+import { APP_URL } from '@/src/app/constants'
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/chat/', '/profile/', '/rooms/favorites', '/rooms/my-rooms', '/verify-email'],
+      disallow: ['/chat/', '/profile/', '/rooms/favorites', '/rooms/my-rooms', '/verify-email', '/api/'],
     },
-    sitemap: `${appUrl}/sitemap.xml`,
+    sitemap: `${APP_URL}/sitemap.xml`,
   }
 }

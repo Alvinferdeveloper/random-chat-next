@@ -15,6 +15,7 @@ import { useCategories } from '@/src/app/rooms/create/hooks/useCategories';
 import { useRoomUserCounts } from '@/src/app/rooms/hooks/useRoomUserCounts';
 import { useDebounce } from '@/src/app/hooks/useDebounce';
 import { Search, X, Loader2 } from 'lucide-react';
+import { APP_NAME } from '@/src/app/constants';
 
 const cardVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
@@ -132,10 +133,10 @@ export default function Rooms() {
                         transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] as const, delay: 0.1 }}
                         className="relative text-white text-5xl md:text-[64px] font-black tracking-tight leading-[1.05] drop-shadow-xl after:block after:content-[''] after:w-14 after:h-1 after:bg-emerald-400/60 after:mx-auto after:mt-5 after:rounded-full"
                     >
-                        {t('rooms.hero.title').split('ChatHub').map((part, i, arr) => (
+                        {t('rooms.hero.title').split(APP_NAME).map((part, i, arr) => (
                             <span key={i}>
                                 {part}
-                                {i < arr.length - 1 && <span className="text-primary">ChatHub</span>}
+                                {i < arr.length - 1 && <span className="text-primary">{APP_NAME}</span>}
                             </span>
                         ))}
                     </motion.h1>

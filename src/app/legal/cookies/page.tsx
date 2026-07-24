@@ -1,8 +1,9 @@
 import { Metadata } from "next";
+import { APP_NAME } from "@/src/app/constants";
 
 export const metadata: Metadata = {
-    title: "Política de Cookies | ChatHub",
-    description: "Información sobre cómo utilizamos las cookies para mejorar tu experiencia.",
+    title: "Política de Cookies",
+    description: `Información sobre cómo utilizamos las cookies para mejorar tu experiencia en ${APP_NAME}.`,
 };
 
 export default function CookiesPage() {
@@ -10,7 +11,7 @@ export default function CookiesPage() {
         <section>
             <h1 className="text-4xl font-extrabold mb-8">Política de Cookies</h1>
             <p className="text-lg text-muted-foreground mb-6">
-                Utilizamos cookies para que ChatHub funcione correctamente y para entender cómo usas nuestra plataforma.
+                Utilizamos cookies para que {APP_NAME} funcione correctamente y para entender cómo usas nuestra plataforma.
             </p>
 
             <h2 className="text-2xl font-bold mt-8 mb-4">¿Qué es una cookie?</h2>
@@ -27,7 +28,7 @@ export default function CookiesPage() {
 
             <h2 className="text-2xl font-bold mt-8 mb-4">Control de cookies</h2>
             <p className="mb-4">
-                Puedes desactivar las cookies en cualquier momento desde la configuración de tu navegador, pero ten en cuenta que algunas funciones de ChatHub podrían dejar de funcionar.
+                Puedes desactivar las cookies en cualquier momento desde la configuración de tu navegador, pero ten en cuenta que algunas funciones de {APP_NAME} podrían dejar de funcionar.
             </p>
 
             <div className="mt-12 p-6 bg-muted rounded-lg">

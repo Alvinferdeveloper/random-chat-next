@@ -1,8 +1,9 @@
 import { Metadata } from "next";
+import { APP_NAME } from "@/src/app/constants";
 
 export const metadata: Metadata = {
     title: "Mis Salas",
-    description: "Gestiona las salas de chat que has creado en ChatHub. Administra tu comunidad.",
+    description: `Gestiona las salas de chat que has creado en ${APP_NAME}. Administra tu comunidad.`,
     robots: {
         index: false,
         follow: true,

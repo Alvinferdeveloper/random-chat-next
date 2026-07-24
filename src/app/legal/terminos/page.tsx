@@ -1,8 +1,9 @@
 import { Metadata } from "next";
+import { APP_NAME } from "@/src/app/constants";
 
 export const metadata: Metadata = {
-    title: "Términos de Servicio | ChatHub",
-    description: "Lee los términos y condiciones de uso de la plataforma ChatHub.",
+    title: "Términos de Servicio",
+    description: `Lee los términos y condiciones de uso de la plataforma ${APP_NAME}.`,
 };
 
 export default function TermsPage() {
@@ -10,12 +11,12 @@ export default function TermsPage() {
         <section>
             <h1 className="text-4xl font-extrabold mb-8">Términos de Servicio</h1>
             <p className="text-lg text-muted-foreground mb-6">
-                Al usar ChatHub, aceptas cumplir con los siguientes términos y condiciones. Por favor, léelos atentamente.
+                Al usar {APP_NAME}, aceptas cumplir con los siguientes términos y condiciones. Por favor, léelos atentamente.
             </p>
 
             <h2 className="text-2xl font-bold mt-8 mb-4">1. Uso del Servicio</h2>
             <p className="mb-4">
-                ChatHub es una plataforma para la comunicación entre personas. Te comprometes a no usar el servicio para fines ilegales o que violen nuestras normas de la comunidad.
+                {APP_NAME} es una plataforma para la comunicación entre personas. Te comprometes a no usar el servicio para fines ilegales o que violen nuestras normas de la comunidad.
             </p>
 
             <h2 className="text-2xl font-bold mt-8 mb-4">2. Contenido del Usuario</h2>
@@ -30,7 +31,7 @@ export default function TermsPage() {
 
             <h2 className="text-2xl font-bold mt-8 mb-4">4. Limitación de Responsabilidad</h2>
             <p className="mb-4">
-                ChatHub se proporciona "tal cual". No nos hacemos responsables de las interacciones externas entre usuarios ni de la pérdida de datos fuera de nuestro control técnico.
+                {APP_NAME} se proporciona "tal cual". No nos hacemos responsables de las interacciones externas entre usuarios ni de la pérdida de datos fuera de nuestro control técnico.
             </p>
 
             <div className="mt-12 p-6 bg-muted rounded-lg">

@@ -1,3 +1,6 @@
+export const APP_NAME = "ChatHub";
+export const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+
 export const ageRangeOptions = [
     { value: 'RANGE_19_24', label: '19-24 años' },
     { value: 'RANGE_25_34', label: '25-34 años' },

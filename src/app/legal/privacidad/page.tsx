@@ -1,8 +1,9 @@
 import { Metadata } from "next";
+import { APP_NAME } from "@/src/app/constants";
 
 export const metadata: Metadata = {
-    title: "Política de Privacidad | ChatHub",
-    description: "Conoce cómo manejamos tus datos y protegemos tu privacidad en ChatHub.",
+    title: "Política de Privacidad",
+    description: `Conoce cómo manejamos tus datos y protegemos tu privacidad en ${APP_NAME}.`,
 };
 
 export default function PrivacyPage() {
@@ -10,7 +11,7 @@ export default function PrivacyPage() {
         <section>
             <h1 className="text-4xl font-extrabold mb-8">Política de Privacidad</h1>
             <p className="text-lg text-muted-foreground mb-6">
-                En ChatHub, la privacidad de nuestros usuarios es nuestra prioridad. Esta política describe cómo recopilamos, usamos y protegemos tu información.
+                En {APP_NAME}, la privacidad de nuestros usuarios es nuestra prioridad. Esta política describe cómo recopilamos, usamos y protegemos tu información.
             </p>
 
             <h2 className="text-2xl font-bold mt-8 mb-4">1. Información que recopilamos</h2>

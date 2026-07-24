@@ -1,14 +1,16 @@
 import { Metadata } from "next";
+import { JsonLd } from "@/src/components/seo/JsonLd";
+import { APP_NAME } from "@/src/app/constants";
 
 export const metadata: Metadata = {
-    title: "Preguntas Frecuentes | ChatHub",
-    description: "Encuentra respuestas a las dudas más comunes sobre ChatHub.",
+    title: `Preguntas Frecuentes`,
+    description: `Encuentra respuestas a las dudas más comunes sobre ${APP_NAME}.`,
 };
 
 export default function FAQPage() {
     const faqs = [
         {
-            q: "¿Es ChatHub gratuito?",
+            q: `¿Es ${APP_NAME} gratuito?`,
             a: "Sí, puedes unirte a cualquier sala pública y chatear de forma totalmente gratuita."
         },
         {
@@ -23,6 +25,15 @@ export default function FAQPage() {
 
     return (
         <div className="container mx-auto px-4 py-16 max-w-3xl">
+            <JsonLd data={{
+                '@context': 'https://schema.org',
+                '@type': 'FAQPage',
+                mainEntity: faqs.map(faq => ({
+                    '@type': 'Question',
+                    name: faq.q,
+                    acceptedAnswer: { '@type': 'Answer', text: faq.a },
+                })),
+            }} />
             <h1 className="text-4xl font-extrabold mb-12 text-center">Preguntas Frecuentes</h1>
             <div className="space-y-8">
                 {faqs.map((faq, i) => (

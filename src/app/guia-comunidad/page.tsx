@@ -1,8 +1,9 @@
 import { Metadata } from "next";
+import { APP_NAME } from "@/src/app/constants";
 
 export const metadata: Metadata = {
-    title: "Normas de la Comunidad | ChatHub",
-    description: "Nuestras reglas para mantener un ambiente seguro y divertido.",
+    title: "Normas de la Comunidad",
+    description: `Nuestras reglas para mantener un ambiente seguro y divertido en ${APP_NAME}.`,
 };
 
 export default function CommunityGuidePage() {
@@ -10,7 +11,7 @@ export default function CommunityGuidePage() {
         <div className="container mx-auto px-4 py-16 max-w-3xl">
             <h1 className="text-4xl font-extrabold mb-8">Normas de la Comunidad</h1>
             <p className="text-lg text-muted-foreground mb-10">
-                Queremos que ChatHub sea un lugar increíble para todos. Para lograrlo, pedimos a todos los usuarios que sigan estas reglas básicas:
+                Queremos que {APP_NAME} sea un lugar increíble para todos. Para lograrlo, pedimos a todos los usuarios que sigan estas reglas básicas:
             </p>
 
             <div className="space-y-12">

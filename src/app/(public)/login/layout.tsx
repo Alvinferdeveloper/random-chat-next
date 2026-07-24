@@ -1,8 +1,9 @@
 import { Metadata } from "next";
+import { APP_NAME } from "@/src/app/constants";
 
 export const metadata: Metadata = {
-    title: "Sign In",
-    description: "Sign in to ChatHub to join chat rooms, connect with people, and share moments.",
+    title: "Iniciar Sesión",
+    description: `Inicia sesión en ${APP_NAME} para unirte a salas de chat, conectar con personas y compartir momentos.`,
     robots: {
         index: false,
         follow: true,

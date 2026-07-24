@@ -7,6 +7,8 @@ import { SessionProvider } from "@/src/app/components/providers/SessionProvider"
 import { MaintenanceGuard } from "@/src/app/components/providers/MaintenanceGuard";
 import { I18nProvider } from "@/src/app/components/providers/I18nProvider";
 import { Toaster } from "@/src/components/ui/sonner";
+import { JsonLd } from "@/src/components/seo/JsonLd";
+import { APP_NAME, APP_URL } from "@/src/app/constants";
 import localfont from 'next/font/local'
 
 const montserrat = Montserrat({
@@ -33,17 +35,17 @@ const chillax = localfont({
   variable: "--font-chillax",
 })
 
-const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+const appUrl = APP_URL;
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | ChatHub",
-    default: "ChatHub - Conecta y Comparte en Tiempo Real",
+    template: `%s | ${APP_NAME}`,
+    default: `${APP_NAME} - Conecta y Comparte en Tiempo Real`,
   },
-  description: "Únete a salas de chat temáticas, comparte momentos y conoce gente nueva en ChatHub, tu comunidad cálida y moderna.",
-  keywords: ["chat", "chathub", "random chat", "salas de chat", "comunidad", "tiempo real", "mensajería"],
-  authors: [{ name: "ChatHub Team" }],
-  creator: "ChatHub Team",
+  description: `Únete a salas de chat temáticas, comparte momentos y conoce gente nueva en ${APP_NAME}, tu comunidad cálida y moderna.`,
+  keywords: ["chat", "random chat", "salas de chat", "comunidad", "tiempo real", "mensajería"],
+  authors: [{ name: `${APP_NAME} Team` }],
+  creator: `${APP_NAME} Team`,
   metadataBase: new URL(appUrl),
   alternates: {
     canonical: appUrl,
@@ -55,22 +57,22 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_ES",
     url: appUrl,
-    siteName: "ChatHub",
-    title: "ChatHub - Conecta y Comparte en Tiempo Real",
-    description: "Únete a salas de chat temáticas, comparte momentos y conoce gente nueva en ChatHub, tu comunidad cálida y moderna.",
+    siteName: APP_NAME,
+    title: `${APP_NAME} - Conecta y Comparte en Tiempo Real`,
+    description: `Únete a salas de chat temáticas, comparte momentos y conoce gente nueva en ${APP_NAME}, tu comunidad cálida y moderna.`,
     images: [
       {
         url: "/images/logo_chat.png",
         width: 1200,
         height: 630,
-        alt: "ChatHub Logo",
+        alt: `${APP_NAME} Logo`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ChatHub - Conecta y Comparte en Tiempo Real",
-    description: "Únete a salas de chat temáticas, comparte momentos y conoce gente nueva en ChatHub, tu comunidad cálida y moderna.",
+    title: `${APP_NAME} - Conecta y Comparte en Tiempo Real`,
+    description: `Únete a salas de chat temáticas, comparte momentos y conoce gente nueva en ${APP_NAME}, tu comunidad cálida y moderna.`,
     images: ["/images/logo_chat.png"],
   },
   robots: {
@@ -106,6 +108,30 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
+      <head>
+        <JsonLd data={{
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: APP_NAME,
+          url: APP_URL,
+          description: `Únete a salas de chat temáticas, comparte momentos y conoce gente nueva en ${APP_NAME}.`,
+          inLanguage: 'es',
+          publisher: {
+            '@type': 'Organization',
+            name: APP_NAME,
+            logo: { '@type': 'ImageObject', url: `${APP_URL}/images/logo_chat.png` },
+          },
+        }} />
+        <JsonLd data={{
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          name: APP_NAME,
+          url: APP_URL,
+          logo: { '@type': 'ImageObject', url: `${APP_URL}/images/logo_chat.png`, width: 512, height: 512 },
+          sameAs: [],
+          contactPoint: { '@type': 'ContactPoint', contactType: 'customer service' },
+        }} />
+      </head>
       <body className={chillax.className}>
         <I18nProvider>
           <SessionProvider>
