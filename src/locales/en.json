@@ -466,6 +466,7 @@
     "rooms.hero.title": "Find your place in ChatHub",
     "rooms.hero.subtitle": "Gaming, music, learning and more. There's a room waiting for you.",
     "rooms.search.placeholder": "Explore communities",
+    "rooms.search.suggestions": "Popular categories",
     "rooms.load_more.retry": "Retry loading more",
     "rooms.load_more.loading": "Loading more rooms...",
     "rooms.load_more.no_more": "No more rooms to show.",

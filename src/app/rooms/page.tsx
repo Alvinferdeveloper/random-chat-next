@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import useRoom from '@/src/app/rooms/hooks/useRoom';
 import { AdditionalInfoModal } from '@/src/app/components/auth/AdditionalInfoModal';
@@ -10,6 +10,7 @@ import { useInfiniteScroll } from '@/src/app/hooks/useInfiniteScroll';
 import { motion, Variants } from 'framer-motion';
 import { RoomCard } from '@/src/app/rooms/components/RoomCard';
 import { RoomSkeleton } from '@/src/app/rooms/components/RoomSkeleton';
+import { useCategories } from '@/src/app/rooms/create/hooks/useCategories';
 
 import { useRoomUserCounts } from '@/src/app/rooms/hooks/useRoomUserCounts';
 import { useDebounce } from '@/src/app/hooks/useDebounce';
@@ -39,6 +40,9 @@ export default function Rooms() {
 
     const { sentinelRef } = useInfiniteScroll({ loading, hasMore, onLoadMore: loadMoreRooms });
     const { userCounts } = useRoomUserCounts();
+    const { categories } = useCategories();
+    const searchContainerRef = useRef<HTMLDivElement>(null);
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
 
     const { session, isPending } = useAuth();
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -51,6 +55,16 @@ export default function Rooms() {
             setIsModalOpen(true);
         }
     }, [isPending, isCompleteProfile, session?.user]);
+
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
+                setIsSearchFocused(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const handleProfileComplete = () => {
         setIsModalOpen(false);
@@ -140,6 +154,7 @@ export default function Rooms() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] as const, delay: 0.3 }}
                         className="w-full max-w-[680px] mt-8"
+                        ref={searchContainerRef}
                     >
                         <div className="relative flex items-center gap-2 rounded-xl border border-white/20 bg-white/15 backdrop-blur-md px-4 py-2 shadow-lg transition-all duration-200 focus-within:bg-white/20 focus-within:border-white/30">
                             <Search className="w-5 h-5 text-white/70 shrink-0" />
@@ -149,6 +164,7 @@ export default function Rooms() {
                                 placeholder={t('rooms.search.placeholder')}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
+                                onFocus={() => setIsSearchFocused(true)}
                             />
                             {searchQuery && (
                                 <button
@@ -159,6 +175,24 @@ export default function Rooms() {
                                 </button>
                             )}
                         </div>
+
+                        {isSearchFocused && !searchQuery && categories.length > 0 && (
+                            <div className="mt-2 rounded-xl border border-white/20 bg-white/15 backdrop-blur-md p-3 shadow-lg">
+                                <p className="text-xs text-white/60 font-medium mb-2 px-1">{t('rooms.search.suggestions')}</p>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {categories.map(category => (
+                                        <button
+                                            key={category.id}
+                                            onClick={() => { setSearchQuery(category.name); setIsSearchFocused(false); }}
+                                            className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3 py-1.5 text-sm text-white/80 hover:bg-white/20 hover:text-white transition-colors cursor-pointer"
+                                        >
+                                            {category.icon && <span>{category.icon}</span>}
+                                            {category.name}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </motion.div>
                 </div>
             </section>
