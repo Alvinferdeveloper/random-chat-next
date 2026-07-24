@@ -42,6 +42,9 @@ export const metadata: Metadata = {
     template: `%s | ${APP_NAME}`,
     default: `${APP_NAME} - Conecta y Comparte en Tiempo Real`,
   },
+  icons: {
+    icon: '/images/logo_chat.png'
+  },
   description: `Únete a salas de chat temáticas, comparte momentos y conoce gente nueva en ${APP_NAME}, tu comunidad cálida y moderna.`,
   keywords: ["chat", "random chat", "salas de chat", "comunidad", "tiempo real", "mensajería"],
   authors: [{ name: `${APP_NAME} Team` }],
