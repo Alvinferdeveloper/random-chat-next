@@ -5,6 +5,7 @@ import { useSocketHandler } from "@/src/app/hooks/useSocketHandler";
 import { useJoinRoom } from "@/src/app/hooks/useJoinRoom";
 import { useUsername } from "@/src/app/hooks/useUsername";
 import { useMessageInput } from "@/src/app/chat/[id]/hooks/useMessageInput";
+import { useRoomInfo } from "@/src/app/chat/[id]/hooks/useRoomInfo";
 import { useAutoScroll } from "@/src/app/chat/[id]/hooks/useAutoScroll";
 import { useImageViewer } from "@/src/app/chat/[id]/hooks/useImageViewer";
 import { ChatHeader } from "@/src/app/chat/[id]/components/ChatHeader";
@@ -39,7 +40,9 @@ export default function ChatPage() {
     const [mounted, setMounted] = useState(false);
 
     const searchParams = useSearchParams();
-    const roomName = searchParams.get("roomName");
+    const roomNameParam = searchParams.get("roomName");
+    const { room } = useRoomInfo(id as string);
+    const roomName = room?.name || roomNameParam;
 
     const {
         messages,
@@ -132,6 +135,7 @@ export default function ChatPage() {
             <ChatHeader
                 roomId={id as string}
                 roomName={roomName as string}
+                roomIcon={room?.server_icon}
                 isUserListVisible={isUserListVisible}
                 onToggleUserList={toggleUserList}
             />

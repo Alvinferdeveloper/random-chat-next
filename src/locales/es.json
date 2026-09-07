@@ -302,6 +302,9 @@
     "chat.header.back": "Volver",
     "chat.header.show_participants": "Mostrar participantes",
     "chat.header.room_fallback": "Chat",
+    "chat.header.share": "Compartir tribu",
+    "chat.header.link_copied": "Enlace copiado al portapapeles",
+    "chat.header.link_copy_error": "No se pudo copiar el enlace",
 
     "chat.connecting.connecting_to": "Conectando a {{topic}}",
     "chat.connecting.establishing": "Estableciendo conexión",
