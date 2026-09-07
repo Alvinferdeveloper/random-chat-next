@@ -15,7 +15,7 @@ export function useGuestRoute() {
     if (isPending) return;
 
     if (session && GUEST_ROUTES.includes(pathname)) {
-      router.replace("/rooms");
+      router.replace("/tribus");
     }
   }, [session, isPending, pathname, router]);
 

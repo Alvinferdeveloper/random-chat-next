@@ -10,6 +10,7 @@ import { UserNav } from '@/src/app/components/layout/ProfileDropDown';
 import { GlobalSearch } from './GlobalSearch';
 import { Compass, Menu, Search, X, HelpCircle, Users } from 'lucide-react';
 import { Button } from '@/src/components/ui/button';
+import { APP_NAME } from '@/src/app/constants';
 import {
   Sheet,
   SheetContent,
@@ -24,12 +25,12 @@ export default function Header() {
   const { t } = useTranslation();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  const isAppView = pathname?.startsWith('/chat') || pathname?.startsWith('/rooms') || pathname?.startsWith('/profile') || pathname?.startsWith('/dashboard');
+  const isAppView = pathname?.startsWith('/chat') || pathname?.startsWith('/tribus') || pathname?.startsWith('/profile') || pathname?.startsWith('/dashboard');
 
   const navItems = isAppView ? [
-    { href: '/rooms', label: t('layout.header.nav_explore') },
+    { href: '/tribus', label: t('layout.header.nav_explore') },
   ] : [
-    { href: '/rooms', label: t('layout.header.nav_explore') },
+    { href: '/tribus', label: t('layout.header.nav_explore') },
     { href: '/faq', label: t('layout.header.nav_faq'), icon: HelpCircle },
     { href: '/guia-comunidad', label: t('layout.header.nav_community'), icon: Users },
   ];
@@ -82,7 +83,7 @@ export default function Header() {
         <div className="flex items-center gap-4 lg:gap-8 flex-1 md:flex-initial">
           <Link href="/" className="flex items-center shrink-0 gap-2">
             <Image src="/images/logo_chat.png" width={30} height={30} alt="Logo" className="rounded-xl" />
-            <span className="text-xl font-bold tracking-tighter hidden lg:block">ChatHub</span>
+            <span className="text-xl font-bold tracking-tighter hidden lg:block">{APP_NAME}</span>
           </Link>
         </div>
 

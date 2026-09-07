@@ -2,16 +2,16 @@
 
 import { AuthGuard } from "@/src/app/components/auth/AuthGuard";
 import { useTranslation } from 'react-i18next';
-import { useMyRooms } from '@/src/app/rooms/my-rooms/hooks/useMyRooms';
-import { RoomCard } from '@/src/app/rooms/components/RoomCard';
+import { useMyRooms } from '@/src/app/tribus/my-rooms/hooks/useMyRooms';
+import { RoomCard } from '@/src/app/tribus/components/RoomCard';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useRoomUserCounts } from '@/src/app/rooms/hooks/useRoomUserCounts';
+import { useRoomUserCounts } from '@/src/app/tribus/hooks/useRoomUserCounts';
 import { useInfiniteScroll } from '@/src/app/hooks/useInfiniteScroll';
-import RoomCardFooter from '@/src/app/rooms/my-rooms/components/RoomCardFooter';
-import { RoomStatus } from '@/src/app/rooms/hooks/useRoom';
+import RoomCardFooter from '@/src/app/tribus/my-rooms/components/RoomCardFooter';
+import { RoomStatus } from '@/src/app/tribus/hooks/useRoom';
 import { cn } from '@/src/lib/utils';
 
 const cardVariants = {
@@ -71,14 +71,14 @@ export default function MyRoomsPage() {
                 <div className="max-w-7xl mx-auto space-y-8">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div className="space-y-1">
-                            <Link href="/rooms" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-2">
+                            <Link href="/tribus" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-2">
                                 <ArrowLeft className="h-4 w-4" />
                                 {t('rooms.my-rooms.back')}
                             </Link>
                             <h1 className="text-3xl font-bold tracking-tight text-white">{t('rooms.my-rooms.title')}</h1>
                             <p className="text-muted-foreground">{t('rooms.my-rooms.subtitle')}</p>
                         </div>
-                        <Link href="/rooms/create">
+                        <Link href="/tribus/create">
                             <button className="bg-primary cursor-pointer hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-md font-medium transition-colors">
                                 {t('rooms.my-rooms.create_new')}
                             </button>
@@ -122,7 +122,7 @@ export default function MyRoomsPage() {
                                 </p>
                             </div>
                             {activeTab === 'ALL' && (
-                                <Link href="/rooms/create">
+                                <Link href="/tribus/create">
                                     <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 rounded-md font-medium transition-colors">
                                         {t('rooms.my-rooms.create_first')}
                                     </button>

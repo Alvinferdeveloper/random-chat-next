@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { RoomStatus } from "@/src/app/rooms/hooks/useRoom";
+import { RoomStatus } from "@/src/app/tribus/hooks/useRoom";
 
 export type { RoomStatus };
 

@@ -30,7 +30,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     useEffect(() => {
         if (!isPending) {
             if (!session?.user || (session.user as any).role !== 'ADMIN') {
-                router.push('/rooms');
+                router.push('/tribus');
             }
         }
     }, [session, isPending, router]);
@@ -113,7 +113,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             </p>
                         </div>
                         <button
-                            onClick={() => router.push('/rooms')}
+                            onClick={() => router.push('/tribus')}
                             className="p-1.5 rounded-md text-admin-nav-icon hover:text-admin-nav-hover hover:bg-admin-nav-hover-bg transition-colors"
                             aria-label={t('admin.nav.leave_panel')}
                         >

@@ -1,4 +1,4 @@
-import { RoomStatus } from "@/src/app/rooms/hooks/useRoom";
+import { RoomStatus } from "@/src/app/tribus/hooks/useRoom";
 
 const ROOM_STATUS_CONFIG = {
     IN_REVISION: {

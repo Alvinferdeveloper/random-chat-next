@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Room, RoomStatus } from "@/src/app/rooms/hooks/useRoom";
+import { Room, RoomStatus } from "@/src/app/tribus/hooks/useRoom";
 
 export function useMyRooms(statusFilter: RoomStatus | 'ALL' = 'ALL') {
     const [rooms, setRooms] = useState<Room[]>([]);

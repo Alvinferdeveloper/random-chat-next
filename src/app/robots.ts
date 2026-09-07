@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/chat/', '/profile/', '/rooms/favorites', '/rooms/my-rooms', '/verify-email', '/api/'],
+      disallow: ['/chat/', '/profile/', '/tribus/favorites', '/tribus/my-rooms', '/verify-email', '/api/'],
     },
     sitemap: `${APP_URL}/sitemap.xml`,
   }

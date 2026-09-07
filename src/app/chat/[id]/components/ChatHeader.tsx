@@ -5,6 +5,7 @@ import { Button } from "@/src/components/ui/button";
 import Image from "next/image";
 import { ThemeToggle } from "@/src/app/components/layout/ThemeToggle";
 import { useTranslation } from "react-i18next";
+import { APP_NAME } from "@/src/app/constants";
 
 interface ChatHeaderProps {
     roomId: string;
@@ -30,7 +31,7 @@ export function ChatHeader({ roomId, roomName, isUserListVisible, onToggleUserLi
     return (
         <header className="sticky top-0 z-50 h-14 sm:h-16 flex items-center justify-between px-3 sm:px-5 border-b border-white/[0.04] bg-background/70 backdrop-blur-xl supports-[backdrop-filter]:bg-background/40 gap-2">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                <Link href="/rooms" className="shrink-0">
+                <Link href="/tribus" className="shrink-0">
                     <Button
                         variant="ghost"
                         size="icon"
@@ -84,7 +85,7 @@ export function ChatHeader({ roomId, roomName, isUserListVisible, onToggleUserLi
                         src="/images/logo_chat.png"
                         width={40}
                         height={40}
-                        alt="ChatHub"
+                        alt={APP_NAME}
                         className="w-8 h-8 sm:w-8 sm:h-8 object-contain opacity-70 hover:opacity-100 transition-opacity duration-200"
                     />
                 </Link>

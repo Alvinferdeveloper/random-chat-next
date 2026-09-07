@@ -1,4 +1,4 @@
-export const APP_NAME = "ChatHub";
+export const APP_NAME = "Tribuzz";
 export const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
 export const ageRangeOptions = [

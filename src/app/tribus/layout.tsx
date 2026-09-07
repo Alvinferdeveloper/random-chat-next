@@ -3,15 +3,15 @@ import { Metadata } from "next";
 import { APP_NAME } from "@/src/app/constants";
 
 export const metadata: Metadata = {
-    title: "Salas de Chat",
-    description: `Explora y únete a salas de chat temáticas. Comparte momentos y conoce gente nueva con intereses similares en ${APP_NAME}.`,
+    title: "Tribus",
+    description: `Explora y únete a tribus temáticas. Comparte momentos y conoce gente nueva con intereses similares en ${APP_NAME}.`,
     robots: {
         index: true,
         follow: true,
     },
     openGraph: {
-        title: `Salas de Chat - ${APP_NAME}`,
-        description: `Explora y únete a salas de chat temáticas. Comparte momentos y conoce gente nueva.`,
+        title: `Tribus - ${APP_NAME}`,
+        description: `Explora y únete a tribus temáticas. Comparte momentos y conoce gente nueva.`,
     },
 };
 

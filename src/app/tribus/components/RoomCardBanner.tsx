@@ -20,7 +20,7 @@ export function RoomCardBanner({ roomName, serverBanner, serverIcon, children }:
                 {serverBanner && !bannerError ? (
                     <img
                         src={serverBanner}
-                        alt="Room banner"
+                        alt="Tribe banner"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         onError={() => setBannerError(true)}
                     />

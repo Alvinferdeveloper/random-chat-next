@@ -16,7 +16,7 @@ export default function PrivacyPage() {
 
             <h2 className="text-2xl font-bold mt-8 mb-4">1. Información que recopilamos</h2>
             <p className="mb-4">
-                Recopilamos información básica para el funcionamiento del servicio, como tu nombre de usuario, correo electrónico y los mensajes que envías en las salas de chat.
+                Recopilamos información básica para el funcionamiento del servicio, como tu nombre de usuario, correo electrónico y los mensajes que envías en las tribus.
             </p>
 
             <h2 className="text-2xl font-bold mt-8 mb-4">2. Uso de la información</h2>

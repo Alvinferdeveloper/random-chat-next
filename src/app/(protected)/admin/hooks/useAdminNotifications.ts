@@ -20,7 +20,7 @@ export function useAdminNotifications() {
         };
 
         const handleNewRoom = (data: { roomId: string; name: string; ownerUsername: string }) => {
-            toast.info(`Nueva sala creada: ${data.name}`, {
+            toast.info(`Nueva tribu creada: ${data.name}`, {
                 description: `Por: ${data.ownerUsername}`,
                 action: {
                     label: 'Revisar',

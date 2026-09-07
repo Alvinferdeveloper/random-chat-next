@@ -15,6 +15,7 @@ import { ArrowLeft } from "lucide-react";
 import Facebook from '@/src/app/components/svg/logos/Facebook';
 import Google from '@/src/app/components/svg/logos/Google';
 import { AuthSplitScreen } from '@/src/app/components/auth/AuthSplitScreen';
+import { APP_NAME } from '@/src/app/constants';
 
 const container = {
   hidden: { opacity: 0 },
@@ -50,14 +51,14 @@ export default function LoginPage() {
   const handleGoogleLogin = async () => {
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/rooms`
+      callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/tribus`
     });
   };
 
   const handleFacebookLogin = async () => {
     await authClient.signIn.social({
       provider: "facebook",
-      callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/rooms`
+      callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/tribus`
     });
   };
 
@@ -81,7 +82,7 @@ export default function LoginPage() {
         setError(error.message || t('auth.login.error.invalid_credentials'));
       }
     } else {
-      router.push('/rooms');
+      router.push('/tribus');
     }
   };
 
@@ -105,7 +106,7 @@ export default function LoginPage() {
         <div className="flex-1 flex flex-col justify-center">
           <div className="flex justify-center mb-2">
             <Link href="/">
-              <Image src="/images/logo_chat.png" width={50} height={50} alt="ChatHub" priority className="h-auto" />
+              <Image src="/images/logo_chat.png" width={50} height={50} alt={APP_NAME} priority className="h-auto" />
             </Link>
           </div>
 

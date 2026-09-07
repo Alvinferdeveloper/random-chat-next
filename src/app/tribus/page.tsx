@@ -3,16 +3,16 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import useRoom from '@/src/app/rooms/hooks/useRoom';
+import useRoom from '@/src/app/tribus/hooks/useRoom';
 import { AdditionalInfoModal } from '@/src/app/components/auth/AdditionalInfoModal';
 import { useAuth } from '@/src/app/hooks/useAuth';
 import { useInfiniteScroll } from '@/src/app/hooks/useInfiniteScroll';
 import { motion, Variants } from 'framer-motion';
-import { RoomCard } from '@/src/app/rooms/components/RoomCard';
-import { RoomSkeleton } from '@/src/app/rooms/components/RoomSkeleton';
-import { useCategories } from '@/src/app/rooms/create/hooks/useCategories';
+import { RoomCard } from '@/src/app/tribus/components/RoomCard';
+import { RoomSkeleton } from '@/src/app/tribus/components/RoomSkeleton';
+import { useCategories } from '@/src/app/tribus/create/hooks/useCategories';
 
-import { useRoomUserCounts } from '@/src/app/rooms/hooks/useRoomUserCounts';
+import { useRoomUserCounts } from '@/src/app/tribus/hooks/useRoomUserCounts';
 import { useDebounce } from '@/src/app/hooks/useDebounce';
 import { Search, X, Loader2 } from 'lucide-react';
 import { APP_NAME } from '@/src/app/constants';

@@ -38,7 +38,7 @@ export default function CommunityGuidePage() {
                         <span>🚫</span> Nada de Spam
                     </h2>
                     <p className="text-muted-foreground">
-                        No uses las salas para publicidad no deseada o para enviar links maliciosos. El spam degrada la experiencia de todos.
+                        No uses las tribus para publicidad no deseada o para enviar links maliciosos. El spam degrada la experiencia de todos.
                     </p>
                 </section>
 
@@ -47,7 +47,7 @@ export default function CommunityGuidePage() {
                         <span>💬</span> Mantén el Tema
                     </h2>
                     <p className="text-muted-foreground">
-                        Intenta que tus conversaciones se ajusten al tema de la sala. Esto ayuda a que las comunidades crezcan de forma saludable.
+                        Intenta que tus conversaciones se ajusten al tema de la tribu. Esto ayuda a que las comunidades crezcan de forma saludable.
                     </p>
                 </section>
             </div>

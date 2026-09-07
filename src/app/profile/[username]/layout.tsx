@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     return {
         title: `${decoded}`,
-        description: `Perfil público de ${decoded} en ${APP_NAME}. Conoce sus intereses y salas favoritas.`,
+        description: `Perfil público de ${decoded} en ${APP_NAME}. Conoce sus intereses y tribus favoritas.`,
         robots: {
             index: true,
             follow: true,

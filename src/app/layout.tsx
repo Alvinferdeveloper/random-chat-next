@@ -45,8 +45,8 @@ export const metadata: Metadata = {
   icons: {
     icon: '/images/logo_chat.png'
   },
-  description: `Únete a salas de chat temáticas, comparte momentos y conoce gente nueva en ${APP_NAME}, tu comunidad cálida y moderna.`,
-  keywords: ["chat", "random chat", "salas de chat", "comunidad", "tiempo real", "mensajería"],
+  description: `Únete a tribus temáticas, comparte momentos y conoce gente nueva en ${APP_NAME}, tu comunidad cálida y moderna.`,
+  keywords: ["chat", "tribus", "comunidades", "comunidad", "tiempo real", "mensajería"],
   authors: [{ name: `${APP_NAME} Team` }],
   creator: `${APP_NAME} Team`,
   metadataBase: new URL(appUrl),
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     url: appUrl,
     siteName: APP_NAME,
     title: `${APP_NAME} - Conecta y Comparte en Tiempo Real`,
-    description: `Únete a salas de chat temáticas, comparte momentos y conoce gente nueva en ${APP_NAME}, tu comunidad cálida y moderna.`,
+    description: `Únete a tribus temáticas, comparte momentos y conoce gente nueva en ${APP_NAME}, tu comunidad cálida y moderna.`,
     images: [
       {
         url: "/images/logo_chat.png",
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: `${APP_NAME} - Conecta y Comparte en Tiempo Real`,
-    description: `Únete a salas de chat temáticas, comparte momentos y conoce gente nueva en ${APP_NAME}, tu comunidad cálida y moderna.`,
+    description: `Únete a tribus temáticas, comparte momentos y conoce gente nueva en ${APP_NAME}, tu comunidad cálida y moderna.`,
     images: ["/images/logo_chat.png"],
   },
   robots: {
@@ -117,7 +117,7 @@ export default function RootLayout({
           '@type': 'WebSite',
           name: APP_NAME,
           url: APP_URL,
-          description: `Únete a salas de chat temáticas, comparte momentos y conoce gente nueva en ${APP_NAME}.`,
+          description: `Únete a tribus temáticas, comparte momentos y conoce gente nueva en ${APP_NAME}.`,
           inLanguage: 'es',
           publisher: {
             '@type': 'Organization',

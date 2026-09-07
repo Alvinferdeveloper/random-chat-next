@@ -12,6 +12,7 @@ import { authClient } from '@/src/app/lib/auth-client';
 import Image from 'next/image';
 import { ArrowLeft, MailCheck } from "lucide-react";
 import { AuthSplitScreen } from '@/src/app/components/auth/AuthSplitScreen';
+import { APP_NAME } from '@/src/app/constants';
 
 const container = {
   hidden: { opacity: 0 },
@@ -120,7 +121,7 @@ export default function SignupPage() {
         <div className="flex-1 flex flex-col justify-center">
           <div className="flex justify-center mb-2">
             <Link href="/">
-              <Image src="/images/logo_chat.png" width={50} height={50} alt="ChatHub" priority className="h-auto" />
+              <Image src="/images/logo_chat.png" width={50} height={50} alt={APP_NAME} priority className="h-auto" />
             </Link>
           </div>
 

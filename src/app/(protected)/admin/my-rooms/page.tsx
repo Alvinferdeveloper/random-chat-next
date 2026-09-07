@@ -75,7 +75,7 @@ export default function AdminMyRoomsPage() {
                 </Button>
                 {!loading && !error && total > 0 && (
                     <Badge variant="outline" className="text-sm px-3 py-1 w-fit">
-                        {total} {total === 1 ? 'sala' : 'salas'}
+                        {total} {total === 1 ? 'tribu' : 'tribus'}
                     </Badge>
                 )}
             </motion.div>

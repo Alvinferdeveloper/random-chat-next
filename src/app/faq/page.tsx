@@ -11,15 +11,15 @@ export default function FAQPage() {
     const faqs = [
         {
             q: `¿Es ${APP_NAME} gratuito?`,
-            a: "Sí, puedes unirte a cualquier sala pública y chatear de forma totalmente gratuita."
+            a: "Sí, puedes unirte a cualquier tribu pública y chatear de forma totalmente gratuita."
         },
         {
-            q: "¿Cómo puedo crear mi propia sala?",
-            a: "Actualmente, la creación de salas está limitada a moderadores, pero pronto habilitaremos la función para usuarios verificados."
+            q: "¿Cómo puedo crear mi propia tribu?",
+            a: "Actualmente, la creación de tribus está limitada a moderadores, pero pronto habilitaremos la función para usuarios verificados."
         },
         {
             q: "¿Cómo reporto a un usuario?",
-            a: "Dentro de la sala de chat, puedes hacer clic en el nombre del usuario y seleccionar 'Reportar' para que nuestro equipo de moderación lo revise."
+            a: "Dentro de la tribu, puedes hacer clic en el nombre del usuario y seleccionar 'Reportar' para que nuestro equipo de moderación lo revise."
         }
     ];
 

@@ -6,6 +6,7 @@ import Twitter from "@/src/app/components/icons/Twitter"
 import Instagram from "@/src/app/components/icons/Instagram"
 import Github from "@/src/app/components/icons/Github"
 import { useTranslation } from '@/src/app/lib/i18n'
+import { APP_NAME } from '@/src/app/constants'
 
 export default function Footer() {
   const { t } = useTranslation()
@@ -17,8 +18,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4">
           <div className="md:col-span-2 space-y-4 justify-items-center">
             <Link href="/" className="flex items-center gap-2">
-              <Image src="/images/logo_chat.png" alt="ChatHub Logo" width={40} height={40} className="rounded-xl" />
-              <span className="text-xl font-bold tracking-tight text-foreground">ChatHub</span>
+              <Image src="/images/logo_chat.png" alt={`${APP_NAME} Logo`} width={40} height={40} className="rounded-xl" />
+              <span className="text-xl font-bold tracking-tight text-foreground">{APP_NAME}</span>
             </Link>
             <p className="text-muted-foreground text-sm max-w-xs">
               {t('layout.footer.description')}
@@ -42,7 +43,7 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">{t('layout.footer.platform_heading')}</h3>
             <ul className="space-y-2">
-              <li><Link href="/rooms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t('layout.footer.explore_rooms')}</Link></li>
+              <li><Link href="/tribus" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t('layout.footer.explore_rooms')}</Link></li>
               <li><Link href="/faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t('layout.footer.faq')}</Link></li>
               <li><Link href="/guia-comunidad" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t('layout.footer.community_guidelines')}</Link></li>
             </ul>

@@ -6,7 +6,7 @@ import { useCreateRoom } from '../hooks/useCreateRoom';
 import { Button } from '@/src/components/ui/button';
 import { Loader2, Upload, Image as ImageIcon, CheckCircle2, Eye, ArrowRight, CheckCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card';
-import SuccessDialog from '@/src/app/rooms/create/components/SuccessDialog';
+import SuccessDialog from '@/src/app/tribus/create/components/SuccessDialog';
 import { cn } from '@/src/lib/utils';
 import { useRouter } from 'next/navigation';
 
@@ -65,7 +65,7 @@ export function CustomizeRoom({ room }: CustomizeRoomProps) {
 
     const handleDialogClose = () => {
         setShowSuccessDialog(false);
-        router.push('/rooms');
+        router.push('/tribus');
     };
 
     const isUploading = !!uploading;

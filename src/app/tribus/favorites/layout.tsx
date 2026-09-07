@@ -3,7 +3,7 @@ import { APP_NAME } from "@/src/app/constants";
 
 export const metadata: Metadata = {
     title: "Mis Favoritos",
-    description: `Accede a tus salas de chat favoritas en ${APP_NAME}. Comparte momentos con tu comunidad.`,
+    description: `Accede a tus tribus favoritas en ${APP_NAME}. Comparte momentos con tu comunidad.`,
     robots: {
         index: false,
         follow: true,

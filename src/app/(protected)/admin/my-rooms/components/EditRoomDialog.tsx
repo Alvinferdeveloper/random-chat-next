@@ -2,10 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCategories } from '@/src/app/rooms/create/hooks/useCategories';
-import { useCreateRoom } from '@/src/app/rooms/create/hooks/useCreateRoom';
-import { useUpdateRoom } from '@/src/app/rooms/hooks/useUpdateRoom';
-import { CategorySelector } from '@/src/app/rooms/create/components/CategorySelector';
+import { useCategories } from '@/src/app/tribus/create/hooks/useCategories';
+import { useCreateRoom } from '@/src/app/tribus/create/hooks/useCreateRoom';
+import { useUpdateRoom } from '@/src/app/tribus/hooks/useUpdateRoom';
+import { CategorySelector } from '@/src/app/tribus/create/components/CategorySelector';
 import { Input } from '@/src/components/ui/input';
 import { Label } from '@/src/components/ui/label';
 import { Textarea } from '@/src/components/ui/textarea';

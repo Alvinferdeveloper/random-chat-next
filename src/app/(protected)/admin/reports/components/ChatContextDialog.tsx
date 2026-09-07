@@ -16,6 +16,7 @@ import { MessageSquare, Clock, Calendar } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 import { DetailedReport } from '../hooks/useAdminReports';
 import { Message, isTextMessage, isImageMessage } from '@/src/types/chat';
+import { APP_NAME } from '@/src/app/constants';
 
 const ease = [0.23, 1, 0.32, 1] as const;
 
@@ -186,7 +187,7 @@ export function ChatContextDialog({ isOpen, onClose, reports, reportedUsername }
                         {t('admin.reports.context.evidence_count', { count: reportsWithContext.length })}
                     </span>
                     <span className="text-[10px] text-muted-foreground/50 font-mono font-medium">
-                        ChatHub
+                        {APP_NAME}
                     </span>
                 </div>
             </DialogContent>

@@ -23,7 +23,7 @@ export default function CookiesPage() {
             <ul className="list-disc pl-6 mb-6 space-y-2">
                 <li><strong>Esenciales:</strong> Necesarias para el inicio de sesión y la seguridad.</li>
                 <li><strong>Preferencias:</strong> Guardan tu idioma y configuración de interfaz.</li>
-                <li><strong>Analíticas:</strong> Nos ayudan a saber qué salas de chat son las más populares para mejorar el servicio.</li>
+                <li><strong>Analíticas:</strong> Nos ayudan a saber qué tribus son las más populares para mejorar el servicio.</li>
             </ul>
 
             <h2 className="text-2xl font-bold mt-8 mb-4">Control de cookies</h2>

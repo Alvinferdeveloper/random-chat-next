@@ -108,7 +108,7 @@ const HeroSection = forwardRef<HTMLDivElement>((props, ref) => {
                         </div>
                         <div className="flex flex-col gap-2 min-[400px]:flex-row">
                             <Button size="lg" className="gap-2" asChild>
-                                <Link href="/rooms">
+                                <Link href="/tribus">
                                     {t('landing.hero.cta_start')}
                                     <ArrowRight className="w-4 h-4" />
                                 </Link>

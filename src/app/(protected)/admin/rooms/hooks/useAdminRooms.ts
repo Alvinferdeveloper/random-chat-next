@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Room } from '@/src/app/rooms/hooks/useRoom';
+import { Room } from '@/src/app/tribus/hooks/useRoom';
 
 export interface AdminRoom extends Room {
     status: 'IN_REVISION' | 'ACCEPTED' | 'REJECTED';

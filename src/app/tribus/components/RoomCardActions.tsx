@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Room } from '@/src/app/rooms/hooks/useRoom';
+import { Room } from '@/src/app/tribus/hooks/useRoom';
 import { Settings, Trash2, Heart, Loader2 } from 'lucide-react';
-import { RoomEditDialog } from '@/src/app/rooms/components/RoomEditDialog';
+import { RoomEditDialog } from '@/src/app/tribus/components/RoomEditDialog';
 import { useAuth } from '../../hooks/useAuth';
 
 interface RoomCardActionsProps {

@@ -8,8 +8,8 @@ export async function generateMetadata(
     const { id: roomId } = await params;
 
     return {
-        title: `Sala de Chat #${roomId}`,
-        description: `Únete a esta sala de chat en ${APP_NAME} y conecta con personas en tiempo real.`,
+        title: `Tribu #${roomId}`,
+        description: `Únete a esta tribu en ${APP_NAME} y conecta con personas en tiempo real.`,
         robots: {
             index: false,
             follow: false,

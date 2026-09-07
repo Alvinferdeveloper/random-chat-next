@@ -33,7 +33,7 @@ export default function CreateRoomPage() {
                     {/* Navigation header */}
                     <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <Link
-                            href="/rooms"
+                            href="/tribus"
                             className="group flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm font-medium"
                         >
                             <div className="p-2 rounded-full bg-secondary group-hover:bg-secondary/80 transition-colors">

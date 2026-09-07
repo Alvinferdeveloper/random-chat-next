@@ -1,15 +1,15 @@
 'use client';
 
-import { Room } from '@/src/app/rooms/hooks/useRoom';
+import { Room } from '@/src/app/tribus/hooks/useRoom';
 import { Card } from '@/src/components/ui/card';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useFavoriteRoom } from '@/src/app/rooms/hooks/useFavoriteRoom';
+import { useFavoriteRoom } from '@/src/app/tribus/hooks/useFavoriteRoom';
 import { useAuth } from '@/src/app/hooks/useAuth';
 
-import { RoomCardBanner } from '@/src/app/rooms/components/RoomCardBanner';
-import { RoomCardActions } from '@/src/app/rooms/components/RoomCardActions';
-import { RoomCardContent } from '@/src/app/rooms/components/RoomCardContent';
+import { RoomCardBanner } from '@/src/app/tribus/components/RoomCardBanner';
+import { RoomCardActions } from '@/src/app/tribus/components/RoomCardActions';
+import { RoomCardContent } from '@/src/app/tribus/components/RoomCardContent';
 
 interface RoomCardProps {
     room: Room;

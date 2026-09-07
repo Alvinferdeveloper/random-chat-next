@@ -3,14 +3,14 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useRoom from '@/src/app/rooms/hooks/useRoom';
+import useRoom from '@/src/app/tribus/hooks/useRoom';
 import { AuthGuard } from "@/src/app/components/auth/AuthGuard";
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { useInfiniteScroll } from '@/src/app/hooks/useInfiniteScroll';
 import { Variants } from 'framer-motion';
-import { RoomCard } from '@/src/app/rooms/components/RoomCard';
-import { useRoomUserCounts } from '@/src/app/rooms/hooks/useRoomUserCounts';
-import { SearchBar } from '@/src/app/rooms/components/SearchBar';
+import { RoomCard } from '@/src/app/tribus/components/RoomCard';
+import { useRoomUserCounts } from '@/src/app/tribus/hooks/useRoomUserCounts';
+import { SearchBar } from '@/src/app/tribus/components/SearchBar';
 import { useDebounce } from '@/src/app/hooks/useDebounce';
 import { Button } from '@/src/components/ui/button';
 import Link from 'next/link';
@@ -51,7 +51,7 @@ export default function FavoritesPage() {
                 <div className="max-w-7xl mx-auto p-6 space-y-6">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div className="space-y-1">
-                            <Link href="/rooms" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-2">
+                            <Link href="/tribus" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-2">
                                 <ArrowLeft className="h-4 w-4" />
                                 {t('rooms.favorites.back')}
                             </Link>
@@ -70,7 +70,7 @@ export default function FavoritesPage() {
                         {rooms.length === 0 && !loading && !error && (
                             <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
                                 <p className="text-gray-400 text-lg mb-4">{t('rooms.favorites.empty')}</p>
-                                <Button onClick={() => router.push('/rooms')}>
+                                <Button onClick={() => router.push('/tribus')}>
                                     {t('rooms.favorites.browse')}
                                 </Button>
                             </div>

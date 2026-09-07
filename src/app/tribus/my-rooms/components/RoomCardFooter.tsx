@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { formatDate } from "@/src/app/utils/date";
 import { getRoomStatusConfig } from "@/src/app/utils/ui";
 import { Calendar } from "lucide-react";
-import { Room } from "@/src/app/rooms/hooks/useRoom";
+import { Room } from "@/src/app/tribus/hooks/useRoom";
 import { cn } from "@/src/lib/utils";
 
 interface Props {

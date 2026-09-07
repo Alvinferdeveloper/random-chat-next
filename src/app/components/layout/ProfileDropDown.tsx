@@ -86,17 +86,17 @@ export function UserNav() {
                         <UserIcon className="size-4" />
                         <span>{t('layout.profile_dropdown.profile')}</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className='cursor-pointer transition-colors duration-150' onClick={() => navigation.push("/rooms/my-rooms")}>
+                    <DropdownMenuItem className='cursor-pointer transition-colors duration-150' onClick={() => navigation.push("/tribus/my-rooms")}>
                         <LayoutDashboard className="size-4" />
                         <span>{t('layout.profile_dropdown.my_rooms')}</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className='cursor-pointer transition-colors duration-150' onClick={() => navigation.push("/rooms/favorites")}>
+                    <DropdownMenuItem className='cursor-pointer transition-colors duration-150' onClick={() => navigation.push("/tribus/favorites")}>
                         <Heart className="size-4" />
                         <span>{t('layout.profile_dropdown.favorites')}</span>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuGroup>
-                    <DropdownMenuItem className='cursor-pointer transition-colors duration-150' onClick={() => navigation.push("/rooms/create")}>
+                    <DropdownMenuItem className='cursor-pointer transition-colors duration-150' onClick={() => navigation.push("/tribus/create")}>
                         <BadgePlus className="size-4" />
                         <span>{t('layout.profile_dropdown.create_room')}</span>
                     </DropdownMenuItem>
