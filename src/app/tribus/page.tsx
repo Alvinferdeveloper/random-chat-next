@@ -77,7 +77,7 @@ export default function Rooms() {
         router.push(`/chat/${roomId}?roomName=${roomName}`);
     };
 
-    const showInitialSkeleton = isPending || (loading && rooms.length === 0);
+    const showInitialSkeleton = loading && rooms.length === 0;
 
     const ErrorView = () => (
         <div className="flex flex-col items-center justify-center py-12 px-4 text-center">

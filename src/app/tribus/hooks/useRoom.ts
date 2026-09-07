@@ -1,4 +1,6 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { useCachedOnMount } from "@/src/app/hooks/useCachedOnMount";
+import { setSessionCache } from "@/src/app/utils/sessionCache";
 
 export type Room = {
     id: string,
@@ -19,14 +21,36 @@ export type RoomStatus = 'IN_REVISION' | 'ACCEPTED' | 'REJECTED';
 
 export type RoomFetchType = 'all' | 'favorites';
 
+type RoomsCacheEntry = { rooms: Room[]; page: number; hasMore: boolean };
+
+// Cached (see sessionCache) so a returning tab can show the previous list
+// instantly instead of an empty skeleton while it silently refetches page 1.
+const ROOMS_CACHE_TTL_MS = 2 * 60 * 1000;
+
+function roomsCacheKey(type: RoomFetchType, searchQuery: string) {
+    return `rooms_cache:${type}:${searchQuery}`;
+}
+
 export default function useRoom(searchQuery: string = "", type: RoomFetchType = 'all') {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [error, setError] = useState("");
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
+    const paramsKeyRef = useRef(`${type}:${searchQuery}`);
+
+    // Adopt a recent cached page 1 before paint so a reloaded tab doesn't
+    // flash an empty skeleton for a list we already had a moment ago.
+    useCachedOnMount<RoomsCacheEntry>(roomsCacheKey(type, searchQuery), ROOMS_CACHE_TTL_MS, (cached) => {
+        setRooms(cached.rooms);
+        setPage(cached.page);
+        setHasMore(cached.hasMore);
+    });
 
     useEffect(() => {
+        const key = `${type}:${searchQuery}`;
+        if (paramsKeyRef.current === key) return; // skip on initial mount
+        paramsKeyRef.current = key;
         setRooms([]);
         setPage(1);
         setHasMore(true);
@@ -67,6 +91,14 @@ export default function useRoom(searchQuery: string = "", type: RoomFetchType = 
             setRooms(prevRooms => page === 1 ? json.data : [...prevRooms, ...json.data]);
             setPage(prevPage => prevPage + 1);
             setHasMore(json.pagination.hasNextPage);
+
+            if (page === 1) {
+                setSessionCache<RoomsCacheEntry>(roomsCacheKey(type, searchQuery), {
+                    rooms: json.data,
+                    page: 2,
+                    hasMore: json.pagination.hasNextPage,
+                });
+            }
 
         } catch (err: any) {
             // fetch() only throws an exception (rejects the promise) on network errors 
