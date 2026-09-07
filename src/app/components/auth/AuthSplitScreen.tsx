@@ -23,7 +23,7 @@ export function AuthSplitScreen({ children, illustrationUrl }: AuthSplitScreenPr
               <span className="h-px w-8 bg-border" />
             </div>
             <h2 className="text-5xl font-bold tracking-tight text-foreground">
-              Chat<span className="text-primary">Hub</span>
+              Tribu<span className="text-primary">zz</span>
             </h2>
             <div className="mt-5 h-1 w-12 rounded-full bg-primary/30 mx-auto" />
             <p className="mt-5 text-base text-muted-foreground/80 max-w-sm leading-relaxed">

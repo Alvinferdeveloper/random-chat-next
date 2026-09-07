@@ -42,7 +42,7 @@ export default function PrivacyPage() {
 
             <div className="mt-12 p-6 bg-muted rounded-lg">
                 <p className="text-sm italic">
-                    Última actualización: 2 de mayo de 2026. Si tienes dudas, contáctanos en privacidad@chathub.com
+                    Última actualización: 2 de mayo de 2026. Si tienes dudas, contáctanos en privacidad@tribuzz.chat
                 </p>
             </div>
         </section>
