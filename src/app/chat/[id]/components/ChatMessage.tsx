@@ -8,6 +8,7 @@ import React, { useState, useRef, useEffect, useCallback, memo } from "react";
 import { useLongPress } from "@/src/app/chat/[id]/hooks/useLongPress";
 import { useHover } from "@/src/app/hooks/useHover";
 import { ReactionPicker } from "@/src/app/chat/[id]/components/ReactionPicker";
+import { ReactionPill } from "@/src/app/chat/[id]/components/ReactionPill";
 import { cn } from "@/src/lib/utils";
 import { AudioPlayer } from "@/src/app/chat/[id]/components/AudioPlayer";
 import { useAuth } from "@/src/app/hooks/useAuth";
@@ -48,8 +49,15 @@ export const ChatMessage = memo(function ChatMessage({ msg, username, openImageV
     const [menuVisible, setMenuVisible] = useState(false);
     const [pickerVisible, setPickerVisible] = useState(false);
     const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+    // Tracked separately from CSS group-hover: the reactions row is a DOM
+    // descendant of the bubble (just visually offset via negative bottom),
+    // so hovering a reaction pill would also count as "hovering the message"
+    // for group-hover purposes and pop the action toolbar open unintentionally.
+    const [isBubbleHovered, setIsBubbleHovered] = useState(false);
+    const [isReactionHovered, setIsReactionHovered] = useState(false);
     const messageRef = useRef<HTMLDivElement>(null);
     const hasHover = useHover();
+    const showActionToolbar = hasHover && isBubbleHovered && !isReactionHovered;
     const { session } = useAuth();
 
     const handleLongPress = (event: React.MouseEvent | React.TouchEvent) => {
@@ -290,23 +298,13 @@ export const ChatMessage = memo(function ChatMessage({ msg, username, openImageV
                     isMyMessage ? "right-2 flex-row-reverse" : "left-2"
                 )}>
                     {msg.reactions.map((reaction: Reaction) => (
-                        <button
+                        <ReactionPill
                             key={reaction.emoji}
-                            onClick={() => handleReact(reaction.emoji)}
-                            className={cn(
-                                "flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] border-2 transition-transform hover:scale-110 active:scale-95",
-                                "bg-white dark:bg-zinc-800 shadow-md",
-                                isMyMessage ? "border-primary" : "border-muted"
-                            )}
-                        >
-                            <span>{reaction.emoji}</span>
-                            <span className={cn(
-                                "font-bold",
-                                isMyMessage ? "text-primary" : "text-muted-foreground"
-                            )}>
-                                {reaction.users.length}
-                            </span>
-                        </button>
+                            reaction={reaction}
+                            isMyMessage={isMyMessage}
+                            onReact={handleReact}
+                            onHoverChange={setIsReactionHovered}
+                        />
                     ))}
                 </div>
             )}
@@ -364,7 +362,11 @@ export const ChatMessage = memo(function ChatMessage({ msg, username, openImageV
                     </div>
                 )}
 
-                <div className="relative">
+                <div
+                    className="relative"
+                    onMouseEnter={() => setIsBubbleHovered(true)}
+                    onMouseLeave={() => setIsBubbleHovered(false)}
+                >
                     {!isGroupStart && (
                         <time
                             className={cn(
@@ -378,8 +380,9 @@ export const ChatMessage = memo(function ChatMessage({ msg, username, openImageV
                     )}
                     {hasHover && (
                         <div className={cn(
-                            "absolute -top-4 z-20 flex items-center gap-0.5 rounded-full border bg-background/95 backdrop-blur-sm shadow-md p-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 ease-out",
-                            isMyMessage ? "right-2" : "left-2"
+                            "absolute -top-4 z-20 flex items-center gap-0.5 rounded-full border bg-background/95 backdrop-blur-sm shadow-md p-0.5 transition-opacity duration-150 ease-out",
+                            isMyMessage ? "right-2" : "left-2",
+                            showActionToolbar ? "opacity-100" : "opacity-0 pointer-events-none"
                         )}>
                             <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full" onClick={() => setPickerVisible(v => !v)}>
                                 <SmilePlus className="h-3.5 w-3.5" />

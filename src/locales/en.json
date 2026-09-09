@@ -315,6 +315,10 @@
     "chat.date_separator.today": "Today",
     "chat.date_separator.yesterday": "Yesterday",
 
+    "chat.reaction_tooltip.one": "{{user}} reacted {{emoji}}",
+    "chat.reaction_tooltip.two": "{{user1}} and {{user2}} reacted {{emoji}}",
+    "chat.reaction_tooltip.many": "{{user1}}, {{user2}} and {{count}} more reacted {{emoji}}",
+
     "chat.connecting.connecting_to": "Connecting to {{topic}}",
     "chat.connecting.establishing": "Establishing connection",
     "chat.connecting.connecting_users": "We're connecting you with other users interested in this topic...",
