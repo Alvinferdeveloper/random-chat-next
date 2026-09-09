@@ -306,6 +306,12 @@
     "chat.header.link_copied": "Link copied to clipboard",
     "chat.header.link_copy_error": "Could not copy the link",
 
+    "chat.scroll_to_bottom.label": "Jump to latest",
+    "chat.scroll_to_bottom.unread": "{{count}} new messages",
+
+    "chat.empty_state.title": "Light up the conversation",
+    "chat.empty_state.subtitle": "Be the first to say something in this tribe.",
+
     "chat.connecting.connecting_to": "Connecting to {{topic}}",
     "chat.connecting.establishing": "Establishing connection",
     "chat.connecting.connecting_users": "We're connecting you with other users interested in this topic...",

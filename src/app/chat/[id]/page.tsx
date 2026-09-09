@@ -18,6 +18,7 @@ import { ImageViewerModal } from "@/src/app/chat/[id]/components/ImageViewerModa
 import { UserJoinedNotification } from '@/src/app/chat/[id]/components/UserJoinedNotification';
 import { useImageHandling } from "@/src/app/chat/[id]/hooks/useImageHandling";
 import { UserList } from "@/src/app/chat/[id]/components/UserList";
+import { ScrollToBottomButton } from "@/src/app/chat/[id]/components/ScrollToBottomButton";
 import { TypingIndicator } from "@/src/app/chat/[id]/components/TypingIndicator";
 import { useHover } from "@/src/app/hooks/useHover";
 import { cn } from "@/src/lib/utils";
@@ -71,7 +72,7 @@ export default function ChatPage() {
         cancelEdit
     } = useMessageInput(editingMessage, setEditingMessage, editMessage);
 
-    const { messagesEndRef, scrollToBottom } = useAutoScroll(messages);
+    const { messagesEndRef, scrollToBottom, isNearBottom, unreadCount, jumpToBottom } = useAutoScroll(messages);
 
     // Single instance of favorites for the entire chat page
     const { favoriteGifs, toggleFavorite, loadingFavorites } = useFavoriteGifs();
@@ -148,20 +149,30 @@ export default function ChatPage() {
                             hasHover && <CampfireLottie src="/illustrations/fire/animations/12345.json" className="w-64 h-64 opacity-80" />
                         ))}
                     </div>
-                    <div className="relative z-10 flex-1 scrollbar-thin-light">
-                        <MessageList
-                            messages={messages}
-                            username={username}
-                            messagesEndRef={messagesEndRef}
-                            scrollToBottom={scrollToBottom}
-                            openImageViewer={openImageViewer}
-                            usersInRoom={usersInRoom}
-                            setReplyingToMessage={setReplyingToMessage}
-                            sendReaction={sendReaction}
-                            favoriteGifs={favoriteGifs}
-                            toggleFavorite={toggleFavorite}
-                            onEdit={(msg) => setEditingMessage(msg)}
-                            onDelete={(id) => setDeleteConfirmId(id)}
+                    {/* This wrapper never scrolls itself - it's the fixed anchor for the
+                        floating scroll-to-bottom button, which would otherwise move with
+                        the content if anchored to the scrollable pane below. */}
+                    <div className="relative z-10 flex-1 overflow-hidden">
+                        <div className="h-full scrollbar-thin-light">
+                            <MessageList
+                                messages={messages}
+                                username={username}
+                                messagesEndRef={messagesEndRef}
+                                scrollToBottom={scrollToBottom}
+                                openImageViewer={openImageViewer}
+                                usersInRoom={usersInRoom}
+                                setReplyingToMessage={setReplyingToMessage}
+                                sendReaction={sendReaction}
+                                favoriteGifs={favoriteGifs}
+                                toggleFavorite={toggleFavorite}
+                                onEdit={(msg) => setEditingMessage(msg)}
+                                onDelete={(id) => setDeleteConfirmId(id)}
+                            />
+                        </div>
+                        <ScrollToBottomButton
+                            visible={!isNearBottom && messages.length > 0}
+                            unreadCount={unreadCount}
+                            onClick={jumpToBottom}
                         />
                     </div>
                     <TypingIndicator typingUsers={typingUsers} />

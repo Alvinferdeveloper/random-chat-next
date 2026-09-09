@@ -31,6 +31,10 @@ interface ChatMessageProps {
     toggleFavorite: (giphyId: string, url: string, title?: string) => void;
     onEdit?: (message: Message) => void;
     onDelete?: (messageId: string) => void;
+    /** False when this message is a same-author, close-in-time continuation
+     * of the previous one - hides the repeated avatar/name/time header and
+     * tightens spacing, the way Discord/Slack/iMessage group message bursts. */
+    isGroupStart?: boolean;
 }
 
 function formatTime(dateStr: string) {
@@ -38,7 +42,7 @@ function formatTime(dateStr: string) {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
-export const ChatMessage = memo(function ChatMessage({ msg, username, openImageViewer, scrollToBottom, setReplyingToMessage, sendReaction, usersInRoom, favoriteGifs, toggleFavorite, onEdit, onDelete }: ChatMessageProps) {
+export const ChatMessage = memo(function ChatMessage({ msg, username, openImageViewer, scrollToBottom, setReplyingToMessage, sendReaction, usersInRoom, favoriteGifs, toggleFavorite, onEdit, onDelete, isGroupStart = true }: ChatMessageProps) {
     const { t } = useTranslation();
     const isMyMessage = msg.username === username;
     const [menuVisible, setMenuVisible] = useState(false);
@@ -78,8 +82,11 @@ export const ChatMessage = memo(function ChatMessage({ msg, username, openImageV
     useEffect(() => {
         if (!menuVisible) return;
 
-        // Listen to scroll on the nearest scrollable ancestor and window
-        const scrollParent = messageRef.current?.closest('[class*="overflow-y"]') as HTMLElement | null;
+        // Listen to scroll on the nearest scrollable ancestor and window.
+        // The actual scroll pane's overflow comes from the .scrollbar-thin-light
+        // CSS class, not a literal "overflow-y-*" utility, so match that class
+        // directly rather than a substring that never matched it.
+        const scrollParent = messageRef.current?.closest('.scrollbar-thin-light') as HTMLElement | null;
         const handler = () => dismissMenu();
 
         window.addEventListener('scroll', handler, true); // capture phase to catch all scrolls
@@ -196,12 +203,17 @@ export const ChatMessage = memo(function ChatMessage({ msg, username, openImageV
         );
     }
 
+    const hasReactions = Boolean(msg.reactions && msg.reactions.length > 0);
+
     const messageContent = (
         <div
             ref={messageRef}
             className={cn(
-                "max-w-xs rounded-2xl text-sm md:max-w-md relative mb-4 self-start",
-                isMyMessage ? "bg-blue-700 text-white rounded-tr-none" : "bg-muted rounded-tl-none",
+                "max-w-xs rounded-2xl text-sm md:max-w-md relative self-start",
+                hasReactions && "mb-4",
+                isMyMessage
+                    ? cn("bg-primary text-primary-foreground", isGroupStart && "rounded-tr-none")
+                    : cn("bg-muted", isGroupStart && "rounded-tl-none"),
                 isImageMessage(msg) || isGifMessage(msg) ? "p-0.5" : "p-3 shadow-sm"
             )}
             {...(!hasHover && longPressHandlers)}
@@ -284,13 +296,13 @@ export const ChatMessage = memo(function ChatMessage({ msg, username, openImageV
                             className={cn(
                                 "flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] border-2 transition-transform hover:scale-110 active:scale-95",
                                 "bg-white dark:bg-zinc-800 shadow-md",
-                                isMyMessage ? "border-blue-700" : "border-muted"
+                                isMyMessage ? "border-primary" : "border-muted"
                             )}
                         >
                             <span>{reaction.emoji}</span>
                             <span className={cn(
                                 "font-bold",
-                                isMyMessage ? "text-blue-700 dark:text-blue-400" : "text-muted-foreground"
+                                isMyMessage ? "text-primary" : "text-muted-foreground"
                             )}>
                                 {reaction.users.length}
                             </span>
@@ -311,61 +323,78 @@ export const ChatMessage = memo(function ChatMessage({ msg, username, openImageV
 
     return (
         <>
-            <div className={`group w-full flex flex-col gap-1 ${isMyMessage ? "items-end" : "items-start"}`}>
-                <div className={`flex items-center gap-2 ${isMyMessage ? "flex-row-reverse" : "flex-row"}`}>
-                    {isMyMessage ? (
-                        <Avatar className="h-6 w-6">
-                            <AvatarImage
-                                src={msg.userProfileImage || `https://api.dicebear.com/9.x/avataaars/svg?seed=${msg.username}`}
-                                alt={`${msg.username}'s profile picture`}
-                            />
-                            <AvatarFallback>{getInitials(msg.username)}</AvatarFallback>
-                        </Avatar>
-                    ) : (
-                        <Link href={`/profile/${encodeURIComponent(msg.username)}`}>
-                            <Avatar className="h-6 w-6 hover:ring-2 hover:ring-primary transition-all">
+            <div className={cn(
+                "group w-full flex flex-col gap-1",
+                isMyMessage ? "items-end" : "items-start",
+                isGroupStart ? "mt-4" : "mt-0.5"
+            )}>
+                {isGroupStart && (
+                    <div className={`flex items-center gap-2 ${isMyMessage ? "flex-row-reverse" : "flex-row"}`}>
+                        {isMyMessage ? (
+                            <Avatar className="h-6 w-6">
                                 <AvatarImage
                                     src={msg.userProfileImage || `https://api.dicebear.com/9.x/avataaars/svg?seed=${msg.username}`}
                                     alt={`${msg.username}'s profile picture`}
                                 />
                                 <AvatarFallback>{getInitials(msg.username)}</AvatarFallback>
                             </Avatar>
-                        </Link>
-                    )}
-                    {isMyMessage ? (
-                        <span className="text-sm font-semibold text-primary">{t('chat.message.you')}</span>
-                    ) : (
-                        <Link
-                            href={`/profile/${encodeURIComponent(msg.username)}`}
-                            className="text-sm font-semibold text-primary hover:underline"
-                        >
-                            {msg.username}
-                        </Link>
-                    )}
-                    <span className="text-xs text-muted-foreground">{formatTime(msg.timestamp)}</span>
-                    {msg.edited && <span className="text-[10px] text-muted-foreground/60 italic ml-1">{t('chat.message.edited')}</span>}
-                </div>
+                        ) : (
+                            <Link href={`/profile/${encodeURIComponent(msg.username)}`}>
+                                <Avatar className="h-6 w-6 hover:ring-2 hover:ring-primary transition-all">
+                                    <AvatarImage
+                                        src={msg.userProfileImage || `https://api.dicebear.com/9.x/avataaars/svg?seed=${msg.username}`}
+                                        alt={`${msg.username}'s profile picture`}
+                                    />
+                                    <AvatarFallback>{getInitials(msg.username)}</AvatarFallback>
+                                </Avatar>
+                            </Link>
+                        )}
+                        {isMyMessage ? (
+                            <span className="text-sm font-semibold text-primary">{t('chat.message.you')}</span>
+                        ) : (
+                            <Link
+                                href={`/profile/${encodeURIComponent(msg.username)}`}
+                                className="text-sm font-semibold text-primary hover:underline"
+                            >
+                                {msg.username}
+                            </Link>
+                        )}
+                        <span className="text-xs text-muted-foreground">{formatTime(msg.timestamp)}</span>
+                        {msg.edited && <span className="text-[10px] text-muted-foreground/60 italic ml-1">{t('chat.message.edited')}</span>}
+                    </div>
+                )}
 
-                <div className="flex items-center gap-2">
+                <div className="relative">
+                    {!isGroupStart && (
+                        <time
+                            className={cn(
+                                "absolute top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground/70 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 ease-out",
+                                isMyMessage ? "right-full mr-2" : "left-full ml-2"
+                            )}
+                        >
+                            {formatTime(msg.timestamp)}
+                            {msg.edited && <span className="italic ml-1">{t('chat.message.edited')}</span>}
+                        </time>
+                    )}
                     {hasHover && (
                         <div className={cn(
-                            "flex flex-col gap-1 self-center opacity-0 group-hover:opacity-100 transition-opacity",
-                            isMyMessage ? "order-first" : "order-last"
+                            "absolute -top-4 z-20 flex items-center gap-0.5 rounded-full border bg-background/95 backdrop-blur-sm shadow-md p-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 ease-out",
+                            isMyMessage ? "right-2" : "left-2"
                         )}>
-                            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setPickerVisible(v => !v)}>
-                                <SmilePlus className="h-4 w-4" />
+                            <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full" onClick={() => setPickerVisible(v => !v)}>
+                                <SmilePlus className="h-3.5 w-3.5" />
                             </Button>
-                            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleReply}>
-                                <Reply className="h-4 w-4" />
+                            <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full" onClick={handleReply}>
+                                <Reply className="h-3.5 w-3.5" />
                             </Button>
                             {isMyMessage && isTextMessage(msg) && onEdit && (
-                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onEdit(msg)}>
-                                    <Pencil className="h-4 w-4" />
+                                <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full" onClick={() => onEdit(msg)}>
+                                    <Pencil className="h-3.5 w-3.5" />
                                 </Button>
                             )}
                             {isMyMessage && onDelete && (
-                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onDelete(msg.id)}>
-                                    <Trash2 className="h-4 w-4" />
+                                <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full hover:text-destructive" onClick={() => onDelete(msg.id)}>
+                                    <Trash2 className="h-3.5 w-3.5" />
                                 </Button>
                             )}
                         </div>

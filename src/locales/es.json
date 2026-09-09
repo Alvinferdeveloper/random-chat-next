@@ -306,6 +306,12 @@
     "chat.header.link_copied": "Enlace copiado al portapapeles",
     "chat.header.link_copy_error": "No se pudo copiar el enlace",
 
+    "chat.scroll_to_bottom.label": "Ir al final",
+    "chat.scroll_to_bottom.unread": "{{count}} mensajes nuevos",
+
+    "chat.empty_state.title": "Enciende la conversación",
+    "chat.empty_state.subtitle": "Sé el primero en decir algo en esta tribu.",
+
     "chat.connecting.connecting_to": "Conectando a {{topic}}",
     "chat.connecting.establishing": "Estableciendo conexión",
     "chat.connecting.connecting_users": "Estamos conectándote con otros usuarios interesados en este tema...",
