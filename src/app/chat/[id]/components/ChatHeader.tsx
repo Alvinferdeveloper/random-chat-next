@@ -5,9 +5,16 @@ import { ArrowLeft, Users, Share2, Check } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import Image from "next/image";
 import { ThemeToggle } from "@/src/app/components/layout/ThemeToggle";
+import { RoomPresence } from "@/src/app/chat/[id]/components/RoomPresence";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { APP_NAME } from "@/src/app/constants";
+
+interface User {
+    id: string;
+    username: string;
+    profileImage?: string;
+}
 
 interface ChatHeaderProps {
     roomId: string;
@@ -15,7 +22,7 @@ interface ChatHeaderProps {
     roomIcon?: string;
     isUserListVisible: boolean;
     onToggleUserList: () => void;
-    userCount?: number;
+    usersInRoom?: User[];
 }
 
 function RoomIcon({ roomName, roomIcon }: { roomName: string; roomIcon?: string }) {
@@ -39,7 +46,7 @@ function RoomIcon({ roomName, roomIcon }: { roomName: string; roomIcon?: string 
     );
 }
 
-export function ChatHeader({ roomId, roomName, roomIcon, isUserListVisible, onToggleUserList, userCount = 0 }: ChatHeaderProps) {
+export function ChatHeader({ roomId, roomName, roomIcon, isUserListVisible, onToggleUserList, usersInRoom = [] }: ChatHeaderProps) {
     const { t } = useTranslation();
     const [justCopied, setJustCopied] = useState(false);
 
@@ -80,6 +87,8 @@ export function ChatHeader({ roomId, roomName, roomIcon, isUserListVisible, onTo
                         <span className="absolute inline-flex w-full h-full rounded-full bg-emerald-400/60 animate-ping" style={{ animationDuration: '2s' }} />
                         <span className="relative inline-flex w-full h-full rounded-full bg-emerald-500" />
                     </span>
+
+                    <RoomPresence users={usersInRoom} onClick={onToggleUserList} />
                 </div>
             </div>
 
@@ -106,12 +115,6 @@ export function ChatHeader({ roomId, roomName, roomIcon, isUserListVisible, onTo
                 >
                     <Users className="h-4 w-4" />
                 </Button>
-
-                {userCount > 0 && (
-                    <span className="text-[11px] sm:text-xs font-medium text-muted-foreground/60 tabular-nums -ml-0.5 sm:-ml-1">
-                        {userCount}
-                    </span>
-                )}
 
                 <div className="flex items-center">
                     <ThemeToggle />

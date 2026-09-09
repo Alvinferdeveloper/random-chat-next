@@ -139,6 +139,7 @@ export default function ChatPage() {
                 roomIcon={room?.server_icon}
                 isUserListVisible={isUserListVisible}
                 onToggleUserList={toggleUserList}
+                usersInRoom={usersInRoom}
             />
             <div className="flex flex-1 overflow-hidden">
                 <main className="flex-1 flex flex-col relative">
