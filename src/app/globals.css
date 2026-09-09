@@ -155,6 +155,39 @@
   }
 }
 
+/* emoji-picker-react theming - map its CSS variables to our own design
+   tokens instead of its default look, so it feels native to the app.
+   Both the light and dark variable sets point at the same app token,
+   since the token itself already flips value between :root and .dark. */
+.chat-emoji-picker.epr-main {
+  --epr-bg-color: var(--background);
+  --epr-dark-bg-color: var(--background);
+  --epr-text-color: var(--foreground);
+  --epr-dark-text-color: var(--foreground);
+  --epr-hover-bg-color: var(--accent);
+  --epr-dark-hover-bg-color: var(--accent);
+  --epr-focus-bg-color: var(--accent);
+  --epr-dark-focus-bg-color: var(--accent);
+  --epr-highlight-color: var(--primary);
+  --epr-category-icon-active-color: var(--primary);
+  --epr-dark-category-icon-active-color: var(--primary);
+  --epr-category-label-bg-color: var(--muted);
+  --epr-dark-category-label-bg-color: var(--muted);
+  --epr-category-label-text-color: var(--muted-foreground);
+  --epr-search-input-bg-color: var(--muted);
+  --epr-dark-search-input-bg-color: var(--muted);
+  --epr-search-input-bg-color-active: var(--muted);
+  --epr-dark-search-input-bg-color-active: var(--muted);
+  --epr-search-input-text-color: var(--foreground);
+  --epr-search-input-placeholder-color: var(--muted-foreground);
+  --epr-search-border-color: transparent;
+  --epr-picker-border-color: var(--border);
+  --epr-dark-picker-border-color: var(--border);
+  --epr-picker-border-radius: 1rem;
+  --epr-preview-text-color: var(--muted-foreground);
+  font-family: inherit;
+}
+
 /* Custom Scrollbar Styles */
 .scrollbar-thin-light {
   overflow-y: auto;

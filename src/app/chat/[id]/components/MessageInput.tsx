@@ -3,7 +3,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { Input } from "@/src/components/ui/input";
 import { Button } from "@/src/components/ui/button";
 import { Send, Smile, Paperclip, X, Reply as ReplyIcon, Mic, Film, Pencil } from "lucide-react";
-import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import EmojiPicker, { EmojiClickData, Theme as EmojiPickerTheme } from "emoji-picker-react";
+import { useTheme } from "next-themes";
 import { Message, isTextMessage, isImageMessage, isAudioMessage } from "@/src/types/chat";
 import { MentionList } from "@/src/app/chat/[id]/components/MentionList";
 import { useAudioRecording } from "@/src/app/chat/[id]/hooks/useAudioRecording";
@@ -78,6 +79,7 @@ export function MessageInput({
     const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const { t } = useTranslation();
+    const { resolvedTheme } = useTheme();
     const socket = useSocket();
     const { addOptimisticMessage } = useSocketHandler();
     const { username } = useUsername();
@@ -267,7 +269,11 @@ export function MessageInput({
                 <div ref={pickerRef}>
                     {showEmojiPicker && (
                         <div className="absolute bottom-full mb-2 z-20">
-                            <EmojiPicker onEmojiClick={onEmojiClick} />
+                            <EmojiPicker
+                                onEmojiClick={onEmojiClick}
+                                theme={resolvedTheme === 'dark' ? EmojiPickerTheme.DARK : EmojiPickerTheme.LIGHT}
+                                className="chat-emoji-picker"
+                            />
                         </div>
                     )}
                     
