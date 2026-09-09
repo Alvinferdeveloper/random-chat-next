@@ -3,6 +3,8 @@ import React from "react";
 import { Message } from "@/src/types/chat";
 import { ChatMessage } from "@/src/app/chat/[id]/components/ChatMessage";
 import { EmptyMessagesState } from "@/src/app/chat/[id]/components/EmptyMessagesState";
+import { DateSeparator } from "@/src/app/chat/[id]/components/DateSeparator";
+import { isDifferentDay } from "@/src/app/chat/[id]/utils/time";
 
 interface User {
     id: string;
@@ -42,6 +44,13 @@ function isGroupStart(messages: Message[], index: number): boolean {
     return gap > GROUP_WINDOW_MS;
 }
 
+// The very first message always gets a date label too, so the conversation
+// has date context from the top - not just when a day boundary is crossed.
+function needsDateSeparator(messages: Message[], index: number): boolean {
+    if (index === 0) return true;
+    return isDifferentDay(messages[index - 1].timestamp, messages[index].timestamp);
+}
+
 export function MessageList({ messages, username, messagesEndRef, openImageViewer, scrollToBottom, setReplyingToMessage, sendReaction, usersInRoom, favoriteGifs, toggleFavorite, onEdit, onDelete }: MessageListProps) {
     if (messages.length === 0) {
         return (
@@ -54,23 +63,30 @@ export function MessageList({ messages, username, messagesEndRef, openImageViewe
     return (
         <div className="flex-1 p-4">
             <div>
-                {messages.map((msg, idx) => (
-                    <ChatMessage
-                        key={msg.id}
-                        msg={msg}
-                        username={username}
-                        openImageViewer={openImageViewer}
-                        scrollToBottom={scrollToBottom}
-                        setReplyingToMessage={setReplyingToMessage}
-                        sendReaction={sendReaction}
-                        usersInRoom={usersInRoom}
-                        favoriteGifs={favoriteGifs}
-                        toggleFavorite={toggleFavorite}
-                        onEdit={onEdit}
-                        onDelete={onDelete}
-                        isGroupStart={isGroupStart(messages, idx)}
-                    />
-                ))}
+                {messages.map((msg, idx) => {
+                    const showDateSeparator = needsDateSeparator(messages, idx);
+                    return (
+                        <React.Fragment key={msg.id}>
+                            {showDateSeparator && <DateSeparator dateStr={msg.timestamp} />}
+                            <ChatMessage
+                                msg={msg}
+                                username={username}
+                                openImageViewer={openImageViewer}
+                                scrollToBottom={scrollToBottom}
+                                setReplyingToMessage={setReplyingToMessage}
+                                sendReaction={sendReaction}
+                                usersInRoom={usersInRoom}
+                                favoriteGifs={favoriteGifs}
+                                toggleFavorite={toggleFavorite}
+                                onEdit={onEdit}
+                                onDelete={onDelete}
+                                // A date separator always starts a fresh group visually,
+                                // even if the same author kept talking across midnight.
+                                isGroupStart={showDateSeparator || isGroupStart(messages, idx)}
+                            />
+                        </React.Fragment>
+                    );
+                })}
                 <div ref={messagesEndRef} />
             </div>
         </div>

@@ -312,6 +312,9 @@
     "chat.empty_state.title": "Enciende la conversación",
     "chat.empty_state.subtitle": "Sé el primero en decir algo en esta tribu.",
 
+    "chat.date_separator.today": "Hoy",
+    "chat.date_separator.yesterday": "Ayer",
+
     "chat.connecting.connecting_to": "Conectando a {{topic}}",
     "chat.connecting.establishing": "Estableciendo conexión",
     "chat.connecting.connecting_users": "Estamos conectándote con otros usuarios interesados en este tema...",
