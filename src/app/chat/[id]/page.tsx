@@ -101,7 +101,7 @@ export default function ChatPage() {
     const { openImageViewer, isImageViewerOpen, viewedImageUrl, closeImageViewer } = useImageViewer()
 
     if (connecting) {
-        return <ChatConnecting roomId={id as string} />;
+        return <ChatConnecting roomName={roomName as string | undefined} />;
     }
 
     const toggleUserList = () => setIsUserListVisible(!isUserListVisible);
