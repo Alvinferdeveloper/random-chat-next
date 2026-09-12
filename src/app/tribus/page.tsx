@@ -72,9 +72,9 @@ export default function Rooms() {
         window.location.reload();
     };
 
-    const handleJoinRoom = (roomId: string, roomName: string) => {
+    const handleJoinRoom = (roomId: string) => {
         setConnecting(roomId);
-        router.push(`/chat/${roomId}?roomName=${roomName}`);
+        router.push(`/chat/${roomId}`);
     };
 
     const showInitialSkeleton = loading && rooms.length === 0;

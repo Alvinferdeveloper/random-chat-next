@@ -4,15 +4,16 @@ export type RoomInfo = {
     id: string;
     name: string;
     short_description: string;
+    full_description: string;
     server_icon: string;
     server_banner: string;
     verified: boolean;
 };
 
 /**
- * Fetches the public info of a single room (name, icon, etc.) so the chat
- * header can display it even when the page was opened from a shared link
- * (i.e. no roomName was carried over via query params).
+ * Fetches the public info of a single room (name, icon, description, etc.)
+ * so the chat page has everything it needs to render the header and the
+ * "tribe info" dialog, without relying on data carried over via query params.
  */
 export function useRoomInfo(roomId: string) {
     const [room, setRoom] = useState<RoomInfo | null>(null);

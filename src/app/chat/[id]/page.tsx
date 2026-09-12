@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useSocketHandler } from "@/src/app/hooks/useSocketHandler";
 import { useJoinRoom } from "@/src/app/hooks/useJoinRoom";
 import { useUsername } from "@/src/app/hooks/useUsername";
@@ -40,10 +40,8 @@ export default function ChatPage() {
     const { theme, resolvedTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 
-    const searchParams = useSearchParams();
-    const roomNameParam = searchParams.get("roomName");
     const { room } = useRoomInfo(id as string);
-    const roomName = room?.name || roomNameParam;
+    const roomName = room?.name;
 
     const {
         messages,
@@ -135,8 +133,8 @@ export default function ChatPage() {
             )}
             <ChatHeader
                 roomId={id as string}
-                roomName={roomName as string}
-                roomIcon={room?.server_icon}
+                roomName={roomName}
+                room={room}
                 isUserListVisible={isUserListVisible}
                 onToggleUserList={toggleUserList}
                 usersInRoom={usersInRoom}

@@ -16,7 +16,7 @@ interface RoomCardProps {
     index: number;
     userCount: number;
     isConnecting: boolean;
-    onJoin: (roomId: string, roomName: string) => void;
+    onJoin: (roomId: string) => void;
     cardVariants: any;
     footer?: React.ReactNode;
     onDelete?: (roomId: string) => Promise<any>;
@@ -60,7 +60,7 @@ export function RoomCard({
                     } ${hovered ? "scale-[1.02] shadow-xl" : ""}`}
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
-                onClick={() => onJoin(room.id, room.name)}
+                onClick={() => onJoin(room.id)}
             >
                 <RoomCardBanner
                     roomName={room.name}

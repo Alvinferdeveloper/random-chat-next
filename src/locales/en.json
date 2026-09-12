@@ -303,6 +303,7 @@
     "chat.header.show_participants": "Show participants",
     "chat.header.room_fallback": "Chat",
     "chat.header.share": "Share tribe",
+    "chat.header.room_info": "View tribe info",
     "chat.header.link_copied": "Link copied to clipboard",
     "chat.header.link_copy_error": "Could not copy the link",
 
@@ -314,6 +315,8 @@
 
     "chat.date_separator.today": "Today",
     "chat.date_separator.yesterday": "Yesterday",
+
+    "chat.room_info.member_count": "{{count}} in this tribe right now",
 
     "chat.reaction_tooltip.one": "{{user}} reacted {{emoji}}",
     "chat.reaction_tooltip.two": "{{user1}} and {{user2}} reacted {{emoji}}",

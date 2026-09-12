@@ -6,6 +6,8 @@ import { Button } from "@/src/components/ui/button";
 import Image from "next/image";
 import { ThemeToggle } from "@/src/app/components/layout/ThemeToggle";
 import { RoomPresence } from "@/src/app/chat/[id]/components/RoomPresence";
+import { RoomInfoDialog } from "@/src/app/chat/[id]/components/RoomInfoDialog";
+import { RoomInfo } from "@/src/app/chat/[id]/hooks/useRoomInfo";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { APP_NAME } from "@/src/app/constants";
@@ -18,8 +20,8 @@ interface User {
 
 interface ChatHeaderProps {
     roomId: string;
-    roomName: string;
-    roomIcon?: string;
+    roomName?: string;
+    room: RoomInfo | null;
     isUserListVisible: boolean;
     onToggleUserList: () => void;
     usersInRoom?: User[];
@@ -46,9 +48,10 @@ function RoomIcon({ roomName, roomIcon }: { roomName: string; roomIcon?: string 
     );
 }
 
-export function ChatHeader({ roomId, roomName, roomIcon, isUserListVisible, onToggleUserList, usersInRoom = [] }: ChatHeaderProps) {
+export function ChatHeader({ roomId, roomName, room, isUserListVisible, onToggleUserList, usersInRoom = [] }: ChatHeaderProps) {
     const { t } = useTranslation();
     const [justCopied, setJustCopied] = useState(false);
+    const [infoOpen, setInfoOpen] = useState(false);
 
     const handleShare = async () => {
         const url = `${window.location.origin}/chat/${roomId}`;
@@ -76,8 +79,13 @@ export function ChatHeader({ roomId, roomName, roomIcon, isUserListVisible, onTo
                     </Button>
                 </Link>
 
-                <div className="flex items-center gap-2.5 min-w-0">
-                    <RoomIcon roomName={roomName} roomIcon={roomIcon} />
+                <button
+                    onClick={() => room && setInfoOpen(true)}
+                    disabled={!room}
+                    className="flex items-center gap-2.5 min-w-0 cursor-pointer disabled:cursor-default rounded-lg -mx-1.5 px-1.5 py-1 transition-colors hover:bg-accent/40 disabled:hover:bg-transparent"
+                    aria-label={t('chat.header.room_info')}
+                >
+                    <RoomIcon roomName={roomName ?? ''} roomIcon={room?.server_icon} />
 
                     <h1 className="text-sm sm:text-base font-semibold tracking-tight truncate">
                         {roomName || t('chat.header.room_fallback')}
@@ -87,9 +95,9 @@ export function ChatHeader({ roomId, roomName, roomIcon, isUserListVisible, onTo
                         <span className="absolute inline-flex w-full h-full rounded-full bg-emerald-400/60 animate-ping" style={{ animationDuration: '2s' }} />
                         <span className="relative inline-flex w-full h-full rounded-full bg-emerald-500" />
                     </span>
+                </button>
 
-                    <RoomPresence users={usersInRoom} onClick={onToggleUserList} />
-                </div>
+                <RoomPresence users={usersInRoom} onClick={onToggleUserList} />
             </div>
 
             <div className="flex items-center gap-3 sm:gap-6 shrink-0">
@@ -130,6 +138,15 @@ export function ChatHeader({ roomId, roomName, roomIcon, isUserListVisible, onTo
                     />
                 </Link>
             </div>
+
+            {room && (
+                <RoomInfoDialog
+                    room={room}
+                    memberCount={usersInRoom.length}
+                    open={infoOpen}
+                    onOpenChange={setInfoOpen}
+                />
+            )}
         </header>
     );
 }
