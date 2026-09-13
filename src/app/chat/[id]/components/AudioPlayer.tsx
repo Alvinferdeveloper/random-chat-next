@@ -34,7 +34,7 @@ export function AudioPlayer({ url, isUploading, duration }: { url: string; isUpl
             <button
                 onClick={togglePlay}
                 disabled={isUploading}
-                className="w-10 h-10 shrink-0 rounded-full bg-current/15 flex items-center justify-center hover:bg-current/25 transition-colors disabled:opacity-50"
+                className="w-10 h-10 shrink-0 rounded-full bg-current/15 flex items-center justify-center hover:bg-current/25 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
             >
                 {isUploading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />

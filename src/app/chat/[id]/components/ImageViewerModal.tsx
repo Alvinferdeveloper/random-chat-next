@@ -24,7 +24,7 @@ export function ImageViewerModal({ isOpen, imageUrl, onClose }: ImageViewerModal
             >
                 <button
                     onClick={onClose}
-                    className="absolute right-0 text-white bg-gray-600 rounded-full p-2 hover:bg-gray-700 transition-colors"
+                    className="absolute right-0 text-white bg-gray-600 rounded-full p-2 hover:bg-gray-700 transition-colors cursor-pointer"
                 >
                     <X size={24} />
                 </button>

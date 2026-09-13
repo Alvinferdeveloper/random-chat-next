@@ -402,25 +402,25 @@ export const ChatMessage = memo(function ChatMessage({ msg, username, openImageV
                                 <button
                                     key={emoji}
                                     onClick={() => handleReact(emoji)}
-                                    className="h-7 w-7 rounded-full flex items-center justify-center text-sm hover:bg-accent transition-transform hover:scale-110 active:scale-95"
+                                    className="h-7 w-7 rounded-full flex items-center justify-center text-sm hover:bg-accent transition-transform hover:scale-110 active:scale-95 cursor-pointer"
                                     aria-label={t('chat.message.react_with', { emoji })}
                                 >
                                     {emoji}
                                 </button>
                             ))}
-                            <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full" onClick={() => setPickerVisible(v => !v)}>
+                            <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full cursor-pointer" onClick={() => setPickerVisible(v => !v)}>
                                 <SmilePlus className="h-3.5 w-3.5" />
                             </Button>
-                            <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full" onClick={handleReply}>
+                            <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full cursor-pointer" onClick={handleReply}>
                                 <Reply className="h-3.5 w-3.5" />
                             </Button>
                             {isMyMessage && isTextMessage(msg) && onEdit && (
-                                <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full" onClick={() => onEdit(msg)}>
+                                <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full cursor-pointer" onClick={() => onEdit(msg)}>
                                     <Pencil className="h-3.5 w-3.5" />
                                 </Button>
                             )}
                             {isMyMessage && onDelete && (
-                                <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full hover:text-destructive" onClick={() => onDelete(msg.id)}>
+                                <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full cursor-pointer hover:text-destructive" onClick={() => onDelete(msg.id)}>
                                     <Trash2 className="h-3.5 w-3.5" />
                                 </Button>
                             )}
@@ -451,19 +451,19 @@ export const ChatMessage = memo(function ChatMessage({ msg, username, openImageV
                             </div>
                         ) : (
                             <div className="flex flex-col w-full">
-                                <Button variant="ghost" size="sm" onClick={() => { setPickerVisible(true); }} className="flex items-center gap-3 rounded-lg justify-start px-3">
+                                <Button variant="ghost" size="sm" onClick={() => { setPickerVisible(true); }} className="flex items-center gap-3 rounded-lg justify-start px-3 cursor-pointer">
                                     <SmilePlus className="h-4 w-4" /> {t('chat.message.react')}
                                 </Button>
-                                <Button variant="ghost" size="sm" onClick={handleReply} className="flex items-center gap-3 rounded-lg justify-start px-3">
+                                <Button variant="ghost" size="sm" onClick={handleReply} className="flex items-center gap-3 rounded-lg justify-start px-3 cursor-pointer">
                                     <Reply className="h-4 w-4" /> {t('chat.message.reply')}
                                 </Button>
                                 {isMyMessage && isTextMessage(msg) && onEdit && (
-                                    <Button variant="ghost" size="sm" onClick={() => onEdit(msg)} className="flex items-center gap-3 rounded-lg justify-start px-3">
+                                    <Button variant="ghost" size="sm" onClick={() => onEdit(msg)} className="flex items-center gap-3 rounded-lg justify-start px-3 cursor-pointer">
                                         <Pencil className="h-4 w-4" /> {t('chat.message.edit')}
                                     </Button>
                                 )}
                                 {isMyMessage && onDelete && (
-                                    <Button variant="ghost" size="sm" onClick={() => onDelete(msg.id)} className="flex items-center gap-3 rounded-lg justify-start px-3">
+                                    <Button variant="ghost" size="sm" onClick={() => onDelete(msg.id)} className="flex items-center gap-3 rounded-lg justify-start px-3 cursor-pointer">
                                         <Trash2 className="h-4 w-4" /> {t('chat.message.delete')}
                                     </Button>
                                 )}

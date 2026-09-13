@@ -237,7 +237,7 @@ export function MessageInput({
                         <Pencil className="h-4 w-4 text-primary" />
                         <span>{t('chat.input.editing_message')}</span>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={cancelEdit} className="h-6 w-6">
+                    <Button variant="ghost" size="icon" onClick={cancelEdit} className="h-6 w-6 cursor-pointer">
                         <X className="h-4 w-4" />
                     </Button>
                 </div>
@@ -251,7 +251,7 @@ export function MessageInput({
                             {isTextMessage(replyingToMessage) ? replyingToMessage.message : (isImageMessage(replyingToMessage) ? replyingToMessage.description : (isAudioMessage(replyingToMessage) ? t('chat.message.audio_fallback') : ''))}
                         </span>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={handleCancelReply} className="h-6 w-6">
+                    <Button variant="ghost" size="icon" onClick={handleCancelReply} className="h-6 w-6 cursor-pointer">
                         <X className="h-4 w-4" />
                     </Button>
                 </div>
@@ -307,7 +307,7 @@ export function MessageInput({
                             </div>
                             <button
                                 onClick={cancelRecording}
-                                className="text-xs font-bold text-gray-500 hover:text-gray-700 uppercase tracking-wider"
+                                className="text-xs font-bold text-gray-500 hover:text-gray-700 uppercase tracking-wider cursor-pointer"
                             >
                                 {t('chat.input.cancel_recording')}
                             </button>
@@ -321,7 +321,7 @@ export function MessageInput({
                                         size="icon"
                                         variant="ghost"
                                         onClick={() => fileInputRef.current?.click()}
-                                        className="flex-shrink-0"
+                                        className="flex-shrink-0 cursor-pointer"
                                     >
                                         <Paperclip className="h-5 w-5 text-muted-foreground" />
                                     </Button>

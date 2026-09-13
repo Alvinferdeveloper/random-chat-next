@@ -72,7 +72,7 @@ export function ChatHeader({ roomId, roomName, room, isUserListVisible, onToggle
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl text-muted-foreground hover:text-foreground transition-all duration-200 ease-out hover:bg-accent/50 active:scale-[0.92]"
+                        className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl text-muted-foreground hover:text-foreground transition-all duration-200 ease-out hover:bg-accent/50 active:scale-[0.92] cursor-pointer"
                         aria-label={t('chat.header.back')}
                     >
                         <ArrowLeft className="w-4 h-4" />
@@ -116,7 +116,7 @@ export function ChatHeader({ roomId, roomName, room, isUserListVisible, onToggle
                     size="icon"
                     onClick={onToggleUserList}
                     aria-label={t('chat.header.show_participants')}
-                    className={`h-8 w-8 sm:h-9 sm:w-9 rounded-xl transition-all duration-200 ease-out active:scale-[0.92] ${isUserListVisible
+                    className={`h-8 w-8 sm:h-9 sm:w-9 rounded-xl transition-all duration-200 ease-out active:scale-[0.92] cursor-pointer ${isUserListVisible
                         ? 'bg-accent text-accent-foreground'
                         : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
                         }`}

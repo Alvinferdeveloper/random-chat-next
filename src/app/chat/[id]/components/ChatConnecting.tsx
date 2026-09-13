@@ -27,7 +27,7 @@ export function ChatConnecting({ roomName }: ChatConnectingProps) {
                 <p className="text-sm text-muted-foreground">
                     {t('chat.connecting.connecting_users')}
                 </p>
-                <Button variant="outline" onClick={() => router.push("/")} className="mt-4">
+                <Button variant="outline" onClick={() => router.push("/")} className="mt-4 cursor-pointer">
                     {t('chat.connecting.cancel')}
                 </Button>
             </div>

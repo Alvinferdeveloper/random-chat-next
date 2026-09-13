@@ -21,7 +21,7 @@ export function ReactionPicker({ onSelect }: ReactionPickerProps) {
                 <button
                     key={emoji}
                     onClick={() => onSelect(emoji)}
-                    className="p-1.5 rounded-full hover:bg-muted transition-colors text-xl"
+                    className="p-1.5 rounded-full hover:bg-muted transition-colors text-xl cursor-pointer"
                     aria-label={`React with ${emoji}`}
                 >
                     {emoji}

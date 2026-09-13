@@ -145,7 +145,7 @@ export function UserList({ users, typingUsers, roomId }: UserListProps) {
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg"
+                                        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg cursor-pointer"
                                         onClick={(e) => handleReportClick(e, user)}
                                     >
                                         <Flag className="w-4 h-4" />

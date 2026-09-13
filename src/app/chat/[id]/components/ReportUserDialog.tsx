@@ -126,7 +126,7 @@ export function ReportUserDialog({ isOpen, onClose, reportedUsername, reportedUs
                                         key={option.id}
                                         onClick={() => setSelectedReason(option.id)}
                                         className={cn(
-                                            "flex items-center gap-3.5 w-full p-3 rounded-xl text-left transition-all duration-200",
+                                            "flex items-center gap-3.5 w-full p-3 rounded-xl text-left transition-all duration-200 cursor-pointer",
                                             "active:scale-[0.98]",
                                             selectedReason === option.id
                                                 ? "bg-primary/8 text-foreground ring-1 ring-primary/30"

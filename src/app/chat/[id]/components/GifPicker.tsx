@@ -163,7 +163,7 @@ export function GifPicker({ onSelect, favoriteGifs, toggleFavorite, loadingFavor
                                         {session && (
                                             <button
                                                 onClick={(e) => handleToggleFavorite(e, gif)}
-                                                className="absolute top-1 right-1 p-1.5 rounded-full bg-black/40 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity"
+                                                className="absolute top-1 right-1 p-1.5 rounded-full bg-black/40 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                                             >
                                                 <Heart className={cn(
                                                     "h-3.5 w-3.5 cursor-pointer text-white transition-colors",

@@ -44,7 +44,7 @@ export function ImagePreviewModal({
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute top-2 right-2 rounded-full bg-gray-800 text-white"
+                        className="absolute top-2 right-2 rounded-full bg-gray-800 text-white cursor-pointer"
                         onClick={closeModal}
                         disabled={isUploading}
                     >
@@ -72,14 +72,14 @@ export function ImagePreviewModal({
                                 size="icon"
                                 variant="ghost"
                                 onClick={() => setShowPicker(!showPicker)}
-                                className="absolute inset-y-0 right-0 flex items-center justify-center"
+                                className="absolute inset-y-0 right-0 flex items-center justify-center cursor-pointer"
                                 disabled={isUploading}
                             >
                                 <Smile className="h-5 w-5 text-muted-foreground" />
                             </Button>
                         </div>
                     </div>
-                    <Button onClick={handleImageSend} size="icon" className="flex-shrink-0" disabled={isUploading}>
+                    <Button onClick={handleImageSend} size="icon" className="flex-shrink-0 cursor-pointer" disabled={isUploading}>
                         <Send className={cn("w-4 h-4", isUploading && "animate-pulse")} />
                     </Button>
                 </div>

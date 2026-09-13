@@ -70,7 +70,7 @@ export function ReactionPill({ reaction, isMyMessage, onReact, onHoverChange }: 
                     }
                     : longPressHandlers)}
                 className={cn(
-                    "flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] border-2 transition-transform hover:scale-110 active:scale-95",
+                    "flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] border-2 transition-transform hover:scale-110 active:scale-95 cursor-pointer",
                     "bg-white dark:bg-zinc-800 shadow-md",
                     isMyMessage ? "border-primary" : "border-muted"
                 )}
