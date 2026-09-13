@@ -7,6 +7,7 @@ import { Reply, ChevronRight, SmilePlus, Loader2, Heart, Megaphone, ShieldCheck,
 import React, { useState, useRef, useEffect, useCallback, memo } from "react";
 import { useLongPress } from "@/src/app/chat/[id]/hooks/useLongPress";
 import { useHover } from "@/src/app/hooks/useHover";
+import { useClickOutside } from "@/src/app/hooks/useClickOutside";
 import { ReactionPicker, commonReactions } from "@/src/app/chat/[id]/components/ReactionPicker";
 import { ReactionPill } from "@/src/app/chat/[id]/components/ReactionPill";
 import { cn } from "@/src/lib/utils";
@@ -61,8 +62,14 @@ export const ChatMessage = memo(function ChatMessage({ msg, username, openImageV
     const [isBubbleHovered, setIsBubbleHovered] = useState(false);
     const [isReactionHovered, setIsReactionHovered] = useState(false);
     const messageRef = useRef<HTMLDivElement>(null);
+    const desktopPickerRef = useRef<HTMLDivElement>(null);
     const hasHover = useHover();
     const showActionToolbar = hasHover && isBubbleHovered && !isReactionHovered;
+
+    // The mobile long-press menu already closes the picker via its own
+    // full-screen backdrop; this only needs to cover the desktop hover
+    // toolbar's picker, which had no way to dismiss on an outside click.
+    useClickOutside(desktopPickerRef, () => setPickerVisible(false));
     const { session } = useAuth();
 
     const handleLongPress = (event: React.MouseEvent | React.TouchEvent) => {
@@ -314,10 +321,12 @@ export const ChatMessage = memo(function ChatMessage({ msg, username, openImageV
                 </div>
             )}
             {pickerVisible && hasHover && (
-                <div className={cn(
-                    "absolute -top-12 z-30 animate-in fade-in zoom-in duration-200",
-                    isMyMessage ? "right-0" : "left-0"
-                )}>
+                <div
+                    ref={desktopPickerRef}
+                    className={cn(
+                        "absolute -top-12 z-30 animate-in fade-in zoom-in duration-200",
+                        isMyMessage ? "right-0" : "left-0"
+                    )}>
                     <ReactionPicker onSelect={handleReact} />
                 </div>
             )}
