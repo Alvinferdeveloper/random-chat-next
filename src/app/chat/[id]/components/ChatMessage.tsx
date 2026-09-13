@@ -7,7 +7,7 @@ import { Reply, ChevronRight, SmilePlus, Loader2, Heart, Megaphone, ShieldCheck,
 import React, { useState, useRef, useEffect, useCallback, memo } from "react";
 import { useLongPress } from "@/src/app/chat/[id]/hooks/useLongPress";
 import { useHover } from "@/src/app/hooks/useHover";
-import { ReactionPicker } from "@/src/app/chat/[id]/components/ReactionPicker";
+import { ReactionPicker, commonReactions } from "@/src/app/chat/[id]/components/ReactionPicker";
 import { ReactionPill } from "@/src/app/chat/[id]/components/ReactionPill";
 import { cn } from "@/src/lib/utils";
 import { AudioPlayer } from "@/src/app/chat/[id]/components/AudioPlayer";
@@ -37,6 +37,11 @@ interface ChatMessageProps {
      * tightens spacing, the way Discord/Slack/iMessage group message bursts. */
     isGroupStart?: boolean;
 }
+
+// Pinned directly in the hover toolbar so the most common reactions are a
+// single click away; the smiley button next to them still opens the full
+// picker (commonReactions) for anything else.
+const QUICK_REACTIONS = commonReactions.slice(0, 3);
 
 function formatTime(dateStr: string) {
     const date = new Date(dateStr);
@@ -384,6 +389,16 @@ export const ChatMessage = memo(function ChatMessage({ msg, username, openImageV
                             isMyMessage ? "right-2" : "left-2",
                             showActionToolbar ? "opacity-100" : "opacity-0 pointer-events-none"
                         )}>
+                            {QUICK_REACTIONS.map((emoji) => (
+                                <button
+                                    key={emoji}
+                                    onClick={() => handleReact(emoji)}
+                                    className="h-7 w-7 rounded-full flex items-center justify-center text-sm hover:bg-accent transition-transform hover:scale-110 active:scale-95"
+                                    aria-label={t('chat.message.react_with', { emoji })}
+                                >
+                                    {emoji}
+                                </button>
+                            ))}
                             <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full" onClick={() => setPickerVisible(v => !v)}>
                                 <SmilePlus className="h-3.5 w-3.5" />
                             </Button>

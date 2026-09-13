@@ -334,6 +334,7 @@
     "chat.message.replying_to": "Replying to @{{username}}",
     "chat.message.edited": "(edited)",
     "chat.message.react": "React",
+    "chat.message.react_with": "React with {{emoji}}",
     "chat.message.reply": "Reply",
     "chat.message.edit": "Edit",
     "chat.message.delete": "Delete",

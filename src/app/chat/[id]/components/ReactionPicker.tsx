@@ -6,7 +6,7 @@ interface ReactionPickerProps {
     onSelect: (emoji: string) => void;
 }
 
-const commonReactions = ['👍', '❤️', '😂', '😮', '😢', '🙏'];
+export const commonReactions = ['👍', '❤️', '😂', '😮', '😢', '🙏'];
 
 export function ReactionPicker({ onSelect }: ReactionPickerProps) {
     return (
