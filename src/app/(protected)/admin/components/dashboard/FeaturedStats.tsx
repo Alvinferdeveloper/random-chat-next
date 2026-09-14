@@ -14,10 +14,9 @@ interface LiveStats {
     pendingRooms: number;
 }
 
-const nf = (n?: number) => (n ?? 0).toLocaleString('es-ES');
-
 export default function FeaturedStats({ stats, loading }: { stats: LiveStats | null; loading: boolean }) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const nf = (n?: number) => (n ?? 0).toLocaleString(i18n.language);
 
     return (
         <motion.div

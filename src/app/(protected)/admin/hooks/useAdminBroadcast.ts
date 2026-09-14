@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from '@/src/app/lib/i18n';
 
 export function useAdminBroadcast() {
+    const { t } = useTranslation();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -18,7 +20,7 @@ export function useAdminBroadcast() {
             });
 
             const data = await response.json();
-            if (!response.ok) throw new Error(data.message || 'Error al enviar mensaje global');
+            if (!response.ok) throw new Error(t(data.message || 'Error sending the announcement'));
 
             return true;
         } catch (err) {

@@ -44,6 +44,9 @@
 
     "CATEGORY_NAME_TAKEN": "A category with that name already exists",
 
+    "BROADCAST_MESSAGE_EMPTY": "The message cannot be empty",
+    "CANNOT_DEMOTE_SELF": "You cannot demote your own admin role",
+
     "MAINTENANCE_MODE": "Site is undergoing maintenance. Please try again later",
     "REGISTRATION_DISABLED": "User registration is currently disabled by the administrator",
     "CHAT_DISABLED": "Chat is temporarily disabled",
@@ -183,6 +186,7 @@
 
     "admin.rooms.title": "Tribe Management",
     "admin.rooms.subtitle": "Review and moderate tribes created by users",
+    "admin.rooms.search_placeholder": "Search by tribe name, owner username or email...",
     "admin.rooms.count": "{{count}} pending",
     "admin.rooms.count_all": "{{count}} total",
     "admin.rooms.count_accepted": "{{count}} accepted",
@@ -255,6 +259,10 @@
     "admin.my_rooms.tabs.IN_REVISION": "Under Review",
     "admin.my_rooms.tabs.ACCEPTED": "Accepted",
     "admin.my_rooms.tabs.REJECTED": "Rejected",
+    "admin.my_rooms.count_one": "{{count}} tribe",
+    "admin.my_rooms.count_other": "{{count}} tribes",
+    "admin.my_rooms.loading_more": "Loading...",
+    "admin.my_rooms.load_more": "Load more",
 
     "admin.reports.title": "Community Reports",
     "admin.reports.subtitle": "Manage user reports on the platform",

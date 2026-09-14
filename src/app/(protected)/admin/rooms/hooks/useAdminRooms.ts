@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Room } from '@/src/app/tribus/hooks/useRoom';
+import { useDebounce } from '@/src/app/hooks/useDebounce';
 
 export interface AdminRoom extends Room {
     status: 'IN_REVISION' | 'ACCEPTED' | 'REJECTED';
@@ -19,6 +20,8 @@ export function useAdminRooms(statusFilter: RoomStatusFilter = 'IN_REVISION', pa
     const [error, setError] = useState<string | null>(null);
     const [total, setTotal] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const [search, setSearch] = useState('');
+    const debouncedSearch = useDebounce(search, 300);
 
     const fetchRooms = useCallback(async () => {
         setLoading(true);
@@ -28,6 +31,7 @@ export function useAdminRooms(statusFilter: RoomStatusFilter = 'IN_REVISION', pa
             params.set('status', statusFilter);
             params.set('page', String(page));
             params.set('limit', '12');
+            if (debouncedSearch) params.set('search', debouncedSearch);
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/admin/rooms?${params}`, { credentials: 'include' });
             const json = await response.json();
@@ -41,7 +45,7 @@ export function useAdminRooms(statusFilter: RoomStatusFilter = 'IN_REVISION', pa
         } finally {
             setLoading(false);
         }
-    }, [statusFilter, page]);
+    }, [statusFilter, page, debouncedSearch]);
 
     const updateStatus = async (roomId: string, newStatus: RoomStatus) => {
         try {
@@ -70,5 +74,5 @@ export function useAdminRooms(statusFilter: RoomStatusFilter = 'IN_REVISION', pa
         fetchRooms();
     }, [fetchRooms]);
 
-    return { rooms, loading, error, total, totalPages, updateStatus, refetch: fetchRooms };
+    return { rooms, loading, error, total, totalPages, search, setSearch, updateStatus, refetch: fetchRooms };
 }

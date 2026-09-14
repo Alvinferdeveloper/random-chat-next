@@ -44,6 +44,9 @@
 
     "CATEGORY_NAME_TAKEN": "Ya existe una categoría con ese nombre",
 
+    "BROADCAST_MESSAGE_EMPTY": "El mensaje no puede estar vacío",
+    "CANNOT_DEMOTE_SELF": "No puedes degradar tu propio rol de administrador",
+
     "MAINTENANCE_MODE": "El sitio está en mantenimiento. Intenta de nuevo más tarde",
     "REGISTRATION_DISABLED": "El registro de usuarios está deshabilitado por el administrador",
     "CHAT_DISABLED": "El chat está deshabilitado temporalmente",
@@ -183,6 +186,7 @@
 
     "admin.rooms.title": "Gestión de Tribus",
     "admin.rooms.subtitle": "Revisa y modera las tribus creadas por los usuarios",
+    "admin.rooms.search_placeholder": "Buscar por nombre de tribu, usuario o correo del dueño...",
     "admin.rooms.count": "{{count}} pendientes",
     "admin.rooms.count_all": "{{count}} total",
     "admin.rooms.count_accepted": "{{count}} aceptadas",
@@ -255,6 +259,10 @@
     "admin.my_rooms.tabs.IN_REVISION": "En Revisión",
     "admin.my_rooms.tabs.ACCEPTED": "Aceptadas",
     "admin.my_rooms.tabs.REJECTED": "Rechazadas",
+    "admin.my_rooms.count_one": "{{count}} tribu",
+    "admin.my_rooms.count_other": "{{count}} tribus",
+    "admin.my_rooms.loading_more": "Cargando...",
+    "admin.my_rooms.load_more": "Cargar más",
 
     "admin.reports.title": "Reportes de Comunidad",
     "admin.reports.subtitle": "Gestiona los reportes de los usuarios en la plataforma",

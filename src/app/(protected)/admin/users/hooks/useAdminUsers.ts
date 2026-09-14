@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useDebounce } from '@/src/app/hooks/useDebounce';
+import { useTranslation } from '@/src/app/lib/i18n';
 
 export interface User {
     id: string;
@@ -25,6 +26,7 @@ export type RoleFilter = 'ALL' | 'ADMIN' | 'MODERATOR' | 'USER';
 export type BanFilter = 'ALL' | 'BANNED' | 'UNBANNED';
 
 export function useAdminUsers() {
+    const { t } = useTranslation();
     const [users, setUsers] = useState<User[]>([]);
     const [pagination, setPagination] = useState<Pagination | null>(null);
     const [loading, setLoading] = useState(true);
@@ -98,7 +100,7 @@ export function useAdminUsers() {
 
             if (!response.ok) {
                 const data = await response.json();
-                throw new Error(data.message || 'Error updating role');
+                throw new Error(t(data.message || 'Error updating role'));
             }
 
             setUsers(prev => prev.map(u => u.id === userId ? { ...u, role } : u));

@@ -75,7 +75,7 @@ export default function AdminMyRoomsPage() {
                 </Button>
                 {!loading && !error && total > 0 && (
                     <Badge variant="outline" className="text-sm px-3 py-1 w-fit">
-                        {total} {total === 1 ? 'tribu' : 'tribus'}
+                        {t('admin.my_rooms.count', { count: total })}
                     </Badge>
                 )}
             </motion.div>
@@ -157,7 +157,7 @@ export default function AdminMyRoomsPage() {
                                 disabled={loading}
                                 className="px-6 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer disabled:opacity-50"
                             >
-                                {loading ? 'Cargando...' : 'Cargar más'}
+                                {loading ? t('admin.my_rooms.loading_more') : t('admin.my_rooms.load_more')}
                             </button>
                         </div>
                     )}

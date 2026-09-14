@@ -22,8 +22,6 @@ interface StatCard {
     bg: string;
 }
 
-const nf = (n?: number) => (n ?? 0).toLocaleString('es-ES');
-
 const stagger = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.04 } },
@@ -37,7 +35,8 @@ const fadeUp = {
 const cardGradient = 'bg-gradient-to-br from-zinc-100 to-zinc-100/60 dark:from-zinc-900/90 dark:to-zinc-900/60';
 
 export default function SecondaryStats({ stats, loading }: { stats: LiveStats | null; loading: boolean }) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const nf = (n?: number) => (n ?? 0).toLocaleString(i18n.language);
 
     const cards: StatCard[] = [
         { key: 'total_users', value: stats?.totalUsers, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },

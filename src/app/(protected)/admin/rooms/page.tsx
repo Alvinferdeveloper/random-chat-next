@@ -5,10 +5,11 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useAdminRooms, RoomStatus, RoomStatusFilter } from './hooks/useAdminRooms';
 import { Badge } from '@/src/components/ui/badge';
+import { Input } from '@/src/components/ui/input';
 import { ConfirmDialog } from '@/src/app/components/shared/ConfirmDialog';
 import { Pagination } from '@/src/app/components/shared/Pagination';
 import { toast } from 'sonner';
-import { AlertCircle, Layers } from 'lucide-react';
+import { AlertCircle, Layers, Search } from 'lucide-react';
 import RoomCard from './components/RoomCard';
 
 const TABS: { key: RoomStatusFilter; labelKey: string }[] = [
@@ -81,7 +82,7 @@ export default function ManageRoomsPage() {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<RoomStatusFilter>('IN_REVISION');
     const [page, setPage] = useState(1);
-    const { rooms, loading, error, total, totalPages, updateStatus, refetch } = useAdminRooms(activeTab, page);
+    const { rooms, loading, error, total, totalPages, search, setSearch, updateStatus, refetch } = useAdminRooms(activeTab, page);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [actionData, setActionData] = useState<{ id: string; status: RoomStatus } | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -113,6 +114,11 @@ export default function ManageRoomsPage() {
         setPage(1);
     };
 
+    const handleSearchChange = (value: string) => {
+        setSearch(value);
+        setPage(1);
+    };
+
     const confirmVariant = actionData?.status === 'REJECTED' ? 'destructive' : 'primary';
 
     return (
@@ -133,6 +139,16 @@ export default function ManageRoomsPage() {
                     </Badge>
                 )}
             </motion.div>
+
+            <div className="relative w-full max-w-sm">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                    placeholder={t('admin.rooms.search_placeholder')}
+                    className="pl-10"
+                    value={search}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                />
+            </div>
 
             <div className="flex gap-1 rounded-xl bg-muted/50 p-1 border border-border/50 w-fit">
                 {TABS.map((tab) => (
