@@ -96,6 +96,13 @@
     "admin.quick_actions.pending_reports_desc_other": "{{count}} reports to resolve",
     "admin.quick_actions.pending_reports_desc_empty": "No open reports",
 
+    "admin.notifications.new_report": "New report against {{username}}",
+    "admin.notifications.new_report_reason": "Reason: {{reason}}",
+    "admin.notifications.view": "View",
+    "admin.notifications.new_room": "New tribe created: {{name}}",
+    "admin.notifications.new_room_owner": "By: {{username}}",
+    "admin.notifications.review": "Review",
+
     "admin.settings.title": "System Settings",
     "admin.settings.last_update": "Last updated:",
     "admin.settings.active": "Active",

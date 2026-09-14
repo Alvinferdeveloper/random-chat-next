@@ -96,6 +96,13 @@
     "admin.quick_actions.pending_reports_desc_other": "{{count}} reportes por resolver",
     "admin.quick_actions.pending_reports_desc_empty": "Sin reportes abiertos",
 
+    "admin.notifications.new_report": "Nuevo reporte contra {{username}}",
+    "admin.notifications.new_report_reason": "Motivo: {{reason}}",
+    "admin.notifications.view": "Ver",
+    "admin.notifications.new_room": "Nueva tribu creada: {{name}}",
+    "admin.notifications.new_room_owner": "Por: {{username}}",
+    "admin.notifications.review": "Revisar",
+
     "admin.settings.title": "Ajustes del Sistema",
     "admin.settings.last_update": "Última actualización:",
     "admin.settings.active": "Activo",
