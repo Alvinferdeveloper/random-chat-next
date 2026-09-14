@@ -50,7 +50,11 @@ export default function AdminDashboard() {
             <FeaturedStats stats={stats} loading={loading} />
             <SecondaryStats stats={stats} loading={loading} />
             <ActiveRoomsList rooms={activeRooms} loading={loadingActiveRooms} />
-            <QuickActions onBroadcast={() => setIsBroadcastOpen(true)} />
+            <QuickActions
+                onBroadcast={() => setIsBroadcastOpen(true)}
+                pendingRooms={stats?.pendingRooms}
+                pendingReports={stats?.pendingReports}
+            />
             <SystemSettings settings={settings} loading={settingsLoading} onToggle={handleToggleSetting} />
             <BroadcastDialog
                 open={isBroadcastOpen}
