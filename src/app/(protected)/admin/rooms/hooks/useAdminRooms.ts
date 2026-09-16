@@ -70,9 +70,32 @@ export function useAdminRooms(statusFilter: RoomStatusFilter = 'IN_REVISION', pa
         }
     };
 
+    const updateCategories = async (roomId: string, categoryIds: string[]) => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/admin/rooms/${roomId}/categories`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ categoryIds }),
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.message || 'Error updating categories');
+            }
+            return { success: true };
+        } catch (err: any) {
+            return { success: false, message: err.message };
+        }
+    };
+
+    const updateRoom = (roomId: string, updates: Partial<AdminRoom>) => {
+        setRooms((prev) => prev.map((r) => (r.id === roomId ? { ...r, ...updates } : r)));
+    };
+
     useEffect(() => {
         fetchRooms();
     }, [fetchRooms]);
 
-    return { rooms, loading, error, total, totalPages, search, setSearch, updateStatus, refetch: fetchRooms };
+    return { rooms, loading, error, total, totalPages, search, setSearch, updateStatus, updateCategories, updateRoom, refetch: fetchRooms };
 }

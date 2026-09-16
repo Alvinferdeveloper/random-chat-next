@@ -82,7 +82,7 @@ export default function ManageRoomsPage() {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<RoomStatusFilter>('IN_REVISION');
     const [page, setPage] = useState(1);
-    const { rooms, loading, error, total, totalPages, search, setSearch, updateStatus, refetch } = useAdminRooms(activeTab, page);
+    const { rooms, loading, error, total, totalPages, search, setSearch, updateStatus, updateCategories, updateRoom, refetch } = useAdminRooms(activeTab, page);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [actionData, setActionData] = useState<{ id: string; status: RoomStatus } | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -214,6 +214,8 @@ export default function ManageRoomsPage() {
                                 room={room}
                                 index={index}
                                 onAction={handleActionClick}
+                                onUpdateCategories={updateCategories}
+                                onUpdateRoom={updateRoom}
                                 isSubmitting={isSubmitting}
                             />
                         ))}

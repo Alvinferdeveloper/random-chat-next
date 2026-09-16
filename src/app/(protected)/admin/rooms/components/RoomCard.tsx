@@ -1,18 +1,22 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import Image from 'next/image';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/src/components/ui/card';
 import { Button } from '@/src/components/ui/button';
 import { Badge } from '@/src/components/ui/badge';
-import { Check, X, RotateCcw, Hash } from 'lucide-react';
+import { Check, X, RotateCcw, Hash, Pencil } from 'lucide-react';
 import { AdminRoom, RoomStatus } from '../hooks/useAdminRooms';
+import EditCategoriesDialog from './EditCategoriesDialog';
 
 interface RoomCardProps {
     room: AdminRoom;
     index: number;
     onAction: (roomId: string, status: RoomStatus) => void;
+    onUpdateCategories: (roomId: string, categoryIds: string[]) => Promise<{ success: boolean; message?: string }>;
+    onUpdateRoom: (roomId: string, updates: Partial<AdminRoom>) => void;
     isSubmitting: boolean;
 }
 
@@ -44,8 +48,9 @@ function getActions(roomStatus: RoomStatus): [ActionDef, ActionDef] {
     }
 }
 
-export default function RoomCard({ room, index, onAction, isSubmitting }: RoomCardProps) {
+export default function RoomCard({ room, index, onAction, onUpdateCategories, onUpdateRoom, isSubmitting }: RoomCardProps) {
     const { t } = useTranslation();
+    const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
     const cfg = statusConfig[room.status];
     const actions = getActions(room.status);
 
@@ -116,6 +121,29 @@ export default function RoomCard({ room, index, onAction, isSubmitting }: RoomCa
                         <p className="text-xs text-muted-foreground/70 font-medium mb-1">{t('admin.rooms.full_desc')}</p>
                         <p className="text-muted-foreground/80 line-clamp-3 leading-relaxed">{room.full_description || t('admin.rooms.no_description')}</p>
                     </div>
+                    <div>
+                        <div className="flex items-center justify-between mb-1">
+                            <p className="text-xs text-muted-foreground/70 font-medium">{t('admin.my_rooms.edit_categories')}</p>
+                            <button
+                                onClick={() => setIsCategoriesOpen(true)}
+                                className="text-xs text-primary hover:underline flex items-center gap-1 cursor-pointer"
+                            >
+                                <Pencil className="h-3 w-3" />
+                                {t('admin.my_rooms.edit')}
+                            </button>
+                        </div>
+                        {room.categories && room.categories.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                                {room.categories.map(cat => (
+                                    <Badge key={cat.id} variant="secondary" className="text-[10px]">
+                                        {cat.icon && <span className="mr-1">{cat.icon}</span>}{cat.name}
+                                    </Badge>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-muted-foreground/60 text-xs">{t('admin.rooms.no_categories')}</p>
+                        )}
+                    </div>
                 </CardContent>
 
                 <CardFooter className="flex justify-between gap-3 pt-4 border-t border-border">
@@ -140,6 +168,14 @@ export default function RoomCard({ room, index, onAction, isSubmitting }: RoomCa
                     })}
                 </CardFooter>
             </Card>
+
+            <EditCategoriesDialog
+                room={room}
+                open={isCategoriesOpen}
+                onOpenChange={setIsCategoriesOpen}
+                onUpdateCategories={onUpdateCategories}
+                onUpdate={onUpdateRoom}
+            />
         </motion.div>
     );
 }
