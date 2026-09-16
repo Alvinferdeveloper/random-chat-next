@@ -24,6 +24,7 @@ export interface DetailedReport {
     details: string | null;
     chatContext: Message[] | null;
     createdAt: string;
+    status: 'PENDING' | 'RESOLVED' | 'DISMISSED';
     reporter: { username: string };
     room: { name: string } | null;
 }
@@ -94,6 +95,27 @@ export function useAdminReports() {
         }
     };
 
+    const resolveReport = async (reportId: string, status: 'RESOLVED' | 'DISMISSED') => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/reports/admin/${reportId}/resolve`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status }),
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(t(data.message || 'Error resolving report'));
+            }
+
+            return true;
+        } catch (err) {
+            setError((err as Error).message);
+            return false;
+        }
+    };
+
     const fetchUserReports = async (userId: string): Promise<DetailedReport[]> => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/reports/admin/user/${userId}`, {
@@ -118,6 +140,7 @@ export function useAdminReports() {
         search,
         setSearch,
         resolveReports,
+        resolveReport,
         fetchUserReports,
         refresh: fetchReports
     };

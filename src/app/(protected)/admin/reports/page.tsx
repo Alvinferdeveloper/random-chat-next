@@ -56,7 +56,9 @@ export default function AdminReportsPage() {
         page,
         setPage,
         resolveReports,
-        fetchUserReports
+        resolveReport,
+        fetchUserReports,
+        refresh
     } = useAdminReports();
 
     const { toggleBan } = useAdminUsers();
@@ -70,6 +72,7 @@ export default function AdminReportsPage() {
     const [selectedUsername, setSelectedUsername] = useState('');
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [isBulkSubmitting, setIsBulkSubmitting] = useState(false);
+    const [processingReportId, setProcessingReportId] = useState<string | null>(null);
 
     const handleResolve = async (userId: string, status: 'RESOLVED' | 'DISMISSED') => {
         setProcessingId(userId);
@@ -78,6 +81,17 @@ export default function AdminReportsPage() {
             toast.success(status === 'RESOLVED' ? t('admin.toast.reports_resolved') : t('admin.toast.reports_dismissed'));
         }
         setProcessingId(null);
+    };
+
+    const handleResolveIndividualReport = async (reportId: string, status: 'RESOLVED' | 'DISMISSED') => {
+        setProcessingReportId(reportId);
+        const success = await resolveReport(reportId, status);
+        if (success) {
+            setContextReports(prev => prev.map(r => r.id === reportId ? { ...r, status } : r));
+            toast.success(status === 'RESOLVED' ? t('admin.toast.reports_resolved') : t('admin.toast.reports_dismissed'));
+            refresh();
+        }
+        setProcessingReportId(null);
     };
 
     const toggleSelect = (userId: string) => {
@@ -237,6 +251,8 @@ export default function AdminReportsPage() {
                 onClose={() => setIsContextOpen(false)}
                 reports={contextReports}
                 reportedUsername={selectedUsername}
+                onResolve={handleResolveIndividualReport}
+                processingReportId={processingReportId}
             />
 
             <BulkActionBar

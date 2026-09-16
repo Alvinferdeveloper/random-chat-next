@@ -11,8 +11,9 @@ import {
 } from '@/src/components/ui/dialog';
 import { ScrollArea } from '@/src/components/ui/scroll-area';
 import { Badge } from '@/src/components/ui/badge';
+import { Button } from '@/src/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar';
-import { MessageSquare, Clock, Calendar } from 'lucide-react';
+import { MessageSquare, Clock, Calendar, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 import { DetailedReport } from '../hooks/useAdminReports';
 import { Message, isTextMessage, isImageMessage } from '@/src/types/chat';
@@ -34,9 +35,11 @@ interface ChatContextDialogProps {
     onClose: () => void;
     reports: DetailedReport[];
     reportedUsername: string;
+    onResolve: (reportId: string, status: 'RESOLVED' | 'DISMISSED') => void;
+    processingReportId: string | null;
 }
 
-export function ChatContextDialog({ isOpen, onClose, reports, reportedUsername }: ChatContextDialogProps) {
+export function ChatContextDialog({ isOpen, onClose, reports, reportedUsername, onResolve, processingReportId }: ChatContextDialogProps) {
     const { t } = useTranslation();
 
     const REASON_LABELS: Record<string, string> = {
@@ -48,7 +51,12 @@ export function ChatContextDialog({ isOpen, onClose, reports, reportedUsername }
         OTHER: t('admin.reports.reason.other')
     };
 
-    const reportsWithContext = reports.filter(r => r.chatContext && r.chatContext.length > 0);
+    const STATUS_CONFIG: Record<string, { labelKey: string; variant: 'secondary' | 'default' | 'destructive' }> = {
+        RESOLVED: { labelKey: 'admin.reports.status.resolved', variant: 'default' },
+        DISMISSED: { labelKey: 'admin.reports.status.dismissed', variant: 'secondary' },
+    };
+
+    const evidenceCount = reports.filter(r => r.chatContext && r.chatContext.length > 0).length;
 
     const formatTime = (dateStr: string) => {
         return new Date(dateStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -65,7 +73,7 @@ export function ChatContextDialog({ isOpen, onClose, reports, reportedUsername }
 
                 <div className="flex-1 overflow-hidden">
                     <ScrollArea className="h-full">
-                        {reportsWithContext.length === 0 ? (
+                        {reports.length === 0 ? (
                             <div className="flex flex-col items-center justify-center text-muted-foreground py-20 px-6 text-center">
                                 <Clock className="h-12 w-12 text-muted-foreground/20 mb-4" />
                                 <h3 className="font-semibold text-base">{t('admin.reports.context.no_evidence_title')}</h3>
@@ -75,7 +83,7 @@ export function ChatContextDialog({ isOpen, onClose, reports, reportedUsername }
                             </div>
                         ) : (
                             <div className="p-6 space-y-10">
-                                {reportsWithContext.map((report, rIdx) => (
+                                {reports.map((report, rIdx) => (
                                     <motion.div
                                         key={report.id}
                                         custom={rIdx}
@@ -110,8 +118,38 @@ export function ChatContextDialog({ isOpen, onClose, reports, reportedUsername }
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            {report.status === 'PENDING' ? (
+                                                <div className="flex items-center gap-2 shrink-0">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="h-7 gap-1.5 text-xs cursor-pointer active:scale-[0.98]"
+                                                        onClick={() => onResolve(report.id, 'DISMISSED')}
+                                                        disabled={processingReportId === report.id}
+                                                    >
+                                                        {processingReportId === report.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <XCircle className="w-3 h-3" />}
+                                                        {t('admin.reports.dismiss')}
+                                                    </Button>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="h-7 gap-1.5 text-xs cursor-pointer active:scale-[0.98] text-emerald-600 hover:text-emerald-600 hover:bg-emerald-500/10 border-emerald-500/20"
+                                                        onClick={() => onResolve(report.id, 'RESOLVED')}
+                                                        disabled={processingReportId === report.id}
+                                                    >
+                                                        {processingReportId === report.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3 h-3" />}
+                                                        {t('admin.reports.resolve')}
+                                                    </Button>
+                                                </div>
+                                            ) : (
+                                                <Badge variant={STATUS_CONFIG[report.status].variant} className="h-6 text-[10px] shrink-0">
+                                                    {t(STATUS_CONFIG[report.status].labelKey)}
+                                                </Badge>
+                                            )}
                                         </div>
 
+                                        {report.chatContext && report.chatContext.length > 0 && (
                                         <div className="space-y-3 pl-4 border-l-2 border-border ml-4">
                                             {report.chatContext?.map((msg: Message, mIdx: number) => {
                                                 const isReportedUser = msg.username === reportedUsername;
@@ -166,6 +204,7 @@ export function ChatContextDialog({ isOpen, onClose, reports, reportedUsername }
                                                 );
                                             })}
                                         </div>
+                                        )}
 
                                         {report.details && (
                                             <div className="mt-4 ml-8 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 italic text-xs text-muted-foreground">
@@ -184,7 +223,7 @@ export function ChatContextDialog({ isOpen, onClose, reports, reportedUsername }
 
                 <div className="p-4 bg-zinc-100 dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800 flex justify-between items-center shrink-0">
                     <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                        {t('admin.reports.context.evidence_count', { count: reportsWithContext.length })}
+                        {t('admin.reports.context.evidence_count', { count: evidenceCount })}
                     </span>
                     <span className="text-[10px] text-muted-foreground/50 font-mono font-medium">
                         {APP_NAME}
