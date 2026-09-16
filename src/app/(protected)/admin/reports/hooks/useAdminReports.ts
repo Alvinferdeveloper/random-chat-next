@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useDebounce } from '@/src/app/hooks/useDebounce';
 import { Message } from '@/src/types/chat';
+import { useTranslation } from '@/src/app/lib/i18n';
 
 export interface Offender {
     user: {
@@ -35,6 +36,7 @@ interface Pagination {
 }
 
 export function useAdminReports() {
+    const { t } = useTranslation();
     const [offenders, setOffenders] = useState<Offender[]>([]);
     const [pagination, setPagination] = useState<Pagination | null>(null);
     const [loading, setLoading] = useState(true);
@@ -53,7 +55,7 @@ export function useAdminReports() {
             });
             const data = await response.json();
 
-            if (!response.ok) throw new Error(data.message || 'Error fetching reports');
+            if (!response.ok) throw new Error(t(data.message || 'Error fetching reports'));
 
             setOffenders(data.offenders);
             setPagination(data.pagination);
@@ -63,7 +65,7 @@ export function useAdminReports() {
         } finally {
             setLoading(false);
         }
-    }, [page, debouncedSearch]);
+    }, [page, debouncedSearch, t]);
 
     useEffect(() => {
         fetchReports();
@@ -80,7 +82,7 @@ export function useAdminReports() {
 
             if (!response.ok) {
                 const data = await response.json();
-                throw new Error(data.message || 'Error resolving reports');
+                throw new Error(t(data.message || 'Error resolving reports'));
             }
 
             // Remove from local list
@@ -98,7 +100,7 @@ export function useAdminReports() {
                 credentials: 'include'
             });
             const data = await response.json();
-            if (!response.ok) throw new Error(data.message || 'Error fetching user reports');
+            if (!response.ok) throw new Error(t(data.message || 'Error fetching user reports'));
             return data;
         } catch (err) {
             setError((err as Error).message);

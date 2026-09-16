@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from '@/src/app/lib/i18n';
 
 export interface GlobalSetting {
     key: string;
@@ -10,6 +11,7 @@ export interface GlobalSetting {
 }
 
 export function useAdminSettings() {
+    const { t } = useTranslation();
     const [settings, setSettings] = useState<GlobalSetting[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -22,7 +24,7 @@ export function useAdminSettings() {
             });
             const data = await response.json();
 
-            if (!response.ok) throw new Error(data.message || 'Error al obtener la configuración global');
+            if (!response.ok) throw new Error(t(data.message || 'Error al obtener la configuración global'));
 
             if (data && Array.isArray(data.settings)) {
                 setSettings(data.settings);
@@ -54,7 +56,7 @@ export function useAdminSettings() {
             });
             const data = await response.json();
 
-            if (!response.ok) throw new Error(data.message || 'Error al actualizar la configuración');
+            if (!response.ok) throw new Error(t(data.message || 'Error al actualizar la configuración'));
 
             await fetchSettings();
             return true;

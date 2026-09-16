@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { RoomStatus } from "@/src/app/tribus/hooks/useRoom";
+import { useTranslation } from "@/src/app/lib/i18n";
 
 export type { RoomStatus };
 
@@ -22,6 +23,7 @@ export type AdminMyRoom = {
 };
 
 export function useAdminMyRooms(statusFilter: RoomStatus | 'ALL' = 'ALL') {
+    const { t } = useTranslation();
     const [rooms, setRooms] = useState<AdminMyRoom[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -61,7 +63,7 @@ export function useAdminMyRooms(statusFilter: RoomStatus | 'ALL' = 'ALL') {
 
             if (!response.ok) {
                 const result = await response.json();
-                throw new Error(result.message || "MY_ROOMS_LOAD_ERROR");
+                throw new Error(t(result.message || "MY_ROOMS_LOAD_ERROR"));
             }
 
             const json = await response.json();
@@ -72,15 +74,15 @@ export function useAdminMyRooms(statusFilter: RoomStatus | 'ALL' = 'ALL') {
 
         } catch (err: any) {
             if (err instanceof TypeError) {
-                setError("NETWORK_ERROR");
+                setError(t("NETWORK_ERROR"));
             } else {
-                setError(err.message || "MY_ROOMS_LOAD_ERROR");
+                setError(err.message || t("MY_ROOMS_LOAD_ERROR"));
             }
         } finally {
             fetchingRef.current = false;
             setLoading(false);
         }
-    }, [page, error, hasMore, statusFilter]);
+    }, [page, error, hasMore, statusFilter, t]);
 
     useEffect(() => {
         if (page === 1 && !error) {
@@ -97,7 +99,7 @@ export function useAdminMyRooms(statusFilter: RoomStatus | 'ALL' = 'ALL') {
 
             if (!response.ok) {
                 const result = await response.json();
-                throw new Error(result.message || "ROOM_DELETE_ERROR");
+                throw new Error(t(result.message || "ROOM_DELETE_ERROR"));
             }
 
             setRooms(prevRooms => prevRooms.filter(room => room.id !== roomId));
@@ -119,7 +121,7 @@ export function useAdminMyRooms(statusFilter: RoomStatus | 'ALL' = 'ALL') {
 
             if (!response.ok) {
                 const result = await response.json();
-                throw new Error(result.message || "CATEGORIES_UPDATE_ERROR");
+                throw new Error(t(result.message || "CATEGORIES_UPDATE_ERROR"));
             }
 
             // Update local state
@@ -159,7 +161,7 @@ export function useAdminMyRooms(statusFilter: RoomStatus | 'ALL' = 'ALL') {
 
             if (!response.ok) {
                 const result = await response.json();
-                throw new Error(result.message || "ROOM_CREATE_ERROR");
+                throw new Error(t(result.message || "ROOM_CREATE_ERROR"));
             }
 
             const result = await response.json();

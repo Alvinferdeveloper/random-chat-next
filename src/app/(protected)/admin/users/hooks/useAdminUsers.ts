@@ -51,7 +51,7 @@ export function useAdminUsers() {
             });
             const data = await response.json();
 
-            if (!response.ok) throw new Error(data.message || 'Error fetching users');
+            if (!response.ok) throw new Error(t(data.message || 'Error fetching users'));
 
             setUsers(data.users);
             setPagination(data.pagination);
@@ -61,7 +61,7 @@ export function useAdminUsers() {
         } finally {
             setLoading(false);
         }
-    }, [page, debouncedSearch, roleFilter, banFilter]);
+    }, [page, debouncedSearch, roleFilter, banFilter, t]);
 
     useEffect(() => {
         fetchUsers();
@@ -78,7 +78,7 @@ export function useAdminUsers() {
 
             if (!response.ok) {
                 const data = await response.json();
-                throw new Error(data.message || 'Error updating ban status');
+                throw new Error(t(data.message || 'Error updating ban status'));
             }
 
             setUsers(prev => prev.map(u => u.id === userId ? { ...u, isBanned } : u));

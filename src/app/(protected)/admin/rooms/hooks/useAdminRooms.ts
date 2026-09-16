@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Room } from '@/src/app/tribus/hooks/useRoom';
 import { useDebounce } from '@/src/app/hooks/useDebounce';
+import { useTranslation } from '@/src/app/lib/i18n';
 
 export interface AdminRoom extends Room {
     status: 'IN_REVISION' | 'ACCEPTED' | 'REJECTED';
@@ -15,6 +16,7 @@ export type RoomStatus = 'IN_REVISION' | 'ACCEPTED' | 'REJECTED';
 export type RoomStatusFilter = RoomStatus | 'ALL';
 
 export function useAdminRooms(statusFilter: RoomStatusFilter = 'IN_REVISION', page: number = 1) {
+    const { t } = useTranslation();
     const [rooms, setRooms] = useState<AdminRoom[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -41,11 +43,11 @@ export function useAdminRooms(statusFilter: RoomStatusFilter = 'IN_REVISION', pa
                 setTotalPages(json.meta.totalPages);
             }
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Error loading rooms.');
+            setError(t(err.response?.data?.message || 'Error loading rooms.'));
         } finally {
             setLoading(false);
         }
-    }, [statusFilter, page, debouncedSearch]);
+    }, [statusFilter, page, debouncedSearch, t]);
 
     const updateStatus = async (roomId: string, newStatus: RoomStatus) => {
         try {
@@ -81,7 +83,7 @@ export function useAdminRooms(statusFilter: RoomStatusFilter = 'IN_REVISION', pa
 
             if (!response.ok) {
                 const data = await response.json();
-                throw new Error(data.message || 'Error updating categories');
+                throw new Error(t(data.message || 'Error updating categories'));
             }
             return { success: true };
         } catch (err: any) {
