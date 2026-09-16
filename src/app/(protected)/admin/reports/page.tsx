@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@/src/components/ui/badge';
 import { Input } from '@/src/components/ui/input';
-import { CheckCircle2, ShieldAlert, Search } from 'lucide-react';
+import { CheckCircle2, ShieldAlert, Search, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import { BanDialog } from '@/src/app/(protected)/admin/users/components/BanDialog';
 import { Pagination } from '@/src/app/components/shared/Pagination';
@@ -14,6 +14,7 @@ import { ChatContextDialog } from './components/ChatContextDialog';
 import { DetailedReport } from './hooks/useAdminReports';
 import { toast } from 'sonner';
 import OffenderCard from './components/OffenderCard';
+import { BulkActionBar } from '../components/BulkActionBar';
 
 function ReportSkeleton() {
     return (
@@ -67,6 +68,8 @@ export default function AdminReportsPage() {
     const [isContextOpen, setIsContextOpen] = useState(false);
     const [contextReports, setContextReports] = useState<DetailedReport[]>([]);
     const [selectedUsername, setSelectedUsername] = useState('');
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [isBulkSubmitting, setIsBulkSubmitting] = useState(false);
 
     const handleResolve = async (userId: string, status: 'RESOLVED' | 'DISMISSED') => {
         setProcessingId(userId);
@@ -75,6 +78,28 @@ export default function AdminReportsPage() {
             toast.success(status === 'RESOLVED' ? t('admin.toast.reports_resolved') : t('admin.toast.reports_dismissed'));
         }
         setProcessingId(null);
+    };
+
+    const toggleSelect = (userId: string) => {
+        setSelectedIds((prev) => {
+            const next = new Set(prev);
+            if (next.has(userId)) next.delete(userId);
+            else next.add(userId);
+            return next;
+        });
+    };
+
+    const handleBulkDismiss = async () => {
+        setIsBulkSubmitting(true);
+        const ids = Array.from(selectedIds);
+        const results = await Promise.all(ids.map((id) => resolveReports(id, 'DISMISSED')));
+        const successCount = results.filter(Boolean).length;
+
+        if (successCount > 0) {
+            toast.success(t('admin.toast.bulk_reports_dismissed', { count: successCount }));
+        }
+        setSelectedIds(new Set());
+        setIsBulkSubmitting(false);
     };
 
     const handleBanClick = (user: any) => {
@@ -134,7 +159,7 @@ export default function AdminReportsPage() {
                     placeholder={t('admin.reports.search_placeholder')}
                     className="pl-10"
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={(e) => { setSearch(e.target.value); setSelectedIds(new Set()); }}
                 />
             </div>
 
@@ -182,6 +207,8 @@ export default function AdminReportsPage() {
                             onResolve={handleResolve}
                             onBanClick={handleBanClick}
                             onViewContext={handleViewContext}
+                            selected={selectedIds.has(offender.user.id)}
+                            onToggleSelect={toggleSelect}
                         />
                     ))}
 
@@ -210,6 +237,15 @@ export default function AdminReportsPage() {
                 onClose={() => setIsContextOpen(false)}
                 reports={contextReports}
                 reportedUsername={selectedUsername}
+            />
+
+            <BulkActionBar
+                count={selectedIds.size}
+                onClear={() => setSelectedIds(new Set())}
+                isSubmitting={isBulkSubmitting}
+                actions={[
+                    { key: 'dismiss', label: t('admin.reports.dismiss'), icon: XCircle, variant: 'outline', onClick: handleBulkDismiss },
+                ]}
             />
         </div>
     );

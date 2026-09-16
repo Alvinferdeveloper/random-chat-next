@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/src/components/ui/card';
 import { Button } from '@/src/components/ui/button';
 import { Badge } from '@/src/components/ui/badge';
+import { Checkbox } from '@/src/components/ui/checkbox';
 import { Check, X, RotateCcw, Hash, Pencil } from 'lucide-react';
 import { AdminRoom, RoomStatus } from '../hooks/useAdminRooms';
 import EditCategoriesDialog from './EditCategoriesDialog';
@@ -18,6 +19,8 @@ interface RoomCardProps {
     onUpdateCategories: (roomId: string, categoryIds: string[]) => Promise<{ success: boolean; message?: string }>;
     onUpdateRoom: (roomId: string, updates: Partial<AdminRoom>) => void;
     isSubmitting: boolean;
+    selected: boolean;
+    onToggleSelect: (roomId: string) => void;
 }
 
 const statusConfig: Record<RoomStatus, { labelKey: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
@@ -48,7 +51,7 @@ function getActions(roomStatus: RoomStatus): [ActionDef, ActionDef] {
     }
 }
 
-export default function RoomCard({ room, index, onAction, onUpdateCategories, onUpdateRoom, isSubmitting }: RoomCardProps) {
+export default function RoomCard({ room, index, onAction, onUpdateCategories, onUpdateRoom, isSubmitting, selected, onToggleSelect }: RoomCardProps) {
     const { t } = useTranslation();
     const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
     const cfg = statusConfig[room.status];
@@ -76,6 +79,14 @@ export default function RoomCard({ room, index, onAction, onUpdateCategories, on
                             <Hash className="h-10 w-10 text-muted-foreground/30" />
                         </div>
                     )}
+                    <div className="absolute top-3 left-3 bg-background/80 backdrop-blur-sm rounded-md p-1 shadow-sm">
+                        <Checkbox
+                            checked={selected}
+                            onCheckedChange={() => onToggleSelect(room.id)}
+                            className="cursor-pointer bg-background"
+                            aria-label={t('admin.rooms.select_tribe')}
+                        />
+                    </div>
                     <div className="absolute top-3 right-3">
                         <Badge variant={cfg.variant} className="text-[10px] uppercase tracking-wider shadow-sm">
                             {t(cfg.labelKey)}

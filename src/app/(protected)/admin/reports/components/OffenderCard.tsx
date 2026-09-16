@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar';
 import { Badge } from '@/src/components/ui/badge';
 import { Button } from '@/src/components/ui/button';
+import { Checkbox } from '@/src/components/ui/checkbox';
 import { Eye, XCircle, UserX, ShieldAlert, Calendar, Loader2 } from 'lucide-react';
 import { Offender } from '../hooks/useAdminReports';
 
@@ -15,9 +16,11 @@ interface OffenderCardProps {
     onResolve: (userId: string, status: 'RESOLVED' | 'DISMISSED') => void;
     onBanClick: (user: Offender['user']) => void;
     onViewContext: (user: Offender['user']) => void;
+    selected: boolean;
+    onToggleSelect: (userId: string) => void;
 }
 
-export default function OffenderCard({ offender, index, processingId, onResolve, onBanClick, onViewContext }: OffenderCardProps) {
+export default function OffenderCard({ offender, index, processingId, onResolve, onBanClick, onViewContext, selected, onToggleSelect }: OffenderCardProps) {
     const { t } = useTranslation();
 
     const REASON_LABELS: Record<string, string> = {
@@ -38,6 +41,12 @@ export default function OffenderCard({ offender, index, processingId, onResolve,
             <div className="overflow-hidden rounded-lg border border-border/50 bg-gradient-to-br from-zinc-100 to-zinc-100/60 dark:from-zinc-900/90 dark:to-zinc-900/60">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 border-b border-border/50">
                     <div className="flex items-center gap-4 min-w-0">
+                        <Checkbox
+                            checked={selected}
+                            onCheckedChange={() => onToggleSelect(offender.user.id)}
+                            className="cursor-pointer shrink-0"
+                            aria-label={t('admin.reports.select_offender')}
+                        />
                         <Avatar className="h-11 w-11 border shrink-0">
                             <AvatarImage src={offender.user.image || ''} />
                             <AvatarFallback>{offender.user.username?.charAt(0).toUpperCase()}</AvatarFallback>

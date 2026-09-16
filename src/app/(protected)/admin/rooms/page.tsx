@@ -9,8 +9,9 @@ import { Input } from '@/src/components/ui/input';
 import { ConfirmDialog } from '@/src/app/components/shared/ConfirmDialog';
 import { Pagination } from '@/src/app/components/shared/Pagination';
 import { toast } from 'sonner';
-import { AlertCircle, Layers, Search } from 'lucide-react';
+import { AlertCircle, Layers, Search, Check, X as XIcon } from 'lucide-react';
 import RoomCard from './components/RoomCard';
+import { BulkActionBar } from '../components/BulkActionBar';
 
 const TABS: { key: RoomStatusFilter; labelKey: string }[] = [
     { key: 'ALL', labelKey: 'admin.rooms.tabs.all' },
@@ -86,6 +87,8 @@ export default function ManageRoomsPage() {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [actionData, setActionData] = useState<{ id: string; status: RoomStatus } | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [isBulkSubmitting, setIsBulkSubmitting] = useState(false);
 
     const handleActionClick = useCallback((roomId: string, status: RoomStatus) => {
         setActionData({ id: roomId, status });
@@ -112,11 +115,40 @@ export default function ManageRoomsPage() {
     const handleTabChange = (tab: RoomStatusFilter) => {
         setActiveTab(tab);
         setPage(1);
+        setSelectedIds(new Set());
     };
 
     const handleSearchChange = (value: string) => {
         setSearch(value);
         setPage(1);
+        setSelectedIds(new Set());
+    };
+
+    const toggleSelect = (roomId: string) => {
+        setSelectedIds((prev) => {
+            const next = new Set(prev);
+            if (next.has(roomId)) next.delete(roomId);
+            else next.add(roomId);
+            return next;
+        });
+    };
+
+    const handleBulkAction = async (status: RoomStatus) => {
+        setIsBulkSubmitting(true);
+        const ids = Array.from(selectedIds);
+        const results = await Promise.all(ids.map((id) => updateStatus(id, status)));
+        const successCount = results.filter(Boolean).length;
+
+        if (successCount > 0) {
+            const keyMap: Record<string, string> = {
+                ACCEPTED: 'admin.toast.bulk_room_accepted',
+                REJECTED: 'admin.toast.bulk_room_rejected',
+                IN_REVISION: 'admin.toast.bulk_room_revision',
+            };
+            toast.success(t(keyMap[status], { count: successCount }));
+        }
+        setSelectedIds(new Set());
+        setIsBulkSubmitting(false);
     };
 
     const confirmVariant = actionData?.status === 'REJECTED' ? 'destructive' : 'primary';
@@ -217,6 +249,8 @@ export default function ManageRoomsPage() {
                                 onUpdateCategories={updateCategories}
                                 onUpdateRoom={updateRoom}
                                 isSubmitting={isSubmitting}
+                                selected={selectedIds.has(room.id)}
+                                onToggleSelect={toggleSelect}
                             />
                         ))}
                     </div>
@@ -239,6 +273,16 @@ export default function ManageRoomsPage() {
                 confirmText={actionData ? t(CONFIRM_KEYS[actionData.status].text) : ''}
                 variant={confirmVariant}
                 isLoading={isSubmitting}
+            />
+
+            <BulkActionBar
+                count={selectedIds.size}
+                onClear={() => setSelectedIds(new Set())}
+                isSubmitting={isBulkSubmitting}
+                actions={[
+                    { key: 'reject', label: t('admin.rooms.reject'), icon: XIcon, variant: 'destructive', onClick: () => handleBulkAction('REJECTED') },
+                    { key: 'accept', label: t('admin.rooms.accept'), icon: Check, variant: 'default', onClick: () => handleBulkAction('ACCEPTED') },
+                ]}
             />
         </div>
     );
