@@ -4,7 +4,7 @@ import { useAuth } from '@/src/app/hooks/useAuth';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { Loader2, ShieldCheck, LayoutDashboard, MessageSquare, Users, AlertCircle, Tag, LogOut, ChevronRight, SunMoon, Home } from 'lucide-react';
+import { Loader2, ShieldCheck, LayoutDashboard, MessageSquare, Users, AlertCircle, Tag, LogOut, ChevronRight, SunMoon, Home, History } from 'lucide-react';
 import { ThemeToggle } from '@/src/app/components/layout/ThemeToggle';
 import { cn } from '@/src/lib/utils';
 import { useAdminNotifications } from '@/src/app/(protected)/admin/hooks/useAdminNotifications';
@@ -23,6 +23,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { href: '/admin/users', label: t('admin.nav.users'), icon: Users },
         { href: '/admin/reports', label: t('admin.nav.reports'), icon: AlertCircle },
         { href: '/admin/categories', label: t('admin.nav.categories'), icon: Tag },
+        { href: '/admin/audit-log', label: t('admin.nav.audit_log'), icon: History },
     ];
 
     useAdminNotifications();
